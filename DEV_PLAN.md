@@ -29,12 +29,13 @@
 为了支持付费订阅、多语言学习及更复杂的笔记管理，我们决定从原生开发迁移至 **Next.js** 生态，并引入后端风控机制。
 
 ### 2.1 核心需求
-1.  **多层级笔记管理**:
-    *   **Collection (知识库)** -> **Folder (文件夹)** -> **Note (笔记)**。
+1.  **完整 CRUD (增删改查)**:
+    *   **删除 (Delete)**: 在当前原生版本中优先实现。
+    *   **搜索 (Search)**: 后续实现。
+2.  **多层级笔记管理与多语言 (Hierarchy & Multi-language)**:
+    *   **架构**: User -> Collection (语言设置层) -> Folder (可选) -> Note。
+    *   **语言设置**: 语言 (Target Language) 将在 Collection 层级设置，而不是每条笔记单独设置。
     *   原生 JS 难以维护此逻辑，需迁移至 React/Next.js。
-2.  **多语言支持 (Multi-language)**:
-    *   不仅仅支持西班牙语，需扩展至英、法、德、葡等。
-    *   数据库需增加 `target_language` 字段。
 3.  **商业化风控 (Monetization & Security)**:
     *   **激活码机制**: 用户注册后默认为“未激活”状态 (Read-only)，输入激活码后解锁写入权限。
     *   **存储限制**: 免费用户限制 500KB，付费用户解锁更多。
@@ -67,6 +68,8 @@
 ## 4. 下一步行动计划 (Action Plan)
 
 ### 4.1 立即执行 (Immediate)
+- [ ] **功能补全**:
+    - [ ] **删除笔记**: 在编辑界面增加删除按钮，调用 Supabase API 删除笔记并刷新列表。
 - [ ] **数据库升级**: 在 Supabase SQL Editor 中运行 `DATABASE_UPGRADE.md` 脚本。
 - [ ] **域名配置**: 部署到 Cloudflare Pages 后，在 Supabase 和 Google Cloud Console 更新 OAuth Redirect URL。
 

@@ -107,6 +107,18 @@ body {
     display: flex; align-items: center; justify-content: center;
 }
 
+.btn-danger {
+    background: transparent;
+    color: #ef4444;
+    margin-left: 1rem;
+    transition: all 0.2s;
+}
+
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+    transform: scale(1.1);
+}
+
 .notes-list {
     flex: 1;
     overflow-y: auto;
@@ -156,6 +168,14 @@ header {
 }
 
 .header-content { display: flex; justify-content: space-between; align-items: center; }
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+    margin-left: 1rem;
+}
 
 .title-input {
     background: transparent;

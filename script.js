@@ -27,6 +27,7 @@ const newNoteBtn = document.getElementById('newNoteBtn');
 
 const noteTitle = document.getElementById('noteTitle');
 const noteInput = document.getElementById('noteInput');
+const deleteNoteBtn = document.getElementById('deleteNoteBtn');
 const saveStatus = document.getElementById('saveStatus');
 
 const editModeBtn = document.getElementById('editModeBtn');
@@ -221,7 +222,35 @@ async function createNewNote() {
     }
 }
 
+async function deleteCurrentNote() {
+    if (!currentNoteId) return;
+
+    if (!confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
+        return;
+    }
+
+    saveStatus.textContent = 'Deleting...';
+
+    const { error } = await supabaseClient
+        .from('notes')
+        .delete()
+        .eq('id', currentNoteId);
+
+    if (error) {
+        console.error('Error deleting note:', error);
+        alert('Failed to delete note: ' + error.message);
+        saveStatus.textContent = 'Error';
+    } else {
+        currentNoteId = null;
+        noteTitle.value = '';
+        noteInput.value = '';
+        saveStatus.textContent = 'Deleted';
+        loadNotesList();
+    }
+}
+
 newNoteBtn.addEventListener('click', createNewNote);
+deleteNoteBtn.addEventListener('click', deleteCurrentNote);
 noteTitle.addEventListener('input', triggerSave);
 noteInput.addEventListener('input', triggerSave);
 
