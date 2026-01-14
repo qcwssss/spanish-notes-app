@@ -36,8 +36,8 @@ Run: `git add . && git commit -m "chore: archive v1 legacy code"`
 - Create: Next.js project in root (`.`)
 
 **Step 1: Create App**
-Run: `npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --no-git`
-*Note: Use `--no-git` because we are already in a repo.*
+Run: `npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --disable-git`
+*Note: Use `--disable-git` because we are already in a repo.*
 
 **Step 2: Clean Boilerplate**
 - Modify: `src/app/page.tsx` (Replace with simple "Hello World" or "Spanish Notes Loading...")
