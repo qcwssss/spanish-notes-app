@@ -1,6 +1,8 @@
 // --- CONFIGURATION ---
-const SUPABASE_URL = 'https://labnkvzdfzfjhpxmcugw.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_uF9eey4-__Il0lG-WItBDA_C6jhSbr6'; 
+// NOTE: This is legacy code. These keys are removed for security.
+// If you need to run this legacy version, replace these placeholders with your actual keys.
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY'; 
 
 // Check if Supabase SDK is loaded
 if (typeof supabase === 'undefined') {
