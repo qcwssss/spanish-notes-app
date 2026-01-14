@@ -112,7 +112,7 @@ Dispatch a code-reviewer sub-agent for unbiased review.
 ### Step 1: Get commit range
 
 ```bash
-BASE_SHA=$(git merge-base HEAD origin/master)
+BASE_SHA=$(git merge-base HEAD origin/main || git merge-base HEAD origin/master)
 HEAD_SHA=$(git rev-parse HEAD)
 echo "Review range: $BASE_SHA..$HEAD_SHA"
 ```
