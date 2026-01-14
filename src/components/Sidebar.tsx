@@ -1,12 +1,11 @@
 import Link from 'next/link';
+import { Note } from '@/types/note';
 
-interface Note {
-  id: string;
-  title: string;
-  updated_at: string;
+interface SidebarProps {
+  notes: Note[];
 }
 
-export default function Sidebar({ notes }: { notes: Note[] }) {
+export default function Sidebar({ notes }: SidebarProps) {
   return (
     <aside className="w-64 border-r border-slate-700 bg-slate-900 h-screen overflow-y-auto flex-shrink-0">
       <div className="p-4 border-b border-slate-700">
