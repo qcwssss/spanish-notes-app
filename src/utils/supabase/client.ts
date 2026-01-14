@@ -1,7 +1,7 @@
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserClient as createBrowserClientSupabase } from '@supabase/ssr'
 import { getSupabaseConfig } from './config'
 
-export function createClient() {
+export function createBrowserClient() {
   const { supabaseUrl, supabaseAnonKey } = getSupabaseConfig()
-  return createBrowserClient(supabaseUrl, supabaseAnonKey)
+  return createBrowserClientSupabase(supabaseUrl, supabaseAnonKey)
 }
