@@ -18,15 +18,16 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
+          // Refactored per Gemini suggestion: Create response first, then update both
+          // request and response cookies in a single loop for clarity.
+          const response = NextResponse.next({ request })
+          
+          cookiesToSet.forEach(({ name, value, options }) => {
             request.cookies.set(name, value)
-          )
-          supabaseResponse = NextResponse.next({
-            request,
+            response.cookies.set(name, value, options)
           })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+          
+          supabaseResponse = response
         },
       },
     }
