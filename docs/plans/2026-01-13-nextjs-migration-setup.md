@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this plan task-by-task.
 
-**Goal:** Initialize the Next.js 14 project structure and prepare the environment for migration.
+**Goal:** Initialize the Next.js 16 project structure and prepare the environment for migration.
 
 **Architecture:** 
 - **Framework:** Next.js 16 (App Router)
@@ -36,8 +36,8 @@ Run: `git add . && git commit -m "chore: archive v1 legacy code"`
 - Create: Next.js project in root (`.`)
 
 **Step 1: Create App**
-Run: `npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --no-git-init`
-*Note: Use `--no-git-init` because we are already in a repo.*
+Run: `npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --no-git`
+*Note: Use `--no-git` because we are already in a repo.*
 
 **Step 2: Clean Boilerplate**
 - Modify: `src/app/page.tsx` (Replace with simple "Hello World" or "Spanish Notes Loading...")
@@ -74,10 +74,14 @@ Write `src/utils/supabase/client.ts`:
 import { createBrowserClient } from '@supabase/ssr'
 
 export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Missing Supabase environment variables')
+  }
+
+  return createBrowserClient(supabaseUrl, supabaseKey)
 }
 ```
 
