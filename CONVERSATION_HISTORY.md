@@ -69,4 +69,27 @@ create policy "Users can delete own notes" on notes for delete using ( auth.uid(
 3.  **CRITICAL:** Update Redirect URLs in **both** Google Cloud Console and Supabase Dashboard to match the new domain.
 
 ---
-*Captured from OpenCode Session*
+
+## Session Log: Jan 13, 2026
+
+### 1. Project Analysis & Git Initialization
+- **Analyzed Codebase**: Confirmed Phase 3 (Auth, DB Sync, TTS) is complete.
+- **Git Setup**: Initialized repository, removed sensitive files (`.env`, `server.log`), and pushed to GitHub (`qcwssss/spanish-notes-app`).
+
+### 2. Architecture Review
+- **Deployment**: Prepared for Cloudflare Pages deployment.
+- **Future Requirements**:
+    - Multi-language support (Fr, De, etc.).
+    - Nested Folder structure (Collection -> Folder -> Note).
+    - Monetization & Risk Control (Activation Codes, Storage Limits).
+- **Decision**: Determined that Vanilla JS is insufficient for these complex features. Plan to migrate to **Next.js** in Phase 4.
+
+### 3. Database Engineering
+- Created `DATABASE_UPGRADE.md` containing SQL scripts for:
+    - Adding `target_language` to `notes`.
+    - Creating `user_profiles` and `activation_codes` tables.
+    - Implementing RLS policies for activation-based write access.
+
+### 4. Documentation
+- Created `DEV_PLAN.md`: Comprehensive roadmap and design doc.
+- Created `DATABASE_UPGRADE.md`: Actionable SQL migration script.
