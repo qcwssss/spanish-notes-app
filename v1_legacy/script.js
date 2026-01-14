@@ -150,6 +150,7 @@ function renderNotesList(notes) {
 }
 
 async function loadNoteContent(id) {
+    console.log('[DEBUG] loadNoteContent called with id:', id);
     currentNoteId = id;
     // Update visual active state
     Array.from(notesList.children).forEach((child, index) => {
@@ -225,9 +226,14 @@ async function createNewNote() {
 }
 
 async function deleteCurrentNote() {
-    if (!currentNoteId) return;
+    console.log('[DEBUG] deleteCurrentNote called. currentNoteId:', currentNoteId);
+    if (!currentNoteId) {
+        console.warn('[DEBUG] No currentNoteId, aborting delete.');
+        return;
+    }
 
     if (!confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
+        console.log('[DEBUG] Delete cancelled by user.');
         return;
     }
 
