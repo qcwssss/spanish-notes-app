@@ -84,8 +84,8 @@ export function createClient() {
 **Step 2: Create Env File**
 Write `.env.local`:
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://labnkvzdfzfjhpxmcugw.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_uF9eey4-__Il0lG-WItBDA_C6jhSbr6
+NEXT_PUBLIC_SUPABASE_URL=YOUR_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
 ```
 
 **Step 3: Commit Utils**

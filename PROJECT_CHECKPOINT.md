@@ -17,8 +17,8 @@ We have successfully built a **Web App** with the following features:
 *   **Hosting:** Localhost (currently), target is Cloudflare Pages.
 
 ## 🔑 Key Configuration (关键配置)
-*   **Supabase URL:** `https://labnkvzdfzfjhpxmcugw.supabase.co`
-*   **Supabase Key:** `sb_publishable_uF9eey4-__Il0lG-WItBDA_C6jhSbr6`
+*   **Supabase URL:** `YOUR_SUPABASE_URL`
+*   **Supabase Key:** `YOUR_SUPABASE_ANON_KEY`
 *   **Local Server:** `http://localhost:8000`
 
 ## 📂 Project Structure (文件结构)
