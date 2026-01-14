@@ -30,7 +30,7 @@ export default async function Home({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#0f172a] text-slate-100">
+    <div className="flex min-h-screen bg-slate-950 text-slate-100">
       <Sidebar notes={notes || []} />
       
       <main className="flex-1 p-8 overflow-y-auto h-screen">

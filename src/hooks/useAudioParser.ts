@@ -16,6 +16,10 @@ export interface ParsedTextBlock {
   chinese: string;
 }
 
+const REGEX_HEADING_NUMBER = /^##\s*[①-⑩0-9.]+\s*/;
+const REGEX_HEADING_MARKER = /^##\s*/;
+const REGEX_CHINESE_CHAR = /[\u4e00-\u9fa5]/;
+
 export const useAudioParser = (markdown: string) => {
   const parsedContent = useMemo(() => {
     const lines = markdown.split('\n');
@@ -32,8 +36,8 @@ export const useAudioParser = (markdown: string) => {
       // 1. Heading (##)
       if (line.startsWith('##')) {
         const cleanText = line
-          .replace(/^##\s*[①-⑩0-9.]+\s*/, '') // Remove numbers
-          .replace(/^##\s*/, '') // Remove remaining ##
+          .replace(REGEX_HEADING_NUMBER, '') // Remove numbers
+          .replace(REGEX_HEADING_MARKER, '') // Remove remaining ##
           .trim();
         
         result.push({
@@ -76,9 +80,9 @@ export const useAudioParser = (markdown: string) => {
       }
       // 3. Text Block (Spanish line + Chinese line)
       else {
-        const hasChinese = /[\u4e00-\u9fa5]/.test(line);
+        const hasChinese = REGEX_CHINESE_CHAR.test(line);
         // If current line is NOT Chinese, and next line IS Chinese
-        if (!hasChinese && i + 1 < lines.length && /[\u4e00-\u9fa5]/.test(lines[i + 1])) {
+        if (!hasChinese && i + 1 < lines.length && REGEX_CHINESE_CHAR.test(lines[i + 1])) {
           result.push({
             type: 'text-block',
             content: {
