@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish Note Player</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Supabase JS SDK (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-card">
+            <h1>🇪🇸 Spanish Notes</h1>
+            <p>Sign in to sync your notes across devices</p>
+            <button id="googleLoginBtn" class="google-btn">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo">
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <div class="app-container hidden" id="mainApp">
+        <!-- Sidebar for Note List -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>My Notes</h2>
+                <button id="newNoteBtn" class="icon-btn" title="New Note">+</button>
+            </div>
+            <div id="notesList" class="notes-list">
+                <!-- Notes will be populated here -->
+                <div class="loading-spinner">Loading...</div>
+            </div>
+            <div class="user-profile">
+                <img id="userAvatar" src="" alt="User">
+                <span id="userEmail">user@example.com</span>
+                <button id="logoutBtn" class="logout-btn">Log out</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header>
+                <div class="header-content">
+                    <input type="text" id="noteTitle" placeholder="Untitled Note" class="title-input">
+                    <div class="status-indicator" id="saveStatus">Saved</div>
+                </div>
+            </header>
+
+            <section class="editor-section">
+                <!-- Mode Switcher -->
+                <div class="mode-switch">
+                    <button id="editModeBtn" class="mode-btn active">Edit</button>
+                    <button id="viewModeBtn" class="mode-btn">Practice</button>
+                </div>
+
+                <!-- Edit Mode -->
+                <div id="editView" class="view-pane">
+                    <textarea id="noteInput" placeholder="Paste your markdown notes here...
+Example:
+## ① El sábado por la mañana me despierto.
+| 西班牙语 | 英文 | 中文 |
+| El | The | 这个 |"></textarea>
+                </div>
+
+                <!-- Practice/Play Mode -->
+                <div id="playView" class="view-pane hidden">
+                    <div class="voice-controls">
+                        <label for="voiceSelect">Voice:</label>
+                        <select id="voiceSelect"></select>
+                    </div>
+                    <div id="contentDisplay" class="content-display"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
