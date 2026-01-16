@@ -1,18 +1,22 @@
 import Link from 'next/link';
 import { Note } from '@/types/note';
+import { UserProfile } from '@/types/profile';
 import CreateNoteButton from './CreateNoteButton';
+import UserInfoCard from './UserInfoCard';
 
 interface SidebarProps {
   notes: Note[];
+  profile: UserProfile | null;
 }
 
-export default function Sidebar({ notes }: SidebarProps) {
+export default function Sidebar({ notes, profile }: SidebarProps) {
   return (
-    <aside className="w-64 border-r border-slate-700 bg-slate-900 h-screen overflow-y-auto flex-shrink-0 flex flex-col">
+    <aside className="w-64 border-r border-slate-700 bg-slate-900 h-screen flex flex-col flex-shrink-0">
       <div className="p-4 border-b border-slate-700">
         <h2 className="text-xl font-bold text-slate-100 mb-4">My Notes</h2>
-        <CreateNoteButton />
+        <CreateNoteButton isActive={profile?.is_active || false} />
       </div>
+      
       <nav className="p-2 space-y-1 flex-1 overflow-y-auto">
         {notes.map((note) => (
           <Link
@@ -24,6 +28,8 @@ export default function Sidebar({ notes }: SidebarProps) {
           </Link>
         ))}
       </nav>
+
+      {profile && <UserInfoCard profile={profile} />}
     </aside>
   );
 }
