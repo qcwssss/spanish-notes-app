@@ -1,23 +1,31 @@
 'use client';
 
+import { useState } from 'react';
 import { createNote } from '@/utils/notes/queries';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import ActivationDialog from './ActivationDialog';
 
-export default function CreateNoteButton() {
-  const router = useRouter();
+interface CreateNoteButtonProps {
+  isActive: boolean;
+}
+
+export default function CreateNoteButton({ isActive }: CreateNoteButtonProps) {
   const [isCreating, setIsCreating] = useState(false);
+  const [showActivationDialog, setShowActivationDialog] = useState(false);
+  const router = useRouter();
 
   const handleCreate = async () => {
+    if (!isActive) {
+      setShowActivationDialog(true);
+      return;
+    }
+
     setIsCreating(true);
     try {
-      const newNote = await createNote();
-      if (newNote) {
-        router.push(`/?noteId=${newNote.id}`);
-      }
-    } catch (error) {
-      console.error('Failed to create note:', error);
+      const newNote = await createNote('Untitled Note', '');
+      router.push(`/?noteId=${newNote.id}`);
+    } catch (e) {
+      console.error(e);
       alert('Failed to create note');
     } finally {
       setIsCreating(false);
@@ -25,19 +33,21 @@ export default function CreateNoteButton() {
   };
 
   return (
-    <button
-      onClick={handleCreate}
-      disabled={isCreating}
-      className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors font-medium mb-4 disabled:opacity-50 cursor-pointer"
-    >
-      {isCreating ? (
-        <span className="animate-pulse">Creating...</span>
-      ) : (
-        <>
-          <Plus size={20} />
-          <span>New Note</span>
-        </>
+    <>
+      <button
+        onClick={handleCreate}
+        disabled={isCreating}
+        className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors disabled:opacity-50 font-medium"
+      >
+        {isCreating ? 'Creating...' : '+ New Note'}
+      </button>
+
+      {!isActive && (
+        <ActivationDialog 
+          open={showActivationDialog} 
+          onOpenChange={setShowActivationDialog}
+        />
       )}
-    </button>
+    </>
   );
 }
