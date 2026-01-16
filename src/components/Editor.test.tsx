@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Editor from './Editor';
+import { updateNote } from '@/utils/notes/queries';
 
 vi.mock('@/utils/notes/queries', () => ({
   updateNote: vi.fn(() => Promise.resolve()),
@@ -19,7 +20,7 @@ vi.mock('./ActivationDialog', () => ({
   default: ({ open }: { open: boolean }) => (open ? <div>ActivationDialogOpen</div> : null),
 }));
 
-const note = { id: '1', title: 'Test Note', content: 'Hola' };
+const note = { id: '1', title: 'Test Note', content: 'Hola', updated_at: '2026-01-15T00:00:00Z' };
 
 describe('Editor activation guard', () => {
   it('opens activation dialog when inactive user saves', () => {
@@ -29,5 +30,6 @@ describe('Editor activation guard', () => {
     fireEvent.click(screen.getByText('Save'));
 
     expect(screen.getByText('ActivationDialogOpen')).toBeInTheDocument();
+    expect(updateNote).not.toHaveBeenCalled();
   });
 });
