@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import Editor from './Editor';
 import { updateNote } from '@/utils/notes/queries';
 
@@ -23,13 +23,39 @@ vi.mock('./ActivationDialog', () => ({
 const note = { id: '1', title: 'Test Note', content: 'Hola', updated_at: '2026-01-15T00:00:00Z' };
 
 describe('Editor activation guard', () => {
-  it('opens activation dialog when inactive user saves', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('opens activation dialog when inactive user saves', async () => {
     render(<Editor note={note} isActive={false} />);
 
-    fireEvent.click(screen.getByText('Edit'));
-    fireEvent.click(screen.getByText('Save'));
+    await act(async () => {
+      fireEvent.click(screen.getByText('Edit'));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Save'));
+    });
 
     expect(screen.getByText('ActivationDialogOpen')).toBeInTheDocument();
     expect(updateNote).not.toHaveBeenCalled();
+  });
+
+  it('saves when user is active', async () => {
+    render(<Editor note={note} isActive />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Edit'));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Save'));
+    });
+
+    expect(updateNote).toHaveBeenCalledWith(note.id, {
+      title: note.title,
+      content: note.content,
+    });
   });
 });
