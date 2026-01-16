@@ -5,12 +5,19 @@ import { Note } from '@/types/note';
 import { updateNote, deleteNote } from '@/utils/notes/queries';
 import NotePlayer from './NotePlayer';
 import { useRouter } from 'next/navigation';
+import ActivationDialog from './ActivationDialog';
 
-export default function Editor({ note }: { note: Note }) {
+interface EditorProps {
+  note: Note;
+  isActive: boolean;
+}
+
+export default function Editor({ note, isActive }: EditorProps) {
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content || '');
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showActivationDialog, setShowActivationDialog] = useState(false);
   const router = useRouter();
 
   // Sync state if note prop changes
@@ -21,6 +28,11 @@ export default function Editor({ note }: { note: Note }) {
   }, [note.id, note.title, note.content]);
 
   const handleSave = async () => {
+    if (!isActive) {
+      setShowActivationDialog(true);
+      return;
+    }
+
     setIsSaving(true);
     try {
       await updateNote(note.id, { title, content });
@@ -114,6 +126,13 @@ Chinese translation"
         />
       ) : (
         <NotePlayer content={content} />
+      )}
+
+      {!isActive && (
+        <ActivationDialog 
+          open={showActivationDialog} 
+          onOpenChange={setShowActivationDialog}
+        />
       )}
     </div>
   );
