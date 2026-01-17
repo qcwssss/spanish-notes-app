@@ -41,7 +41,7 @@ export default async function Home({
 
       <main className="flex-1 p-8 overflow-y-auto h-screen">
         {activeNote ? (
-           <Editor note={activeNote} isActive={profile?.is_active || false} />
+          <Editor note={activeNote} isActive={profile?.is_active || false} />
         ) : (
           <div className="flex items-center justify-center h-full text-slate-500">
             <p>Select a note to start practicing</p>

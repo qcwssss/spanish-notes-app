@@ -1,17 +1,23 @@
-name: Trigger Gemini Review
+name: Auto Trigger Gemini Review
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  pull-requests: write
+
 jobs:
   trigger-review:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     steps:
       - name: Comment /gemini review
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr comment ${{ github.event.pull_request.number }} --body "/gemini review" --repo ${{ github.repository }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '/gemini review'
+            })

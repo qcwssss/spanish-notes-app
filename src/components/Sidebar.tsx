@@ -16,7 +16,7 @@ export default function Sidebar({ notes, profile }: SidebarProps) {
         <h2 className="text-xl font-bold text-slate-100 mb-4">My Notes</h2>
         <CreateNoteButton isActive={profile?.is_active || false} />
       </div>
-      
+
       <nav className="p-2 space-y-1 flex-1 overflow-y-auto">
         {notes.map((note) => (
           <Link

@@ -6,7 +6,6 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
-// Mock next/link if necessary, but try without first or minimal mock
 vi.mock('next/link', () => ({
   default: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
@@ -47,10 +46,10 @@ describe('Sidebar', () => {
     expect(links[0].getAttribute('href')).toBe('/?noteId=1');
     expect(links[1].getAttribute('href')).toBe('/?noteId=2');
   });
-  
+
   it('renders "Untitled Note" for empty titles', () => {
-     const notes = [{ id: '3', title: '', updated_at: '2023-01-03' }];
-     render(<Sidebar profile={mockProfile} notes={notes} />);
-     expect(screen.getByText('Untitled Note')).toBeDefined();
+    const notes = [{ id: '3', title: '', updated_at: '2023-01-03' }];
+    render(<Sidebar profile={mockProfile} notes={notes} />);
+    expect(screen.getByText('Untitled Note')).toBeDefined();
   });
 });
