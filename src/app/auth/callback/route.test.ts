@@ -1,10 +1,17 @@
 import { describe, it, expect, vi } from 'vitest';
+import { NextRequest } from 'next/server';
 import { GET } from './route';
 
-vi.mock('@/utils/supabase/server', () => ({
+const exchangeCodeForSession = vi.fn(() => Promise.resolve({ data: { session: {} }, error: null }));
+
+vi.mock('@/utils/supabase/config', () => ({
+  getSupabaseConfig: () => ({ supabaseUrl: 'https://supabase.test', supabaseAnonKey: 'anon' }),
+}));
+
+vi.mock('@supabase/ssr', () => ({
   createServerClient: () => ({
     auth: {
-      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: '1' } }, error: null })),
+      exchangeCodeForSession,
     },
   }),
 }));
@@ -21,8 +28,11 @@ vi.mock('next/server', async () => {
 });
 
 describe('auth callback route', () => {
-  it('redirects to home', async () => {
-    const response = await GET(new Request('http://localhost/auth/callback'));
+  it('exchanges code and redirects to home', async () => {
+    const request = new NextRequest('http://localhost/auth/callback?code=abc');
+    const response = await GET(request);
+
+    expect(exchangeCodeForSession).toHaveBeenCalledWith('abc');
     expect(response).toEqual({ redirected: true, url: 'http://localhost/' });
   });
 });
