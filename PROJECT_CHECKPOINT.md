@@ -1,104 +1,63 @@
 # 🇪🇸 Spanish Notes App - Project Checkpoint
-**Date:** Jan 12, 2026
-**Status:** Phase 3 Complete (Authentication & Database Integrated)
+**Date:** Jan 17, 2026
+**Status:** Phase 4 In Progress (Next.js Migration + Auth Gate + Profiles)
 
 ## 📌 Current State (目前进度)
-We have successfully built a **Web App** with the following features:
-1.  **Frontend:** HTML/CSS/JS (Vanilla) with a modern "Glassmorphism" UI.
-2.  **Authentication:** Google OAuth via **Supabase**.
-3.  **Database:** PostgreSQL (hosted on Supabase) for storing notes.
-4.  **Core Feature:** Markdown parser that converts Spanish notes into interactive, clickable audio players.
-5.  **Sync:** Notes are automatically saved to the cloud and synced across devices.
+We now have a **Next.js App Router** app with authentication gating and user profile features:
+1. **Auth Gate:** Non-dismissible Google OAuth modal (`AuthGate`) on `/`, with `/auth/callback` route exchanging OAuth code and persisting session cookies.
+2. **User Profiles:** `user_profiles` table integration with `UserInfoCard`, `StorageIndicator`, and activation status.
+3. **Activation Guard:** Inactive users are blocked from saving/creating notes and see an activation dialog.
+4. **Settings Page:** `/settings` for target language selection + storage usage (blocked for inactive users).
+5. **TTS Improvements:** Voice selection now persists across sessions (localStorage).
+6. **Tests:** Vitest + React Testing Library added with coverage for key components and server routes.
 
 ## 🛠️ Tech Stack (技术栈)
-*   **Frontend:** HTML5, CSS3, JavaScript (ES6+)
-*   **Backend/DB:** Supabase (PostgreSQL)
-*   **Auth:** Google OAuth 2.0
-*   **Hosting:** Localhost (currently), target is Cloudflare Pages.
+* **Frontend:** Next.js 16 (App Router), React 19, Tailwind CSS
+* **Backend/DB:** Supabase (PostgreSQL + RLS)
+* **Auth:** Google OAuth 2.0 via Supabase SSR
+* **Hosting:** Cloudflare Pages (Next-on-Pages)
 
 ## 🔑 Key Configuration (关键配置)
-*   **Supabase URL:** `YOUR_SUPABASE_URL`
-*   **Supabase Key:** `YOUR_SUPABASE_ANON_KEY`
-*   **Local Server:** `http://localhost:8000`
+* **Supabase URL:** `NEXT_PUBLIC_SUPABASE_URL`
+* **Supabase Key:** `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+* **Redirect URLs (Supabase):**
+  * `https://<pages-domain>/auth/callback`
 
 ## 📂 Project Structure (文件结构)
 ```
 /spanish-notes-app
-├── index.html      # Main UI (Login overlay + App interface)
-├── style.css       # Dark mode styling & Sidebar layout
-├── script.js       # Logic: Auth, DB Sync, Parser, TTS
-└── docs/           # Design docs & Implementation plan
+├── src/app/                  # App Router pages (/ , /settings, /auth/callback)
+├── src/components/           # AuthGate, Sidebar, Editor, UserInfoCard
+├── src/utils/                # Supabase SSR helpers, profile queries
+├── docs/plans/               # Implementation plans
+└── v1_legacy/                # Old vanilla JS app (reference)
 ```
 
-## ⚡ Quick Setup: Database SQL (数据库初始化命令)
-Copy and run this in Supabase **SQL Editor** to set up the database:
+## ✅ Recent Work (已完成)
+- **AuthGate** modal + OAuth callback route with error handling.
+- **Profile UI**: UserInfoCard + StorageIndicator + ActivationDialog.
+- **Editor/Create** guards for inactive users.
+- **Settings page** with language selection and storage view.
+- **TTS voice** selection persistence (remembers last choice).
+- **CI workflow** updated to comment using PAT (`GEMINI_REVIEW_TOKEN`).
 
-```sql
--- 1. 确保 UUID 扩展已开启
-create extension if not exists "uuid-ossp";
+## 🧪 Tests & Build (验证)
+- `npm test src/components/AuthGate.test.tsx`
+- `npm test src/app/auth/callback/route.test.ts`
+- `npm test src/app/page.auth-gate.test.tsx`
+- `npm test src/components/Sidebar.test.tsx`
+- `npm test src/hooks/useTTS.test.ts`
+- `npm run build` (Cloudflare compatible)
 
--- 2. 创建笔记表
-create table if not exists notes (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users not null,
-  title text,
-  content text,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
+## 📋 Open Questions (未决问题)
+1. **Activation policy:** Should Google login auto-activate users or still require activation code?
+2. **UX polish (optional):** Replace `alert()` with toast system; switch `<a>` to `Link`.
 
--- 3. 开启行级安全策略 (RLS)
-alter table notes enable row level security;
-
--- 4. 创建安全规则：只允许用户操作自己的数据
--- (删除旧策略以防重复)
-drop policy if exists "Users can see own notes" on notes;
-drop policy if exists "Users can insert own notes" on notes;
-drop policy if exists "Users can update own notes" on notes;
-drop policy if exists "Users can delete own notes" on notes;
-
--- 重新创建策略
-create policy "Users can see own notes" 
-  on notes for select using ( auth.uid() = user_id );
-
-create policy "Users can insert own notes" 
-  on notes for insert with check ( auth.uid() = user_id );
-
-create policy "Users can update own notes" 
-  on notes for update using ( auth.uid() = user_id );
-
-create policy "Users can delete own notes" 
-  on notes for delete using ( auth.uid() = user_id );
-```
-
-## 📝 Next Steps (下一步计划)
-1.  **Deploy to Cloudflare Pages:**
-    *   Upload the project folder to Cloudflare.
-    *   Update Google Cloud Console & Supabase "Redirect URLs" to the new production domain (e.g., `https://spanish-notes.pages.dev`).
-2.  **Mobile Testing:**
-    *   Verify the layout on iPhone/Android.
-    *   Test "Sign in with Google" flow on mobile.
-3.  **Feature Polish:**
-    *   Add "Delete Note" button.
-    *   Add "Search" in sidebar.
-
-## ⚠️ Important Notes (注意事项)
-*   **Database Table:** The `notes` table with RLS policies MUST exist in Supabase for the app to work.
-*   **Redirect URI:** If you change the domain (e.g. deploy to public), you MUST update the Allowed Redirect URIs in **both** Google Cloud Console and Supabase Dashboard.
+## 🧭 Next Steps (下一步计划)
+1. Decide activation policy (manual activation vs auto-activate on OAuth).
+2. Validate OAuth redirect URL in Supabase for the Pages domain.
+3. Merge PR `https://github.com/qcwssss/spanish-notes-app/pull/5` when ready.
+4. Optional UX refinements after merge.
 
 ---
-*Generated by Antigravity Agent*
-
-## 🔊 Audio Engine Details (语音引擎说明)
-*   **Technology:** Uses `window.speechSynthesis` (Web Speech API).
-*   **Cost:** 100% Free. No external API keys required.
-*   **Dependency:** Relies on the user's device/browser TTS engine.
-    *   **iOS/Mac:** Uses Apple's high-quality system voices (Siri-grade).
-    *   **Windows/Android:** Uses Google/Microsoft online voices (high quality).
-    *   **Fallback:** If offline or no specific voice found, falls back to system default.
-*   **Logic:** The app automatically selects the best available Spanish voice (prioritizing "Google", "Monica", or "es-MX").
-
-## 🎨 UI/UX Polish (最新优化)
-*   **Anti-Select:** Added CSS to prevent accidental selection of UI elements (sidebar, buttons) while keeping note content selectable.
-*   **Login Flow:** Added Google Login overlay.
-*   **Sidebar:** Added note list with active state highlighting.
+*Updated by assistant*
