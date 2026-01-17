@@ -35,4 +35,13 @@ describe('auth callback route', () => {
     expect(exchangeCodeForSession).toHaveBeenCalledWith('abc');
     expect(response).toEqual({ redirected: true, url: 'http://localhost/' });
   });
+
+  it('redirects with error when exchange fails', async () => {
+    exchangeCodeForSession.mockResolvedValueOnce({ data: { session: null }, error: new Error('bad') });
+
+    const request = new NextRequest('http://localhost/auth/callback?code=bad');
+    const response = await GET(request);
+
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/?auth=error' });
+  });
 });
