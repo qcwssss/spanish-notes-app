@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 import { getUserProfile } from '@/utils/profile/queries';
 import SettingsForm from './SettingsForm';
 
+export const runtime = 'edge';
+
 export default async function SettingsPage() {
   const profile = await getUserProfile();
 
