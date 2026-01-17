@@ -1,6 +1,10 @@
 import { createServerClient } from '@/utils/supabase/server';
+import { getUserProfile } from '@/utils/profile/queries';
 import Sidebar from '@/components/Sidebar';
-import NotePlayer from '@/components/NotePlayer';
+import Editor from '@/components/Editor';
+import AuthGate from '@/components/AuthGate';
+
+export const runtime = 'edge';
 
 export default async function Home({
   searchParams,
@@ -8,6 +12,7 @@ export default async function Home({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const supabase = await createServerClient();
+  const profile = await getUserProfile();
 
   // 1. Fetch Notes List
   const { data: notes } = await supabase
@@ -18,31 +23,25 @@ export default async function Home({
   // 2. Determine Selected Note
   const resolvedSearchParams = await searchParams;
   const selectedNoteId = resolvedSearchParams?.noteId as string;
-  let activeNoteContent = null;
+  let activeNote = null;
 
   if (selectedNoteId) {
     const { data: note } = await supabase
       .from('notes')
-      .select('content')
+      .select('*')
       .eq('id', selectedNoteId)
       .single();
-    activeNoteContent = note?.content;
+    activeNote = note;
   }
 
   return (
     <div className="flex min-h-screen bg-slate-950 text-slate-100">
-      <Sidebar notes={notes || []} />
-      
+      <AuthGate />
+      <Sidebar notes={notes || []} profile={profile} />
+
       <main className="flex-1 p-8 overflow-y-auto h-screen">
-        {activeNoteContent ? (
-          <div className="max-w-4xl mx-auto space-y-8">
-             <header className="space-y-4">
-               <h1 className="text-3xl font-bold text-slate-100">
-                 {notes?.find(n => n.id === selectedNoteId)?.title || 'Untitled Note'}
-               </h1>
-             </header>
-             <NotePlayer content={activeNoteContent} />
-          </div>
+        {activeNote ? (
+          <Editor note={activeNote} isActive={profile?.is_active || false} />
         ) : (
           <div className="flex items-center justify-center h-full text-slate-500">
             <p>Select a note to start practicing</p>

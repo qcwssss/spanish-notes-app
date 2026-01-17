@@ -7,6 +7,8 @@ export interface TTSVoice {
   voiceURI: string;
 }
 
+const TTS_VOICE_STORAGE_KEY = 'ttsVoiceURI';
+
 export const useTTS = () => {
   const [voices, setVoices] = useState<TTSVoice[]>([]);
   const [selectedVoiceIndex, setSelectedVoiceIndex] = useState<number>(0);
@@ -36,6 +38,16 @@ export const useTTS = () => {
 
       setVoices(formattedVoices);
 
+      const savedVoiceUri = window.localStorage.getItem(TTS_VOICE_STORAGE_KEY);
+      const savedIndex = savedVoiceUri
+        ? spanishVoices.findIndex((voice) => voice.voiceURI === savedVoiceUri)
+        : -1;
+
+      if (savedIndex !== -1) {
+        setSelectedVoiceIndex(savedIndex);
+        return;
+      }
+
       // Auto-select best voice (Monica, Google, or MX)
       const bestIndex = spanishVoices.findIndex(v => 
         v.name.includes('Monica') || 
@@ -55,6 +67,18 @@ export const useTTS = () => {
       window.speechSynthesis.onvoiceschanged = loadVoices;
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || voices.length === 0) {
+      return;
+    }
+
+    const selectedVoice = voices[selectedVoiceIndex];
+
+    if (selectedVoice) {
+      window.localStorage.setItem(TTS_VOICE_STORAGE_KEY, selectedVoice.voiceURI);
+    }
+  }, [selectedVoiceIndex, voices]);
 
   const speak = useCallback((text: string) => {
     if (!supported) return;
