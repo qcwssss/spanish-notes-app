@@ -1,6 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import Sidebar from './Sidebar';
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 // Mock next/link if necessary, but try without first or minimal mock
 vi.mock('next/link', () => ({
@@ -9,6 +13,16 @@ vi.mock('next/link', () => ({
   ),
 }));
 
+const mockProfile = {
+  id: 'test-id',
+  email: 'test@example.com',
+  is_active: true,
+  storage_used: 5000,
+  plan_type: 'free' as const,
+  target_language: 'es',
+  created_at: '2026-01-15T00:00:00Z',
+};
+
 describe('Sidebar', () => {
   const mockNotes = [
     { id: '1', title: 'Note 1', updated_at: '2023-01-01' },
@@ -16,19 +30,19 @@ describe('Sidebar', () => {
   ];
 
   it('renders the sidebar header', () => {
-    render(<Sidebar notes={[]} />);
+    render(<Sidebar profile={mockProfile} notes={[]} />);
     expect(screen.getByText('My Notes')).toBeDefined();
   });
 
   it('renders a list of notes', () => {
-    render(<Sidebar notes={mockNotes} />);
+    render(<Sidebar profile={mockProfile} notes={mockNotes} />);
     expect(screen.getByText('Note 1')).toBeDefined();
     expect(screen.getByText('Long Note Title That Should Be Truncated Maybe')).toBeDefined();
   });
 
   it('renders correct links', () => {
-    render(<Sidebar notes={mockNotes} />);
-    const links = screen.getAllByRole('link');
+    render(<Sidebar profile={mockProfile} notes={mockNotes} />);
+    const links = screen.getAllByRole('link', { name: /note/i });
     expect(links).toHaveLength(2);
     expect(links[0].getAttribute('href')).toBe('/?noteId=1');
     expect(links[1].getAttribute('href')).toBe('/?noteId=2');
@@ -36,7 +50,7 @@ describe('Sidebar', () => {
   
   it('renders "Untitled Note" for empty titles', () => {
      const notes = [{ id: '3', title: '', updated_at: '2023-01-03' }];
-     render(<Sidebar notes={notes} />);
+     render(<Sidebar profile={mockProfile} notes={notes} />);
      expect(screen.getByText('Untitled Note')).toBeDefined();
   });
 });
