@@ -10,6 +10,11 @@
 
 ---
 
+## 2026-01-18 Patch
+- Change: Storage usage now maintained by DB trigger + backfill; profile reads use stored `storage_used`.
+- Scope: `user_profiles.storage_used` trigger + backfill SQL, storage display in settings/sidebar.
+- Status: done
+
 ## Task 1: Verify Database Schema and Test Data
 
 **Goal:** Confirm activation_codes table has test data.
