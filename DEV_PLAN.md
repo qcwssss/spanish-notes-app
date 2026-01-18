@@ -8,6 +8,11 @@
 - Scope: Activation redeem RPC, user_profiles.is_active, DATABASE_UPGRADE 脚本，`https://note-lingo-app.pages.dev`。
 - Status: done
 
+## 2026-01-18 (Markdown TTS)
+- Change: 迁移到完整 Markdown 渲染，并按用户语言过滤朗读内容。
+- Scope: `react-markdown` 渲染 + `useTTS` 语言过滤 + `MarkdownRenderer`。
+- Status: done (pending PR)
+
 ## 2026-01-18 (Patch)
 - Change: 修复设置页语言保存失败（补 `user_profiles.target_language` 字段），存储使用量改为数据库触发器自动维护，并完成回填。
 - Scope: Supabase schema patch + notes 触发器 + storage_used 回填 SQL。

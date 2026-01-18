@@ -10,9 +10,10 @@ import ActivationDialog from './ActivationDialog';
 interface EditorProps {
   note: Note;
   isActive: boolean;
+  targetLanguage: string | null;
 }
 
-export default function Editor({ note, isActive }: EditorProps) {
+export default function Editor({ note, isActive, targetLanguage }: EditorProps) {
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content || '');
   const [isEditing, setIsEditing] = useState(false);
@@ -125,7 +126,7 @@ Spanish text
 Chinese translation"
         />
       ) : (
-        <NotePlayer content={content} />
+        <NotePlayer content={content} targetLanguage={targetLanguage} />
       )}
 
       {!isActive && (

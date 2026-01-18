@@ -28,7 +28,7 @@ describe('Editor activation guard', () => {
   });
 
   it('opens activation dialog when inactive user saves', async () => {
-    render(<Editor note={note} isActive={false} />);
+    render(<Editor note={note} isActive={false} targetLanguage="es" />);
 
     await act(async () => {
       fireEvent.click(screen.getByText('Edit'));
@@ -43,7 +43,7 @@ describe('Editor activation guard', () => {
   });
 
   it('saves when user is active', async () => {
-    render(<Editor note={note} isActive />);
+    render(<Editor note={note} isActive targetLanguage="es" />);
 
     await act(async () => {
       fireEvent.click(screen.getByText('Edit'));
