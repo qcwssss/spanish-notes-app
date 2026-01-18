@@ -32,8 +32,13 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   is_active BOOLEAN DEFAULT false,           -- 默认为未激活
   storage_used BIGINT DEFAULT 0,             -- 已用存储空间 (字节)
   plan_type TEXT DEFAULT 'free',             -- free, pro
+  target_language TEXT DEFAULT NULL,         -- 目标语言（首次保存后锁定）
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- 如果之前已创建表，请补充字段
+ALTER TABLE user_profiles
+ADD COLUMN IF NOT EXISTS target_language TEXT DEFAULT NULL;
 
 -- 开启 RLS
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
@@ -122,6 +127,36 @@ BEGIN
   RETURN 'Success';
 END;
 $$;
+```
+
+## 第四步：存储使用量自动更新 (Storage Usage Tracking)
+
+这部分会在每次新建/更新/删除笔记后更新 `user_profiles.storage_used`。
+
+```sql
+CREATE OR REPLACE FUNCTION public.refresh_storage_used()
+RETURNS TRIGGER AS $$
+DECLARE
+  target_user_id UUID;
+BEGIN
+  target_user_id := COALESCE(NEW.user_id, OLD.user_id);
+
+  UPDATE user_profiles
+  SET storage_used = COALESCE((
+    SELECT SUM(octet_length(content))
+    FROM notes
+    WHERE user_id = target_user_id
+  ), 0)
+  WHERE id = target_user_id;
+
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS notes_refresh_storage_used ON notes;
+CREATE TRIGGER notes_refresh_storage_used
+  AFTER INSERT OR UPDATE OR DELETE ON notes
+  FOR EACH ROW EXECUTE PROCEDURE public.refresh_storage_used();
 ```
 
 ---

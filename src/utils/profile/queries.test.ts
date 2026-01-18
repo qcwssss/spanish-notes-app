@@ -62,6 +62,7 @@ describe('getUserProfile', () => {
     expect(profile?.is_active).toBe(true);
     expect(profile?.plan_type).toBe('free');
     expect(profile?.target_language).toBe('es');
+    expect(profile?.storage_used).toBe(5000);
   });
 
   it('should return null when user not authenticated', async () => {

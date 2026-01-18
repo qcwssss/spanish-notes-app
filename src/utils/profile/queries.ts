@@ -5,9 +5,9 @@ import { UserProfile } from '@/types/profile';
 
 export async function getUserProfile(): Promise<UserProfile | null> {
   const supabase = await createServerClient();
-  
+
   const { data: { user } } = await supabase.auth.getUser();
-  
+
   if (!user) {
     return null;
   }

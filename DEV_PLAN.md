@@ -1,23 +1,39 @@
 # Spanish Notes App - 开发进度与规划文档
 
-**更新日期**: 2026-01-13
-**状态**: Phase 3 完成 (Vanilla JS) -> 准备进入 Phase 4 (Next.js 重构与商业化)
+**更新日期**: 2026-01-18
+**状态**: Phase 4 进行中 (Next.js 重构与商业化)
+
+## 2026-01-18
+- Change: 激活码流程验证可用；数据库升级已完成；Cloudflare Pages 已部署。
+- Scope: Activation redeem RPC, user_profiles.is_active, DATABASE_UPGRADE 脚本，`https://note-lingo-app.pages.dev`。
+- Status: done
+
+## 2026-01-18 (Patch)
+- Change: 修复设置页语言保存失败（补 `user_profiles.target_language` 字段），存储使用量改为数据库触发器自动维护。
+- Scope: Supabase schema patch + notes 触发器更新 `user_profiles.storage_used`。
+- Status: pending (需要执行 SQL)
+
+## 2026-01-17
+- Change: Next.js 迁移完成核心功能（Auth Gate、Activation、Settings、Editor/Sidebar）并补齐删除功能与相关测试。
+- Scope: App Router 首页、设置页、激活码弹窗、笔记增删改、Audio Parser/TTS hooks。
+- Status: done
 
 ---
 
 ## 1. 当前进度 (Current Status)
 
-### 1.1 已完成功能 (Phase 1-3)
-*   **前端架构**: 纯原生 (Vanilla JS + HTML + CSS)。
-*   **UI 设计**: 实现了高质量的 Glassmorphism (玻璃拟态) 深色模式界面。
+### 1.1 已完成功能
+*   **前端架构**: Next.js App Router + React。
 *   **核心功能**:
-    *   **Markdown 解析器**: 将特定格式的笔记转换为可点击的音频播放器。
-    *   **语音引擎**: 智能调用浏览器 TTS，支持 Google/Monica/本地语音包。
-    *   **自动同步**: 基于防抖 (Debounce) 的自动保存机制。
+    *   **Markdown 解析器**: 已迁移为 React Hook (`useAudioParser`)。
+    *   **语音引擎**: 已迁移为 React Hook (`useTTS`)。
+    *   **笔记 CRUD**: 创建/编辑/删除已实现。
 *   **后端集成**:
-    *   **Supabase Auth**: 集成 Google OAuth 登录。
-    *   **PostgreSQL**: 实现 Row Level Security (RLS) 数据隔离。
-*   **部署**: 代码已托管至 GitHub (`spanish-notes-app`)，准备部署至 Cloudflare Pages。
+    *   **Supabase Auth**: Google OAuth 登录。
+    *   **用户档案**: `user_profiles` 读取与激活状态管理。
+    *   **激活码**: 前端弹窗 + 兑换 RPC 调用。
+*   **设置页**: 语言选择与存储信息展示（未激活用户受限）。
+*   **测试**: Vitest + 核心组件/路由覆盖。
 
 ### 1.2 现有数据库结构
 *   `notes` 表: `id`, `user_id`, `title`, `content`, `created_at`, `updated_at`.
@@ -26,20 +42,19 @@
 
 ## 2. 商业化与高级功能规划 (Future Roadmap)
 
-为了支持付费订阅、多语言学习及更复杂的笔记管理，我们决定从原生开发迁移至 **Next.js** 生态，并引入后端风控机制。
-
 ### 2.1 核心需求
 1.  **完整 CRUD (增删改查)**:
-    *   **删除 (Delete)**: 在当前原生版本中优先实现。
-    *   **搜索 (Search)**: 后续实现。
+    *   **删除 (Delete)**: ✅ 已实现。
+    *   **搜索 (Search)**: ⏳ 未实现。
 2.  **多层级笔记管理与多语言 (Hierarchy & Multi-language)**:
     *   **架构**: User -> Collection (语言设置层) -> Folder (可选) -> Note。
     *   **语言设置**: 语言 (Target Language) 将在 Collection 层级设置，而不是每条笔记单独设置。
-    *   原生 JS 难以维护此逻辑，需迁移至 React/Next.js。
 3.  **商业化风控 (Monetization & Security)**:
-    *   **激活码机制**: 用户注册后默认为“未激活”状态 (Read-only)，输入激活码后解锁写入权限。
-    *   **存储限制**: 免费用户限制 500KB，付费用户解锁更多。
+    *   **激活码机制**: ✅ 已实现并验证可用。
+    *   **存储限制**: ⏳ 暂不优先。
     *   **订阅制**: 后期引入 Stripe/LemonSqueezy。
+
+> Note: 搜索功能优先级极低，短期内不做，后期可能取消。
 
 ---
 
@@ -68,18 +83,19 @@
 ## 4. 下一步行动计划 (Action Plan)
 
 ### 4.1 立即执行 (Immediate)
-- [ ] **功能补全**:
-    - [ ] **删除笔记**: 在编辑界面增加删除按钮，调用 Supabase API 删除笔记并刷新列表。
-- [ ] **数据库升级**: 在 Supabase SQL Editor 中运行 `DATABASE_UPGRADE.md` 脚本。
-- [ ] **域名配置**: 部署到 Cloudflare Pages 后，在 Supabase 和 Google Cloud Console 更新 OAuth Redirect URL。
+- [x] **功能补全**:
+    - [x] **删除笔记**: 在编辑界面增加删除按钮，调用 Supabase API 删除笔记并刷新列表。
+- [x] **数据库升级**: 在 Supabase SQL Editor 中运行 `DATABASE_UPGRADE.md` 脚本。
+- [x] **域名配置**: 部署到 Cloudflare Pages 后，在 Supabase 和 Google Cloud Console 更新 OAuth Redirect URL。
 
 ### 4.2 架构重构 (Migration Phase)
-- [ ] **初始化 Next.js 项目**:
-    *   Tech Stack: Next.js 14 (App Router) + TailwindCSS + Radix UI + Supabase SSR。
-- [ ] **迁移核心逻辑**:
+- [x] **初始化 Next.js 项目**:
+    *   Tech Stack: Next.js 16 (App Router) + TailwindCSS + Radix UI + Supabase SSR。
+- [x] **迁移核心逻辑**:
     *   将 `script.js` 中的 Parser 和 TTS 引擎封装为 React Hook (`useAudioParser`, `useTTS`)。
-- [ ] **实现新功能**:
+- [x] **实现新功能**:
     *   开发“激活码输入”弹窗组件。
+- [ ] **实现新功能**:
     *   开发三层目录侧边栏 (Sidebar with Nested Folders)。
 
 ---
