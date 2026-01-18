@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import SettingsForm from './SettingsForm';
+import SettingsForm from '@/app/settings/SettingsForm';
 
 vi.mock('@/utils/profile/queries', () => ({
   updateTargetLanguage: vi.fn(() => Promise.resolve()),

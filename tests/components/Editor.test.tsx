@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import Editor from './Editor';
+import Editor from '@/components/Editor';
 import { updateNote } from '@/utils/notes/queries';
 
 vi.mock('@/utils/notes/queries', () => ({
@@ -12,11 +12,11 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
-vi.mock('./NotePlayer', () => ({
+vi.mock('@/components/NotePlayer', () => ({
   default: () => <div>NotePlayer</div>,
 }));
 
-vi.mock('./ActivationDialog', () => ({
+vi.mock('@/components/ActivationDialog', () => ({
   default: ({ open }: { open: boolean }) => (open ? <div>ActivationDialogOpen</div> : null),
 }));
 
