@@ -23,12 +23,7 @@ export async function getUserProfile(): Promise<UserProfile | null> {
     return null;
   }
 
-  const storageUsed = await calculateStorageUsed(user.id);
-
-  return {
-    ...(data as UserProfile),
-    storage_used: storageUsed,
-  };
+  return data as UserProfile;
 }
 
 export async function updateTargetLanguage(language: string): Promise<void> {

@@ -8,7 +8,7 @@ We now have a Next.js App Router app with the following features implemented:
 2. User profiles with activation status and storage tracking
 3. Activation dialog and server action to redeem activation codes (verified working)
 4. Notes list + editor + create + update + delete flows
-5. Settings page with target language selection and storage view (pending patch deploy)
+5. Settings page with target language selection and storage view (pending storage trigger)
 6. Audio parsing and TTS hooks migrated to React
 7. Vitest coverage for key components and routes
 

@@ -129,6 +129,36 @@ END;
 $$;
 ```
 
+## 第四步：存储使用量自动更新 (Storage Usage Tracking)
+
+这部分会在每次新建/更新/删除笔记后更新 `user_profiles.storage_used`。
+
+```sql
+CREATE OR REPLACE FUNCTION public.refresh_storage_used()
+RETURNS TRIGGER AS $$
+DECLARE
+  target_user_id UUID;
+BEGIN
+  target_user_id := COALESCE(NEW.user_id, OLD.user_id);
+
+  UPDATE user_profiles
+  SET storage_used = COALESCE((
+    SELECT SUM(octet_length(content))
+    FROM notes
+    WHERE user_id = target_user_id
+  ), 0)
+  WHERE id = target_user_id;
+
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS notes_refresh_storage_used ON notes;
+CREATE TRIGGER notes_refresh_storage_used
+  AFTER INSERT OR UPDATE OR DELETE ON notes
+  FOR EACH ROW EXECUTE PROCEDURE public.refresh_storage_used();
+```
+
 ---
 
 ## 第四步：增强安全策略 (Enforce Security)

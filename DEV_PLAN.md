@@ -9,9 +9,9 @@
 - Status: done
 
 ## 2026-01-18 (Patch)
-- Change: 修复设置页语言保存失败（补 `user_profiles.target_language` 字段），存储使用量改为动态计算。
-- Scope: Supabase schema patch + `getUserProfile` 计算 `storage_used`。
-- Status: pending (需要部署)
+- Change: 修复设置页语言保存失败（补 `user_profiles.target_language` 字段），存储使用量改为数据库触发器自动维护。
+- Scope: Supabase schema patch + notes 触发器更新 `user_profiles.storage_used`。
+- Status: pending (需要执行 SQL)
 
 ## 2026-01-17
 - Change: Next.js 迁移完成核心功能（Auth Gate、Activation、Settings、Editor/Sidebar）并补齐删除功能与相关测试。
