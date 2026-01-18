@@ -1,6 +1,6 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useTTS } from './useTTS';
+import { useTTS } from '@/hooks/useTTS';
 
 const voices = [
   { name: 'Voice A', lang: 'es-ES', localService: true, voiceURI: 'voice-a' },
