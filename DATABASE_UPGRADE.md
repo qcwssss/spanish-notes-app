@@ -32,8 +32,13 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   is_active BOOLEAN DEFAULT false,           -- 默认为未激活
   storage_used BIGINT DEFAULT 0,             -- 已用存储空间 (字节)
   plan_type TEXT DEFAULT 'free',             -- free, pro
+  target_language TEXT DEFAULT NULL,         -- 目标语言（首次保存后锁定）
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- 如果之前已创建表，请补充字段
+ALTER TABLE user_profiles
+ADD COLUMN IF NOT EXISTS target_language TEXT DEFAULT NULL;
 
 -- 开启 RLS
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;

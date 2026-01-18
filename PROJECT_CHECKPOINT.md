@@ -1,104 +1,45 @@
-# 🇪🇸 Spanish Notes App - Project Checkpoint
-**Date:** Jan 12, 2026
-**Status:** Phase 3 Complete (Authentication & Database Integrated)
+# Spanish Notes App - Project Checkpoint
+**Date:** Jan 18, 2026
+**Status:** Phase 4 In Progress (Next.js Migration + Auth Gate + Profiles + Activation)
 
-## 📌 Current State (目前进度)
-We have successfully built a **Web App** with the following features:
-1.  **Frontend:** HTML/CSS/JS (Vanilla) with a modern "Glassmorphism" UI.
-2.  **Authentication:** Google OAuth via **Supabase**.
-3.  **Database:** PostgreSQL (hosted on Supabase) for storing notes.
-4.  **Core Feature:** Markdown parser that converts Spanish notes into interactive, clickable audio players.
-5.  **Sync:** Notes are automatically saved to the cloud and synced across devices.
+## Current State
+We now have a Next.js App Router app with the following features implemented:
+1. Auth gate (Google OAuth) with `/auth/callback` exchange flow
+2. User profiles with activation status and storage tracking
+3. Activation dialog and server action to redeem activation codes (verified working)
+4. Notes list + editor + create + update + delete flows
+5. Settings page with target language selection and storage view (pending patch deploy)
+6. Audio parsing and TTS hooks migrated to React
+7. Vitest coverage for key components and routes
 
-## 🛠️ Tech Stack (技术栈)
-*   **Frontend:** HTML5, CSS3, JavaScript (ES6+)
-*   **Backend/DB:** Supabase (PostgreSQL)
-*   **Auth:** Google OAuth 2.0
-*   **Hosting:** Localhost (currently), target is Cloudflare Pages.
+## Tech Stack
+- Frontend: Next.js 16 (App Router), React 19, Tailwind CSS
+- Backend/DB: Supabase (PostgreSQL + RLS)
+- Auth: Google OAuth via Supabase SSR
+- Hosting: Cloudflare Pages (Next-on-Pages)
+- Testing: Vitest + React Testing Library
 
-## 🔑 Key Configuration (关键配置)
-*   **Supabase URL:** `YOUR_SUPABASE_URL`
-*   **Supabase Key:** `YOUR_SUPABASE_ANON_KEY`
-*   **Local Server:** `http://localhost:8000`
+## Key Configuration
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Redirect URL: `https://<pages-domain>/auth/callback`
 
-## 📂 Project Structure (文件结构)
+## Project Structure
 ```
 /spanish-notes-app
-├── index.html      # Main UI (Login overlay + App interface)
-├── style.css       # Dark mode styling & Sidebar layout
-├── script.js       # Logic: Auth, DB Sync, Parser, TTS
-└── docs/           # Design docs & Implementation plan
+├── src/app/                  # App Router pages (/ , /settings, /auth/callback)
+├── src/components/           # AuthGate, Sidebar, Editor, UserInfoCard, ActivationDialog
+├── src/hooks/                # useAudioParser, useTTS
+├── src/utils/                # Supabase SSR helpers, profile/notes/activation logic
+├── docs/plans/               # Implementation plans
+└── v1_legacy/                # Old vanilla JS app (reference)
 ```
 
-## ⚡ Quick Setup: Database SQL (数据库初始化命令)
-Copy and run this in Supabase **SQL Editor** to set up the database:
-
-```sql
--- 1. 确保 UUID 扩展已开启
-create extension if not exists "uuid-ossp";
-
--- 2. 创建笔记表
-create table if not exists notes (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users not null,
-  title text,
-  content text,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
-
--- 3. 开启行级安全策略 (RLS)
-alter table notes enable row level security;
-
--- 4. 创建安全规则：只允许用户操作自己的数据
--- (删除旧策略以防重复)
-drop policy if exists "Users can see own notes" on notes;
-drop policy if exists "Users can insert own notes" on notes;
-drop policy if exists "Users can update own notes" on notes;
-drop policy if exists "Users can delete own notes" on notes;
-
--- 重新创建策略
-create policy "Users can see own notes" 
-  on notes for select using ( auth.uid() = user_id );
-
-create policy "Users can insert own notes" 
-  on notes for insert with check ( auth.uid() = user_id );
-
-create policy "Users can update own notes" 
-  on notes for update using ( auth.uid() = user_id );
-
-create policy "Users can delete own notes" 
-  on notes for delete using ( auth.uid() = user_id );
-```
-
-## 📝 Next Steps (下一步计划)
-1.  **Deploy to Cloudflare Pages:**
-    *   Upload the project folder to Cloudflare.
-    *   Update Google Cloud Console & Supabase "Redirect URLs" to the new production domain (e.g., `https://spanish-notes.pages.dev`).
-2.  **Mobile Testing:**
-    *   Verify the layout on iPhone/Android.
-    *   Test "Sign in with Google" flow on mobile.
-3.  **Feature Polish:**
-    *   Add "Delete Note" button.
-    *   Add "Search" in sidebar.
-
-## ⚠️ Important Notes (注意事项)
-*   **Database Table:** The `notes` table with RLS policies MUST exist in Supabase for the app to work.
-*   **Redirect URI:** If you change the domain (e.g. deploy to public), you MUST update the Allowed Redirect URIs in **both** Google Cloud Console and Supabase Dashboard.
+## Next Steps
+1. Confirm Supabase/Google OAuth Redirect URLs are updated for `https://note-lingo-app.pages.dev`.
+2. Add hierarchy (Collection/Folder/Note).
+3. Decide activation policy (manual vs auto-activate on OAuth).
+4. Revisit search only if it becomes necessary.
 
 ---
-*Generated by Antigravity Agent*
-
-## 🔊 Audio Engine Details (语音引擎说明)
-*   **Technology:** Uses `window.speechSynthesis` (Web Speech API).
-*   **Cost:** 100% Free. No external API keys required.
-*   **Dependency:** Relies on the user's device/browser TTS engine.
-    *   **iOS/Mac:** Uses Apple's high-quality system voices (Siri-grade).
-    *   **Windows/Android:** Uses Google/Microsoft online voices (high quality).
-    *   **Fallback:** If offline or no specific voice found, falls back to system default.
-*   **Logic:** The app automatically selects the best available Spanish voice (prioritizing "Google", "Monica", or "es-MX").
-
-## 🎨 UI/UX Polish (最新优化)
-*   **Anti-Select:** Added CSS to prevent accidental selection of UI elements (sidebar, buttons) while keeping note content selectable.
-*   **Login Flow:** Added Google Login overlay.
-*   **Sidebar:** Added note list with active state highlighting.
+*Updated by assistant*
