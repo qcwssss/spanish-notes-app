@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { extractTargetText } from '@/utils/language/extractor';
+import { splitTextByLanguage } from '@/utils/language/splitter';
 
 interface MarkdownRendererProps {
   content: string;
@@ -9,42 +9,51 @@ interface MarkdownRendererProps {
   onSpeak: (text: string) => void;
 }
 
-function getTextFromChildren(children: React.ReactNode): string {
-  if (children === null || children === undefined) return '';
-  if (typeof children === 'string' || typeof children === 'number') return String(children);
-  if (Array.isArray(children)) return children.map(getTextFromChildren).join('');
-  if (React.isValidElement<{ children?: React.ReactNode }>(children)) {
-    return getTextFromChildren(children.props.children);
-  }
-  return '';
-}
+const InteractiveText = ({ 
+  text, 
+  targetLanguage, 
+  onSpeak 
+}: { 
+  text: string; 
+  targetLanguage: string | null | undefined; 
+  onSpeak: (text: string) => void 
+}) => {
+  const segments = useMemo(() => splitTextByLanguage(text, targetLanguage), [text, targetLanguage]);
+  
+  return (
+    <>
+      {segments.map((seg, i) => (
+        <span
+          key={i}
+          className={seg.isTarget ? 'text-blue-400 hover:text-blue-300 cursor-pointer transition-colors' : undefined}
+          onClick={seg.isTarget ? (e) => { e.stopPropagation(); onSpeak(seg.text); } : undefined}
+        >
+          {seg.text}
+        </span>
+      ))}
+    </>
+  );
+};
 
-function createClickableComponent<TagProps extends { className?: string }>(
-  Tag: React.ElementType,
-  targetLanguage: string | null | undefined,
-  onSpeak: (text: string) => void,
-  baseClassName?: string
-) {
-  return function ClickableTag(props: TagProps & { children?: React.ReactNode }) {
-    const text = getTextFromChildren(props.children);
-    const filtered = extractTargetText(text, targetLanguage);
-    const clickable = Boolean(filtered);
-    const className = [
-      baseClassName,
-      props.className,
-      clickable ? 'cursor-pointer hover:text-blue-300 transition-colors' : undefined,
-    ]
-      .filter(Boolean)
-      .join(' ');
-
-    return (
-      <Tag
-        {...props}
-        className={className}
-        onClick={clickable ? () => onSpeak(filtered) : undefined}
-      />
-    );
-  };
+function processChildren(
+  children: React.ReactNode, 
+  targetLanguage: string | null | undefined, 
+  onSpeak: (text: string) => void
+): React.ReactNode {
+  return React.Children.map(children, (child) => {
+    if (typeof child === 'string') {
+      return <InteractiveText text={child} targetLanguage={targetLanguage} onSpeak={onSpeak} />;
+    }
+    if (React.isValidElement(child)) {
+      const props = child.props as { children?: React.ReactNode };
+      if (props.children) {
+        return React.cloneElement(child as React.ReactElement<any>, {
+          children: processChildren(props.children, targetLanguage, onSpeak)
+        });
+      }
+    }
+    return child;
+  });
 }
 
 const HEADING_CONFIG: Record<string, string> = {
@@ -57,21 +66,21 @@ const HEADING_CONFIG: Record<string, string> = {
 };
 
 export default function MarkdownRenderer({ content, targetLanguage, onSpeak }: MarkdownRendererProps) {
-  const headingComponents = Object.fromEntries(
-    Object.entries(HEADING_CONFIG).map(([tag, className]) => [
-      tag,
-      createClickableComponent(tag as React.ElementType, targetLanguage, onSpeak, className),
-    ])
-  );
-
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        ...headingComponents,
-        p: createClickableComponent('p', targetLanguage, onSpeak, 'text-slate-300'),
-        li: createClickableComponent('li', targetLanguage, onSpeak, 'text-slate-300'),
-        td: createClickableComponent('td', targetLanguage, onSpeak, 'px-4 py-3 text-slate-300'),
+        p: ({ children }) => <p className="text-slate-300">{processChildren(children, targetLanguage, onSpeak)}</p>,
+        li: ({ children }) => <li className="text-slate-300">{processChildren(children, targetLanguage, onSpeak)}</li>,
+        td: ({ children }) => <td className="px-4 py-3 text-slate-300">{processChildren(children, targetLanguage, onSpeak)}</td>,
+        ...Object.fromEntries(
+          Object.entries(HEADING_CONFIG).map(([tag, className]) => [
+            tag,
+            ({ children }: { children: React.ReactNode }) => (
+              <div className={className}>{processChildren(children, targetLanguage, onSpeak)}</div>
+            )
+          ])
+        ),
         ul: ({ children }) => <ul className="list-disc pl-6 space-y-2 text-slate-300">{children}</ul>,
         ol: ({ children }) => <ol className="list-decimal pl-6 space-y-2 text-slate-300">{children}</ol>,
         blockquote: ({ children }) => (

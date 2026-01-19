@@ -1,4 +1,4 @@
-const LANGUAGE_CHARSETS: Record<string, RegExp> = {
+export const LANGUAGE_CHARSETS: Record<string, RegExp> = {
   es: /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ¿¡]/,
   fr: /[A-Za-zÀÂÇÉÈÊËÎÏÔÙÛÜŸŒÆàâçéèêëîïôùûüÿœæ]/,
   de: /[A-Za-zÄÖÜßäöü]/,
