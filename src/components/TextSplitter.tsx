@@ -10,7 +10,7 @@ interface TextSplitterProps {
 const InteractiveSpan: React.FC<{ text: string; onSpeak: () => void }> = ({ text, onSpeak }) => {
   return (
     <span
-      className="cursor-pointer hover:text-blue-300 hover:bg-slate-700/50 rounded px-0.5 transition-colors select-none"
+      className="cursor-pointer text-sky-300/90 hover:text-sky-100 hover:bg-sky-500/20 decoration-sky-500/30 hover:decoration-sky-500/50 underline decoration-dashed underline-offset-4 rounded px-1 -mx-1 transition-all duration-200 select-none"
       onClick={(e) => {
         // Prevent default browser behavior and stop propagation
         e.preventDefault();
