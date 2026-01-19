@@ -1,4 +1,4 @@
-import { extractTargetText } from './extractor';
+import { extractTargetText, LANGUAGE_ALPHABETS } from './extractor';
 
 export type TextSegment = {
   text: string;
@@ -8,39 +8,25 @@ export type TextSegment = {
 export function segmentText(text: string, language: string | null = 'es'): TextSegment[] {
   if (!text) return [];
 
-  // 1. Split by common delimiters that separate languages (like parenthesis for translation)
-  // But keep the delimiters to categorize them
-  // Regex: 
-  // ([A-Za-zÁÉÍÓÚÜÑáéíóúüñ¿¡]+(?:[ ,;.]+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ¿¡]+)*[.?!]?) 
-  // -> Matches Spanish sentences/phrases
-  
-  // Simplified approach: Split by non-target blocks
-  // If we have "El perro (The dog)", we want ["El perro", " (The dog)"]
-  
   const segments: TextSegment[] = [];
-  let current = '';
-  let isTarget = false;
 
-  // We scan char by char to determine boundaries. 
-  // This is a basic implementation. For complex mixed text, we might need a better parser.
-  // Assumption: Target text is Spanish chars. Non-target is CJK or English inside parens.
+  // Dynamic Regex Construction
+  // 1. Get alphabet for target language (default to Spanish if not found)
+  const langKey = language && LANGUAGE_ALPHABETS[language] ? language : 'es';
+  const range = LANGUAGE_ALPHABETS[langKey];
   
-  // Heuristic:
-  // If a block is > 50% target chars, it's target.
-  // Actually, let's use the regex from extractor.
-  
-  // Splitting by newline first ensures we handle lines correctly
+  // 2. Construct Regex dynamically
+  // Structure:
+  // - Optional leading inverted punctuation (¿¡) - hardcoded common ones as they are safe
+  // - Words (Alphabet chars)
+  // - Apostrophes within words
+  // - Space/Comma/Semicolon/Period separators between words
+  // - Optional ending punctuation (?!.)
+  const targetPattern = new RegExp(`([¿¡]?[${range}]+(?:['’][${range}]+)*(?:[ ,;.]+[${range}]+(?:['’][${range}]+)*)*[?!.]?)`, 'g');
+
   const lines = text.split('\n');
   
   lines.forEach((line, i) => {
-    // For each line, try to extract continuous Spanish segments
-    
-    // Regex explanation:
-    // ([¿¡]?[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+(?:['’][A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*(?:[ ,;.]+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+(?:['’][A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*)*[?!.]?)
-    // Tries to grab a full sentence including punctuation.
-    
-    const targetPattern = /([¿¡]?[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+(?:['’][A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*(?:[ ,;.]+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+(?:['’][A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*)*[?!.]?)/g;
-    
     let lastIndex = 0;
     let match;
     

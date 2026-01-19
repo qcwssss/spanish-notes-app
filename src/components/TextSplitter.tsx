@@ -10,7 +10,7 @@ interface TextSplitterProps {
 const InteractiveSpan: React.FC<{ text: string; onSpeak: () => void }> = ({ text, onSpeak }) => {
   return (
     <span
-      className="cursor-pointer text-sky-300/90 hover:text-sky-100 hover:bg-sky-500/20 decoration-sky-500/30 hover:decoration-sky-500/50 underline decoration-dashed underline-offset-4 rounded px-1 -mx-1 transition-all duration-200 select-none"
+      className="cursor-pointer text-sky-300/90 hover:text-sky-100 hover:bg-sky-500/20 decoration-sky-500/30 hover:decoration-sky-500/50 underline decoration-dashed underline-offset-4 rounded px-1 -mx-1 transition-all duration-200"
       onClick={(e) => {
         // Prevent default browser behavior and stop propagation
         e.preventDefault();
@@ -34,7 +34,7 @@ export default function TextSplitter({ text, targetLanguage, onSpeak }: TextSpli
         if (seg.type === 'target') {
           return (
             <InteractiveSpan 
-              key={`${index}-${seg.text.substring(0, 5)}`} 
+              key={index} 
               text={seg.text} 
               onSpeak={() => onSpeak(seg.text)} 
             />
