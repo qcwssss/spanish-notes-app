@@ -52,6 +52,25 @@ describe('useTTS', () => {
     expect(setItemSpy).toHaveBeenCalledWith('ttsVoiceURI:es', 'voice-b');
   });
 
+  it('selects preferred local voice by default', async () => {
+    // Override voices for this test to test selection logic
+    const testVoices = [
+      { name: 'Mexican Web', lang: 'es-MX', localService: false, voiceURI: 'voice-mx' },
+      { name: 'Spain Local', lang: 'es-ES', localService: true, voiceURI: 'voice-es' },
+      { name: 'US Web', lang: 'es-US', localService: false, voiceURI: 'voice-us' },
+    ];
+    
+    // @ts-expect-error - overriding mock
+    window.speechSynthesis.getVoices = () => testVoices;
+
+    const { result } = renderHook(() => useTTS('es'));
+
+    await waitFor(() => {
+      // Should pick es-ES local voice (index 1)
+      expect(result.current.selectedVoiceIndex).toBe(1);
+    });
+  });
+
   it('filters available voices based on target language', async () => {
     const { result } = renderHook(() => useTTS('fr'));
 

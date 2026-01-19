@@ -73,11 +73,16 @@ export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
         return;
       }
 
-      const bestIndex = filteredVoices.findIndex(v =>
-        v.name.includes('Monica') ||
-        v.name.includes('Google') ||
-        v.lang === LANGUAGE_FALLBACK[languageKey]
-      );
+      const preferredLang = LANGUAGE_FALLBACK[languageKey];
+      let bestIndex = filteredVoices.findIndex(v => v.lang === preferredLang && v.localService);
+
+      if (bestIndex === -1) {
+        bestIndex = filteredVoices.findIndex(v => v.lang === preferredLang);
+      }
+
+      if (bestIndex === -1) {
+        bestIndex = filteredVoices.findIndex(v => v.localService);
+      }
 
       if (bestIndex !== -1) {
         setSelectedVoiceIndex(bestIndex);
