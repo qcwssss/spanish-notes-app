@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { extractTargetText } from '@/utils/language/extractor';
+import TextSplitter from './TextSplitter';
 
 interface MarkdownRendererProps {
   content: string;
@@ -9,86 +9,106 @@ interface MarkdownRendererProps {
   onSpeak: (text: string) => void;
 }
 
-function getTextFromChildren(children: React.ReactNode): string {
-  if (children === null || children === undefined) return '';
-  if (typeof children === 'string' || typeof children === 'number') return String(children);
-  if (Array.isArray(children)) return children.map(getTextFromChildren).join('');
-  if (React.isValidElement<{ children?: React.ReactNode }>(children)) {
-    return getTextFromChildren(children.props.children);
-  }
-  return '';
-}
-
-function createClickableComponent<TagProps extends { className?: string }>(
-  Tag: React.ElementType,
+// Recursively traverse React children to find text nodes and replace them with TextSplitter
+function renderWithInteractivity(
+  children: React.ReactNode, 
   targetLanguage: string | null | undefined,
-  onSpeak: (text: string) => void,
-  baseClassName?: string
-) {
-  return function ClickableTag(props: TagProps & { children?: React.ReactNode }) {
-    const text = getTextFromChildren(props.children);
-    const filtered = extractTargetText(text, targetLanguage);
-    const clickable = Boolean(filtered);
-    const className = [
-      baseClassName,
-      props.className,
-      clickable ? 'cursor-pointer hover:text-blue-300 transition-colors' : undefined,
-    ]
-      .filter(Boolean)
-      .join(' ');
-
+  onSpeak: (text: string) => void
+): React.ReactNode {
+  if (typeof children === 'string') {
     return (
-      <Tag
-        {...props}
-        className={className}
-        onClick={clickable ? () => onSpeak(filtered) : undefined}
+      <TextSplitter 
+        text={children} 
+        targetLanguage={targetLanguage} 
+        onSpeak={onSpeak} 
       />
     );
-  };
+  }
+
+  if (Array.isArray(children)) {
+    return React.Children.map(children, (child) => 
+      renderWithInteractivity(child, targetLanguage, onSpeak)
+    );
+  }
+
+  if (React.isValidElement<{ children?: React.ReactNode }>(children)) {
+    return React.cloneElement(children, {
+      ...children.props,
+      children: renderWithInteractivity(children.props.children, targetLanguage, onSpeak)
+    });
+  }
+
+  return children;
 }
 
+// Wrapper for block-level elements to apply interactivity to their textual content
+const createInteractiveBlock = (
+  Tag: React.ElementType, 
+  baseClassName: string,
+  targetLanguage: string | null | undefined,
+  onSpeak: (text: string) => void
+) => {
+  return function InteractiveBlock({ children, ...props }: any) {
+    return (
+      <Tag className={baseClassName} {...props}>
+        {renderWithInteractivity(children, targetLanguage, onSpeak)}
+      </Tag>
+    );
+  };
+};
+
 const HEADING_CONFIG: Record<string, string> = {
-  h1: 'text-2xl font-bold text-slate-100',
-  h2: 'text-xl font-semibold text-slate-100',
-  h3: 'text-lg font-semibold text-slate-100',
-  h4: 'text-base font-semibold text-slate-100',
-  h5: 'text-sm font-semibold text-slate-100',
-  h6: 'text-sm font-semibold text-slate-100',
+  h1: 'text-2xl font-bold text-slate-100 mb-4',
+  h2: 'text-xl font-semibold text-slate-100 mb-3',
+  h3: 'text-lg font-semibold text-slate-100 mb-2',
+  h4: 'text-base font-semibold text-slate-100 mb-2',
+  h5: 'text-sm font-semibold text-slate-100 mb-1',
+  h6: 'text-sm font-semibold text-slate-100 mb-1',
 };
 
 export default function MarkdownRenderer({ content, targetLanguage, onSpeak }: MarkdownRendererProps) {
-  const headingComponents = Object.fromEntries(
-    Object.entries(HEADING_CONFIG).map(([tag, className]) => [
-      tag,
-      createClickableComponent(tag as React.ElementType, targetLanguage, onSpeak, className),
-    ])
-  );
+  const components: any = {
+    p: createInteractiveBlock('p', 'text-slate-300 mb-4 leading-relaxed', targetLanguage, onSpeak),
+    li: createInteractiveBlock('li', 'text-slate-300 mb-1', targetLanguage, onSpeak),
+    td: createInteractiveBlock('td', 'px-4 py-3 text-slate-300', targetLanguage, onSpeak),
+    
+    // Structure elements that don't need text splitting themselves but contain it
+    ul: ({ children }: any) => <ul className="list-disc pl-6 space-y-2 text-slate-300 mb-4">{children}</ul>,
+    ol: ({ children }: any) => <ol className="list-decimal pl-6 space-y-2 text-slate-300 mb-4">{children}</ol>,
+    blockquote: ({ children }: any) => (
+      <blockquote className="border-l-4 border-slate-600 pl-4 py-1 my-4 text-slate-400 italic bg-slate-800/30 rounded-r">
+        {renderWithInteractivity(children, targetLanguage, onSpeak)}
+      </blockquote>
+    ),
+    table: ({ children }: any) => (
+      <div className="overflow-x-auto rounded-lg border border-slate-700 my-4 shadow-sm">
+        <table className="w-full text-sm text-left">{children}</table>
+      </div>
+    ),
+    thead: ({ children }: any) => <thead className="bg-slate-800 text-slate-400 font-medium">{children}</thead>,
+    tbody: ({ children }: any) => <tbody className="divide-y divide-slate-700 bg-slate-900/30">{children}</tbody>,
+    tr: ({ children }: any) => <tr className="hover:bg-slate-800/50 transition-colors">{children}</tr>,
+    th: ({ children }: any) => <th className="px-4 py-2 font-medium bg-slate-800">{children}</th>,
+    
+    // Inline elements usually just pass through, but we want to ensure their text is also split
+    strong: ({ children }: any) => <strong className="font-bold text-slate-200">{renderWithInteractivity(children, targetLanguage, onSpeak)}</strong>,
+    em: ({ children }: any) => <em className="italic text-slate-400">{renderWithInteractivity(children, targetLanguage, onSpeak)}</em>,
+    del: ({ children }: any) => <del className="line-through opacity-70">{renderWithInteractivity(children, targetLanguage, onSpeak)}</del>,
+  };
+
+  // Add headings
+  Object.entries(HEADING_CONFIG).forEach(([tag, className]) => {
+    components[tag] = createInteractiveBlock(tag as React.ElementType, className, targetLanguage, onSpeak);
+  });
 
   return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        ...headingComponents,
-        p: createClickableComponent('p', targetLanguage, onSpeak, 'text-slate-300'),
-        li: createClickableComponent('li', targetLanguage, onSpeak, 'text-slate-300'),
-        td: createClickableComponent('td', targetLanguage, onSpeak, 'px-4 py-3 text-slate-300'),
-        ul: ({ children }) => <ul className="list-disc pl-6 space-y-2 text-slate-300">{children}</ul>,
-        ol: ({ children }) => <ol className="list-decimal pl-6 space-y-2 text-slate-300">{children}</ol>,
-        blockquote: ({ children }) => (
-          <blockquote className="border-l-2 border-slate-600 pl-4 text-slate-400">{children}</blockquote>
-        ),
-        table: ({ children }) => (
-          <div className="overflow-hidden rounded-lg border border-slate-700">
-            <table className="w-full text-sm text-left">{children}</table>
-          </div>
-        ),
-        thead: ({ children }) => <thead className="bg-slate-800 text-slate-400">{children}</thead>,
-        tbody: ({ children }) => <tbody className="divide-y divide-slate-700 bg-slate-900/30">{children}</tbody>,
-        tr: ({ children }) => <tr className="hover:bg-slate-800/50">{children}</tr>,
-        th: ({ children }) => <th className="px-4 py-2 font-medium">{children}</th>,
-      }}
-    >
-      {content}
-    </ReactMarkdown>
+    <div className="markdown-content">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={components}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
   );
 }

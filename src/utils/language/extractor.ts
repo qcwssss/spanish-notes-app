@@ -1,5 +1,5 @@
 const LANGUAGE_CHARSETS: Record<string, RegExp> = {
-  es: /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ¿¡]/,
+  es: /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ¿¡,.;:?!()]/,
   fr: /[A-Za-zÀÂÇÉÈÊËÎÏÔÙÛÜŸŒÆàâçéèêëîïôùûüÿœæ]/,
   de: /[A-Za-zÄÖÜßäöü]/,
   en: /[A-Za-z]/,
