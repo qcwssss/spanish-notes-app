@@ -12,6 +12,11 @@ describe('extractTargetText', () => {
     expect(result).toBe("Je m'appelle Léa");
   });
 
+  it('keeps curly apostrophes', () => {
+    const result = extractTargetText("C’est la vie (这就是生活)", 'fr');
+    expect(result).toBe("C’est la vie");
+  });
+
   it('returns empty string when no target language content', () => {
     const result = extractTargetText('我是一个好奇的人', 'es');
     expect(result).toBe('');

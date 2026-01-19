@@ -15,7 +15,7 @@ export function extractTargetText(text: string, language: string | null | undefi
   const allowed = LANGUAGE_CHARSETS[key];
 
   const cleaned = Array.from(text)
-    .map((char) => (allowed.test(char) || /\s/.test(char) || char === "'" || char === "'" ? char : ' '))
+    .map((char) => (allowed.test(char) || /\s/.test(char) || char === "'" || char === "’" ? char : ' '))
     .join('')
     .replace(/\s+/g, ' ')
     .trim();
