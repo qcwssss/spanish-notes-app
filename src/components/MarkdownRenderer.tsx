@@ -60,7 +60,7 @@ export default function MarkdownRenderer({ content, targetLanguage, onSpeak }: M
   const headingComponents = Object.fromEntries(
     Object.entries(HEADING_CONFIG).map(([tag, className]) => [
       tag,
-      createClickableComponent(tag, targetLanguage, onSpeak, className),
+      createClickableComponent(tag as React.ElementType, targetLanguage, onSpeak, className),
     ])
   );
 
