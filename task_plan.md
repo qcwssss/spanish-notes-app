@@ -4,7 +4,7 @@
 Move all test files from `src/**` into a dedicated `tests/` directory, update tooling configuration, and keep imports working.
 
 ## Current Phase
-Phase 3
+Phase 5
 
 ## Phases
 
@@ -21,18 +21,6 @@ Phase 3
 - **Status:** complete
 
 ### Phase 3: Implementation
-- [ ] Move test files into tests/ tree
-- [ ] Update test config include paths
-- [ ] Fix any import paths if needed
-- **Status:** in_progress
-
-### Phase 2: Planning & Structure
-- [ ] Define new test directory layout
-- [ ] Decide mapping from src path to tests path
-- [ ] Document decisions with rationale
-- **Status:** pending
-
-### Phase 3: Implementation
 - [x] Move test files into tests/ tree
 - [x] Update test config include paths
 - [x] Fix any import paths if needed
@@ -42,12 +30,6 @@ Phase 3
 - [x] Run targeted tests
 - [x] Run full test suite
 - **Status:** complete
-
-
-### Phase 4: Testing & Verification
-- [ ] Run targeted tests
-- [ ] Run full test suite
-- **Status:** pending
 
 ### Phase 5: Delivery
 - [ ] Update docs if needed

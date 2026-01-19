@@ -76,7 +76,7 @@ export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
       const bestIndex = filteredVoices.findIndex(v =>
         v.name.includes('Monica') ||
         v.name.includes('Google') ||
-        v.lang === `${voicePrefix}-MX`
+        v.lang === LANGUAGE_FALLBACK[languageKey]
       );
 
       if (bestIndex !== -1) {

@@ -47,19 +47,31 @@ function createClickableComponent<TagProps extends { className?: string }>(
   };
 }
 
+const HEADING_CONFIG: Record<string, string> = {
+  h1: 'text-2xl font-bold text-slate-100',
+  h2: 'text-xl font-semibold text-slate-100',
+  h3: 'text-lg font-semibold text-slate-100',
+  h4: 'text-base font-semibold text-slate-100',
+  h5: 'text-sm font-semibold text-slate-100',
+  h6: 'text-sm font-semibold text-slate-100',
+};
+
 export default function MarkdownRenderer({ content, targetLanguage, onSpeak }: MarkdownRendererProps) {
+  const headingComponents = Object.fromEntries(
+    Object.entries(HEADING_CONFIG).map(([tag, className]) => [
+      tag,
+      createClickableComponent(tag, targetLanguage, onSpeak, className),
+    ])
+  );
+
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
+        ...headingComponents,
         p: createClickableComponent('p', targetLanguage, onSpeak, 'text-slate-300'),
         li: createClickableComponent('li', targetLanguage, onSpeak, 'text-slate-300'),
-        h1: createClickableComponent('h1', targetLanguage, onSpeak, 'text-2xl font-bold text-slate-100'),
-        h2: createClickableComponent('h2', targetLanguage, onSpeak, 'text-xl font-semibold text-slate-100'),
-        h3: createClickableComponent('h3', targetLanguage, onSpeak, 'text-lg font-semibold text-slate-100'),
-        h4: createClickableComponent('h4', targetLanguage, onSpeak, 'text-base font-semibold text-slate-100'),
-        h5: createClickableComponent('h5', targetLanguage, onSpeak, 'text-sm font-semibold text-slate-100'),
-        h6: createClickableComponent('h6', targetLanguage, onSpeak, 'text-sm font-semibold text-slate-100'),
+        td: createClickableComponent('td', targetLanguage, onSpeak, 'px-4 py-3 text-slate-300'),
         ul: ({ children }) => <ul className="list-disc pl-6 space-y-2 text-slate-300">{children}</ul>,
         ol: ({ children }) => <ol className="list-decimal pl-6 space-y-2 text-slate-300">{children}</ol>,
         blockquote: ({ children }) => (
@@ -74,7 +86,6 @@ export default function MarkdownRenderer({ content, targetLanguage, onSpeak }: M
         tbody: ({ children }) => <tbody className="divide-y divide-slate-700 bg-slate-900/30">{children}</tbody>,
         tr: ({ children }) => <tr className="hover:bg-slate-800/50">{children}</tr>,
         th: ({ children }) => <th className="px-4 py-2 font-medium">{children}</th>,
-        td: createClickableComponent('td', targetLanguage, onSpeak, 'px-4 py-3 text-slate-300'),
       }}
     >
       {content}
