@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractTargetText } from './extractor';
+import { extractTargetText } from '@/utils/language/extractor';
 
 describe('extractTargetText', () => {
   it('keeps Spanish text and strips Chinese', () => {
@@ -8,8 +8,8 @@ describe('extractTargetText', () => {
   });
 
   it('keeps French accents and strips non-target characters', () => {
-    const result = extractTargetText('Je m’appelle Léa（我叫乐雅）', 'fr');
-    expect(result).toBe('Je mappelle Léa');
+    const result = extractTargetText("Je m'appelle Léa（我叫乐雅）", 'fr');
+    expect(result).toBe("Je m'appelle Léa");
   });
 
   it('returns empty string when no target language content', () => {
