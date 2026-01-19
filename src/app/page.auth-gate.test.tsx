@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import Home from '@/app/page';
+import Home from './page';
 
 vi.mock('@/components/AuthGate', () => ({
   default: () => <div>AuthGate</div>,

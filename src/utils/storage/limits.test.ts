@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getStorageLimit, formatCharacterCount, getCharacterLimit } from '@/utils/storage/limits';
+import { getStorageLimit, formatCharacterCount, getCharacterLimit } from './limits';
 
 describe('Storage Limits', () => {
   it('should return correct storage limit for free plan', () => {

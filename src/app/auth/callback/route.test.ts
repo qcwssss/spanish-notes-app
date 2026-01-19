@@ -1,9 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { NextRequest } from 'next/server';
-import { GET } from '@/app/auth/callback/route';
+import { GET } from './route';
 
-const exchangeCodeForSession = vi.fn();
-exchangeCodeForSession.mockResolvedValue({ data: { session: {} }, error: null });
+const exchangeCodeForSession = vi.fn(() => Promise.resolve({ data: { session: {} }, error: null }));
 
 vi.mock('@/utils/supabase/config', () => ({
   getSupabaseConfig: () => ({ supabaseUrl: 'https://supabase.test', supabaseAnonKey: 'anon' }),

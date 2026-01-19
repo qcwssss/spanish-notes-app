@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import StorageIndicator from '@/components/StorageIndicator';
+import StorageIndicator from './StorageIndicator';
 
 describe('StorageIndicator', () => {
   it('should render storage usage correctly', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import Editor from '@/components/Editor';
+import Editor from './Editor';
 import { updateNote } from '@/utils/notes/queries';
 
 vi.mock('@/utils/notes/queries', () => ({
@@ -12,11 +12,11 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
-vi.mock('@/components/NotePlayer', () => ({
+vi.mock('./NotePlayer', () => ({
   default: () => <div>NotePlayer</div>,
 }));
 
-vi.mock('@/components/ActivationDialog', () => ({
+vi.mock('./ActivationDialog', () => ({
   default: ({ open }: { open: boolean }) => (open ? <div>ActivationDialogOpen</div> : null),
 }));
 
@@ -28,7 +28,7 @@ describe('Editor activation guard', () => {
   });
 
   it('opens activation dialog when inactive user saves', async () => {
-    render(<Editor note={note} isActive={false} targetLanguage="es" />);
+    render(<Editor note={note} isActive={false} />);
 
     await act(async () => {
       fireEvent.click(screen.getByText('Edit'));
@@ -43,7 +43,7 @@ describe('Editor activation guard', () => {
   });
 
   it('saves when user is active', async () => {
-    render(<Editor note={note} isActive targetLanguage="es" />);
+    render(<Editor note={note} isActive />);
 
     await act(async () => {
       fireEvent.click(screen.getByText('Edit'));

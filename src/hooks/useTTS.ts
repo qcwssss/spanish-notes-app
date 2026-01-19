@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from 'react';
-import { extractTargetText } from '@/utils/language/extractor';
 
 export interface TTSVoice {
   name: string;
@@ -8,38 +7,13 @@ export interface TTSVoice {
   voiceURI: string;
 }
 
-const DEFAULT_LANGUAGE = 'es';
 const TTS_VOICE_STORAGE_KEY = 'ttsVoiceURI';
-const LANGUAGE_VOICE_PREFIX: Record<string, string> = {
-  es: 'es',
-  fr: 'fr',
-  de: 'de',
-  en: 'en',
-  pt: 'pt',
-  it: 'it',
-  nl: 'nl',
-};
-const LANGUAGE_FALLBACK: Record<string, string> = {
-  es: 'es-ES',
-  fr: 'fr-FR',
-  de: 'de-DE',
-  en: 'en-US',
-  pt: 'pt-PT',
-  it: 'it-IT',
-  nl: 'nl-NL',
-};
 
-export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
+export const useTTS = () => {
   const [voices, setVoices] = useState<TTSVoice[]>([]);
   const [selectedVoiceIndex, setSelectedVoiceIndex] = useState<number>(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [supported, setSupported] = useState(false);
-
-  const languageKey = targetLanguage && LANGUAGE_VOICE_PREFIX[targetLanguage]
-    ? targetLanguage
-    : DEFAULT_LANGUAGE;
-  const voicePrefix = LANGUAGE_VOICE_PREFIX[languageKey];
-  const storageKey = `${TTS_VOICE_STORAGE_KEY}:${voicePrefix}`;
 
   // Initialize voices
   useEffect(() => {
@@ -52,9 +26,10 @@ export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
 
     const loadVoices = () => {
       const allVoices = window.speechSynthesis.getVoices();
-      const filteredVoices = allVoices.filter(v => v.lang.startsWith(voicePrefix));
-
-      const formattedVoices = filteredVoices.map(v => ({
+      // Filter for Spanish voices
+      const spanishVoices = allVoices.filter(v => v.lang.startsWith('es'));
+      
+      const formattedVoices = spanishVoices.map(v => ({
         name: v.name,
         lang: v.lang,
         localService: v.localService,
@@ -63,9 +38,9 @@ export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
 
       setVoices(formattedVoices);
 
-      const savedVoiceUri = window.localStorage.getItem(storageKey);
+      const savedVoiceUri = window.localStorage.getItem(TTS_VOICE_STORAGE_KEY);
       const savedIndex = savedVoiceUri
-        ? filteredVoices.findIndex((voice) => voice.voiceURI === savedVoiceUri)
+        ? spanishVoices.findIndex((voice) => voice.voiceURI === savedVoiceUri)
         : -1;
 
       if (savedIndex !== -1) {
@@ -73,17 +48,13 @@ export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
         return;
       }
 
-      const preferredLang = LANGUAGE_FALLBACK[languageKey];
-      let bestIndex = filteredVoices.findIndex(v => v.lang === preferredLang && v.localService);
-
-      if (bestIndex === -1) {
-        bestIndex = filteredVoices.findIndex(v => v.lang === preferredLang);
-      }
-
-      if (bestIndex === -1) {
-        bestIndex = filteredVoices.findIndex(v => v.localService);
-      }
-
+      // Auto-select best voice (Monica, Google, or MX)
+      const bestIndex = spanishVoices.findIndex(v => 
+        v.name.includes('Monica') || 
+        v.name.includes('Google') || 
+        v.lang === 'es-MX'
+      );
+      
       if (bestIndex !== -1) {
         setSelectedVoiceIndex(bestIndex);
       }
@@ -95,7 +66,7 @@ export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
     if (window.speechSynthesis.onvoiceschanged !== undefined) {
       window.speechSynthesis.onvoiceschanged = loadVoices;
     }
-  }, [storageKey, voicePrefix]);
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined' || voices.length === 0) {
@@ -105,38 +76,32 @@ export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
     const selectedVoice = voices[selectedVoiceIndex];
 
     if (selectedVoice) {
-      window.localStorage.setItem(storageKey, selectedVoice.voiceURI);
+      window.localStorage.setItem(TTS_VOICE_STORAGE_KEY, selectedVoice.voiceURI);
     }
-  }, [selectedVoiceIndex, voices, storageKey]);
+  }, [selectedVoiceIndex, voices]);
 
   const speak = useCallback((text: string) => {
     if (!supported) return;
 
-    const filteredText = extractTargetText(text, languageKey);
-
-    if (!filteredText) {
-      return;
-    }
-
     window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(filteredText);
-    const availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith(voicePrefix));
-
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    const availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('es'));
+    
     if (availableVoices.length > 0) {
       utterance.voice = availableVoices[selectedVoiceIndex] || availableVoices[0];
     } else {
-      utterance.lang = LANGUAGE_FALLBACK[languageKey] || LANGUAGE_FALLBACK[DEFAULT_LANGUAGE];
+      utterance.lang = 'es-ES'; // Fallback
     }
-
+    
     utterance.rate = 0.9;
-
+    
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
-
+    
     window.speechSynthesis.speak(utterance);
-  }, [supported, selectedVoiceIndex, languageKey, voicePrefix]);
+  }, [supported, selectedVoiceIndex]);
 
   const cancel = useCallback(() => {
     if (supported) {

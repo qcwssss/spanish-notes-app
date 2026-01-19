@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import Sidebar from '@/components/Sidebar';
+import Sidebar from './Sidebar';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
