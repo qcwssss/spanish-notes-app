@@ -18,7 +18,7 @@ export default function StorageIndicator({ used, limit }: StorageIndicatorProps)
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs text-slate-400">
-        <span>📝 {formatCharacterCount(used)}/{formatCharacterCount(limit)}</span>
+        <span>📝 {formatCharacterCount(used)}/{formatCharacterCount(limit)} characters</span>
         <span>{percentage}%</span>
       </div>
       <div className="w-full bg-slate-700 rounded-full h-1.5">

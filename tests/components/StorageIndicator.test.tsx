@@ -6,8 +6,7 @@ describe('StorageIndicator', () => {
   it('should render storage usage correctly', () => {
     render(<StorageIndicator used={25000} limit={150000} />);
     
-    expect(screen.getByText(/25k/)).toBeInTheDocument();
-    expect(screen.getByText(/150k/)).toBeInTheDocument();
+    expect(screen.getByText(/25k\/150k characters/)).toBeInTheDocument();
   });
 
   it('should calculate percentage correctly', () => {
