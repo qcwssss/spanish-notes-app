@@ -2,6 +2,7 @@
 
 import { createServerClient } from '@/utils/supabase/server';
 import { UserProfile } from '@/types/profile';
+import { revalidatePath } from 'next/cache';
 
 export async function getUserProfile(): Promise<UserProfile | null> {
   const supabase = await createServerClient();
@@ -43,6 +44,10 @@ export async function updateTargetLanguage(language: string): Promise<void> {
   if (error) {
     throw new Error(`Failed to update language: ${error.message}`);
   }
+
+  // 清除缓存，确保设置页面显示最新数据
+  revalidatePath('/settings');
+  revalidatePath('/');
 }
 
 export async function calculateStorageUsed(userId: string): Promise<number> {

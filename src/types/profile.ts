@@ -15,7 +15,7 @@ export interface Language {
 }
 
 export const LANGUAGES: Language[] = [
-  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+  { code: 'es', name: 'Spanish', flag: '🇲🇽' },
   { code: 'fr', name: 'French', flag: '🇫🇷' },
   { code: 'de', name: 'German', flag: '🇩🇪' },
   { code: 'en', name: 'English', flag: '🇬🇧' },

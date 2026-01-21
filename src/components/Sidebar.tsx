@@ -3,6 +3,7 @@ import { Note } from '@/types/note';
 import { UserProfile } from '@/types/profile';
 import CreateNoteButton from './CreateNoteButton';
 import UserInfoCard from './UserInfoCard';
+import { UNTITLED_NOTE_TITLE } from '@/constants';
 
 interface SidebarProps {
   notes: Note[];
@@ -24,7 +25,7 @@ export default function Sidebar({ notes, profile }: SidebarProps) {
             href={`/?noteId=${note.id}`}
             className="block p-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors truncate"
           >
-            {note.title || 'Untitled Note'}
+            {note.title || UNTITLED_NOTE_TITLE}
           </Link>
         ))}
       </nav>

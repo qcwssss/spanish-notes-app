@@ -1,32 +1,43 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Note } from '@/types/note';
 import { updateNote, deleteNote } from '@/utils/notes/queries';
 import NotePlayer from './NotePlayer';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
+import { UNTITLED_NOTE_TITLE } from '@/constants';
 
 interface EditorProps {
   note: Note;
   isActive: boolean;
   targetLanguage: string | null;
+  initialEditMode?: boolean;
 }
 
-export default function Editor({ note, isActive, targetLanguage }: EditorProps) {
+export default function Editor({ note, isActive, targetLanguage, initialEditMode = false }: EditorProps) {
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content || '');
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(initialEditMode);
   const [isSaving, setIsSaving] = useState(false);
   const [showActivationDialog, setShowActivationDialog] = useState(false);
   const router = useRouter();
+  const isFirstMount = useRef(true);
 
   // Sync state if note prop changes
   useEffect(() => {
     setTitle(note.title);
     setContent(note.content || '');
-    setIsEditing(false); // Reset to view mode when note changes
-  }, [note.id, note.title, note.content]);
+
+    // On initial component mount, the state is already correctly initialized
+    // by useState. For all subsequent updates (e.g. navigating between notes),
+    // we set the editing state based on the `initialEditMode` prop.
+    if (!isFirstMount.current) {
+      setIsEditing(initialEditMode);
+    }
+
+    isFirstMount.current = false;
+  }, [note.id, note.title, note.content, initialEditMode]);
 
   const handleSave = async () => {
     if (!isActive) {
@@ -93,10 +104,26 @@ export default function Editor({ note, isActive, targetLanguage }: EditorProps) 
             ) : (
                 <>
                 <button 
-                    onClick={() => {
-                        setIsEditing(false);
-                        setTitle(note.title);
-                        setContent(note.content || '');
+                    onClick={async () => {
+                        // 检查是否是新建且仍然为空的笔记
+                        const wasNewNote = !note.content && note.title === UNTITLED_NOTE_TITLE;
+                        const isStillEmpty = content.trim() === '' && title.trim() === UNTITLED_NOTE_TITLE;
+
+                        if (wasNewNote && isStillEmpty) {
+                            // 新笔记且用户没有输入任何内容，删除它
+                            try {
+                                await deleteNote(note.id);
+                                router.push('/');
+                            } catch (error) {
+                                console.error('Failed to delete empty note:', error);
+                                alert('Failed to delete note.');
+                            }
+                        } else {
+                            // 恢复原内容
+                            setIsEditing(false);
+                            setTitle(note.title);
+                            setContent(note.content || '');
+                        }
                     }}
                     className="px-4 py-2 text-slate-400 hover:text-slate-200 transition-colors"
                 >
