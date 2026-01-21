@@ -107,10 +107,21 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
             ) : (
                 <>
                 <button 
-                    onClick={() => {
-                        setIsEditing(false);
-                        setTitle(note.title);
-                        setContent(note.content || '');
+                    onClick={async () => {
+                        // 如果是新创建的空笔记，取消时删除它
+                        const isEmptyNewNote = !note.content && note.title === 'Untitled Note';
+                        if (isEmptyNewNote) {
+                            try {
+                                await deleteNote(note.id);
+                                router.push('/');
+                            } catch {
+                                alert('Failed to delete');
+                            }
+                        } else {
+                            setIsEditing(false);
+                            setTitle(note.title);
+                            setContent(note.content || '');
+                        }
                     }}
                     className="px-4 py-2 text-slate-400 hover:text-slate-200 transition-colors"
                 >
