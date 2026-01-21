@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Note } from '@/types/note';
 import { updateNote, deleteNote } from '@/utils/notes/queries';
 import NotePlayer from './NotePlayer';
@@ -11,22 +11,36 @@ interface EditorProps {
   note: Note;
   isActive: boolean;
   targetLanguage: string | null;
+  initialEditMode?: boolean;
 }
 
-export default function Editor({ note, isActive, targetLanguage }: EditorProps) {
+export default function Editor({ note, isActive, targetLanguage, initialEditMode = false }: EditorProps) {
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content || '');
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(initialEditMode);
   const [isSaving, setIsSaving] = useState(false);
   const [showActivationDialog, setShowActivationDialog] = useState(false);
   const router = useRouter();
+  const isFirstMount = useRef(true);
 
   // Sync state if note prop changes
   useEffect(() => {
     setTitle(note.title);
     setContent(note.content || '');
-    setIsEditing(false); // Reset to view mode when note changes
+    // 首次加载时保留 initialEditMode，后续切换笔记时重置为 view 模式
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+    } else {
+      setIsEditing(false);
+    }
   }, [note.id, note.title, note.content]);
+
+  // 监听 initialEditMode 变化（解决客户端导航时组件复用的问题）
+  useEffect(() => {
+    if (initialEditMode) {
+      setIsEditing(true);
+    }
+  }, [initialEditMode]);
 
   const handleSave = async () => {
     if (!isActive) {

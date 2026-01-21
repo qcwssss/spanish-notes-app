@@ -23,7 +23,7 @@ export default function CreateNoteButton({ isActive }: CreateNoteButtonProps) {
     setIsCreating(true);
     try {
       const newNote = await createNote('Untitled Note', '');
-      router.push(`/?noteId=${newNote.id}`);
+      router.push(`/?noteId=${newNote.id}&mode=edit`);
     } catch (e) {
       console.error(e);
       alert('Failed to create note');

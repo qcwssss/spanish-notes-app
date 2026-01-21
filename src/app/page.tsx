@@ -23,6 +23,7 @@ export default async function Home({
   // 2. Determine Selected Note
   const resolvedSearchParams = await searchParams;
   const selectedNoteId = resolvedSearchParams?.noteId as string;
+  const isEditMode = resolvedSearchParams?.mode === 'edit';
   let activeNote = null;
 
   if (selectedNoteId) {
@@ -45,6 +46,7 @@ export default async function Home({
             note={activeNote}
             isActive={profile?.is_active || false}
             targetLanguage={profile?.target_language ?? 'es'}
+            initialEditMode={isEditMode}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-slate-500">
