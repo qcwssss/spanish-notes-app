@@ -105,16 +105,21 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                 <>
                 <button 
                     onClick={async () => {
-                        // 如果是新创建的空笔记，取消时删除它
-                        const isEmptyNewNote = !note.content && note.title === UNTITLED_NOTE_TITLE;
-                        if (isEmptyNewNote) {
+                        // 检查是否是新建且仍然为空的笔记
+                        const wasNewNote = !note.content && note.title === UNTITLED_NOTE_TITLE;
+                        const isStillEmpty = content.trim() === '' && title.trim() === UNTITLED_NOTE_TITLE;
+
+                        if (wasNewNote && isStillEmpty) {
+                            // 新笔记且用户没有输入任何内容，删除它
                             try {
                                 await deleteNote(note.id);
                                 router.push('/');
-                            } catch {
-                                alert('Failed to delete');
+                            } catch (error) {
+                                console.error('Failed to delete empty note:', error);
+                                alert('Failed to delete note.');
                             }
                         } else {
+                            // 恢复原内容
                             setIsEditing(false);
                             setTitle(note.title);
                             setContent(note.content || '');
