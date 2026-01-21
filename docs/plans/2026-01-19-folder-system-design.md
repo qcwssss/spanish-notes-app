@@ -20,9 +20,11 @@
 | Column | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `id` | `uuid` | `gen_random_uuid()` | 主键 |
-| `user_id` | `uuid` | | 外键，关联 `auth.users` |
-| `name` | `text` | | 集合名称 |
+| `user_id` | `uuid` | NOT NULL | 外键，关联 `auth.users.id`，集合所有者 |
+| `name` | `text` | NOT NULL | 集合名称 |
 | `created_at` | `timestamptz` | `now()` | 创建时间 |
+
+**索引**: `CREATE INDEX idx_collections_user_id ON collections(user_id);`
 
 ### 2.2 新增 `folders` 表 (Level 2)
 中间层容器，必须归属于一个 Collection。
@@ -30,12 +32,14 @@
 | Column | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `id` | `uuid` | `gen_random_uuid()` | 主键 |
-| `collection_id` | `uuid` | | **New** 外键，关联 `collections(id)` |
-| `name` | `text` | | 文件夹名称 |
+| `collection_id` | `uuid` | NOT NULL | 外键，关联 `collections(id)` |
+| `user_id` | `uuid` | NOT NULL | 外键，关联 `auth.users.id`（冗余存储，简化 RLS）|
+| `name` | `text` | NOT NULL | 文件夹名称 |
 | `created_at` | `timestamptz` | `now()` | 创建时间 |
 
-**约束**:
-- `collection_id` NOT NULL (文件夹必须在 Collection 下)
+**索引**: `CREATE INDEX idx_folders_user_id ON folders(user_id);`
+
+> **设计说明**: `user_id` 可通过 `collection_id` 推导，但直接存储可简化 RLS 策略、提升查询性能。
 
 ### 2.3 修改 `notes` 表 (Level 3)
 笔记文档，归属于一个 Folder。
