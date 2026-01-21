@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { createNote } from '@/utils/notes/queries';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
+import { UNTITLED_NOTE_TITLE } from '@/constants';
 
 interface CreateNoteButtonProps {
   isActive: boolean;
@@ -22,7 +23,7 @@ export default function CreateNoteButton({ isActive }: CreateNoteButtonProps) {
 
     setIsCreating(true);
     try {
-      const newNote = await createNote('Untitled Note', '');
+      const newNote = await createNote(UNTITLED_NOTE_TITLE, '');
       router.push(`/?noteId=${newNote.id}&mode=edit`);
     } catch (e) {
       console.error(e);

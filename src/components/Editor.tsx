@@ -6,6 +6,7 @@ import { updateNote, deleteNote } from '@/utils/notes/queries';
 import NotePlayer from './NotePlayer';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
+import { UNTITLED_NOTE_TITLE } from '@/constants';
 
 interface EditorProps {
   note: Note;
@@ -27,20 +28,16 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
   useEffect(() => {
     setTitle(note.title);
     setContent(note.content || '');
-    // 首次加载时保留 initialEditMode，后续切换笔记时重置为 view 模式
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-    } else {
-      setIsEditing(false);
-    }
-  }, [note.id, note.title, note.content]);
 
-  // 监听 initialEditMode 变化（解决客户端导航时组件复用的问题）
-  useEffect(() => {
-    if (initialEditMode) {
-      setIsEditing(true);
+    // On initial component mount, the state is already correctly initialized
+    // by useState. For all subsequent updates (e.g. navigating between notes),
+    // we set the editing state based on the `initialEditMode` prop.
+    if (!isFirstMount.current) {
+      setIsEditing(initialEditMode);
     }
-  }, [initialEditMode]);
+
+    isFirstMount.current = false;
+  }, [note.id, note.title, note.content, initialEditMode]);
 
   const handleSave = async () => {
     if (!isActive) {
@@ -109,7 +106,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                 <button 
                     onClick={async () => {
                         // 如果是新创建的空笔记，取消时删除它
-                        const isEmptyNewNote = !note.content && note.title === 'Untitled Note';
+                        const isEmptyNewNote = !note.content && note.title === UNTITLED_NOTE_TITLE;
                         if (isEmptyNewNote) {
                             try {
                                 await deleteNote(note.id);

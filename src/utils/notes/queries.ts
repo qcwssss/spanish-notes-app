@@ -3,8 +3,9 @@
 import { createServerClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { Note } from '@/types/note';
+import { UNTITLED_NOTE_TITLE } from '@/constants';
 
-export async function createNote(title: string = 'Untitled Note', content: string = '') {
+export async function createNote(title: string = UNTITLED_NOTE_TITLE, content: string = '') {
   const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
