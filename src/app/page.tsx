@@ -1,5 +1,6 @@
 import { createServerClient } from '@/utils/supabase/server';
 import { getUserProfile } from '@/utils/profile/queries';
+import { getFolders } from '@/utils/folders/queries';
 import Sidebar from '@/components/Sidebar';
 import Editor from '@/components/Editor';
 import AuthGate from '@/components/AuthGate';
@@ -13,6 +14,7 @@ export default async function Home({
 }) {
   const supabase = await createServerClient();
   const profile = await getUserProfile();
+  const folders = await getFolders();
 
   // 1. Fetch Notes List
   const { data: notes } = await supabase
@@ -38,7 +40,7 @@ export default async function Home({
   return (
     <div className="flex min-h-screen bg-slate-950 text-slate-100">
       <AuthGate />
-      <Sidebar notes={notes || []} profile={profile} />
+      <Sidebar notes={notes || []} folders={folders} profile={profile} />
 
       <main className="flex-1 p-8 overflow-y-auto h-screen">
         {activeNote ? (
