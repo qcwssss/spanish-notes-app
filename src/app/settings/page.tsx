@@ -3,7 +3,6 @@ import { getUserProfile } from '@/utils/profile/queries';
 import SettingsForm from './SettingsForm';
 
 export const runtime = 'edge';
-export const dynamic = 'force-dynamic'; // 禁用缓存，每次都获取最新数据
 
 export default async function SettingsPage() {
   const profile = await getUserProfile();
