@@ -26,6 +26,14 @@
 
 **索引**: `CREATE INDEX idx_collections_user_id ON collections(user_id);`
 
+**外键约束**:
+```sql
+ALTER TABLE collections
+  ADD CONSTRAINT fk_user
+  FOREIGN KEY (user_id) REFERENCES auth.users(id)
+  ON DELETE CASCADE;
+```
+
 ### 2.2 新增 `folders` 表 (Level 2)
 中间层容器，必须归属于一个 Collection。
 
@@ -39,6 +47,17 @@
 
 **索引**: `CREATE INDEX idx_folders_user_id ON folders(user_id);`
 
+**外键约束**:
+```sql
+ALTER TABLE folders
+  ADD CONSTRAINT fk_collection
+  FOREIGN KEY (collection_id) REFERENCES collections(id)
+  ON DELETE CASCADE,
+  ADD CONSTRAINT fk_user
+  FOREIGN KEY (user_id) REFERENCES auth.users(id)
+  ON DELETE CASCADE;
+```
+
 > **设计说明**: `user_id` 可通过 `collection_id` 推导，但直接存储可简化 RLS 策略、提升查询性能。
 
 ### 2.3 修改 `notes` 表 (Level 3)
@@ -49,11 +68,20 @@
 | `folder_id` | `uuid` | `NULL` | **New** | 所属文件夹 ID |
 | `is_favorite` | `boolean` | `false` | **New** | 是否收藏 |
 
+**外键约束**:
+```sql
+ALTER TABLE notes
+  ADD CONSTRAINT fk_folder
+  FOREIGN KEY (folder_id) REFERENCES folders(id)
+  ON DELETE SET NULL;  -- Folder 删除时，Note 的 folder_id 设为 NULL（进入 Inbox）
+```
+
 **约束与设计决策**:
 - **Strict Hierarchy**: 理论上 Note 应该在 Folder 下。如果 `folder_id` 为 NULL，这代表 "Uncategorized" 或者 "Inbox" (默认区域)。
 - **Deletion Strategy**: 
-  - 删除 Collection -> 级联删除 Folders -> 级联删除 Notes。
-  - 删除 Folder -> 级联删除 Notes。
+  - 删除 Collection → 级联删除 Folders → Notes 的 `folder_id` 设为 NULL（通过 `ON DELETE SET NULL`）。
+  - 删除 Folder → Notes 的 `folder_id` 设为 NULL。
+  - 如果想直接删除 Notes，将约束改为 `ON DELETE CASCADE`。
   - *安全机制*: UI 应提示用户二次确认。
 
 ## 3. Server Actions / API
