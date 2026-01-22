@@ -19,7 +19,7 @@ export default async function Home({
   // 1. Fetch Notes List
   const { data: notes } = await supabase
     .from('notes')
-    .select('id, title, updated_at, folder_id')
+    .select('id, title, updated_at, folder_id, is_favorite')
     .order('updated_at', { ascending: false });
 
   // 2. Determine Selected Note
