@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Folder } from '@/types/folder';
 import { Note } from '@/types/note';
@@ -18,6 +18,19 @@ export default function FolderList({ folders, notes, showHierarchy = true }: Fol
     new Set(folders.map(f => f.id))
   );
 
+  const notesByFolder = useMemo(() => {
+    const map = new Map<string, Note[]>();
+    for (const note of notes) {
+      if (note.folder_id) {
+        if (!map.has(note.folder_id)) {
+          map.set(note.folder_id, []);
+        }
+        map.get(note.folder_id)!.push(note);
+      }
+    }
+    return map;
+  }, [notes]);
+
   const toggleFolder = (folderId: string) => {
     setExpandedFolders(prev => {
       const next = new Set(prev);
@@ -31,7 +44,7 @@ export default function FolderList({ folders, notes, showHierarchy = true }: Fol
   };
 
   const getNotesForFolder = (folderId: string) => {
-    return notes.filter(note => note.folder_id === folderId);
+    return notesByFolder.get(folderId) || [];
   };
 
   if (!showHierarchy) {
