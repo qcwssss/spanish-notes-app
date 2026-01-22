@@ -2,7 +2,7 @@
 
 ## 当前状态摘要
 **日期**: 2026年1月21日
-**当前版本**: Phase 5 - 文件夹系统设计完成
+**当前版本**: Phase 6 - 文件夹系统 MVP 完成
 **主要分支**: `feat/folder`
 
 ## 已达成的里程碑
@@ -25,7 +25,7 @@
 - **存储管理**: 后端触发器实时计算用户存储占用，并同步至前端设置页面。
 - **自动化部署**: 成功部署于 Cloudflare Pages。
 
-### 4. 文件夹系统设计 ✅ (NEW)
+### 4. 文件夹系统设计 ✅
 **设计文档**: `docs/plans/2026-01-19-folder-system-design.md` (V4 Final)
 
 **核心设计决策**:
@@ -38,28 +38,58 @@
 | folder_id | `NOT NULL` - 永不为空 |
 | UI 行为 | 渐进显示：无真正文件夹时扁平列表，有文件夹时显示层级 |
 
+### 5. 文件夹系统实现 ✅ (NEW - TDD)
+**TDD 计划**: `docs/plans/2026-01-21-folder-system-tdd-plan.md`
+
+**Phase 1 - 数据库层** ✅:
+- `collections` 表 + RLS 策略
+- `folders` 表 + RLS 策略  
+- `notes` 表添加 `folder_id`, `is_favorite` 字段
+- 新用户触发器 (Eager Create)
+- 现有数据迁移脚本
+
+**Phase 2 - 后端层** ✅:
+- TypeScript 类型: `Collection`, `Folder`
+- `getDefaultFolder()`, `getFolders()` 查询函数
+- `createFolder()`, `renameFolder()`, `deleteFolder()` 操作
+- `moveNote()`, `toggleFavorite()` 笔记操作
+- `shouldShowHierarchy()` 渐进显示逻辑
+
+**Phase 3 - 前端层** ✅:
+- `FolderList` 组件 - 文件夹树 + 展开/折叠
+- `CreateFolderDialog` 组件 - 创建文件夹弹窗
+- `Sidebar` 更新 - 集成渐进显示
+- `page.tsx` 更新 - 获取 folders 数据
+
+**测试覆盖**: 37 个测试通过
+
+**Git 提交**:
+```
+2f4f572 feat(notes): include folder_id in notes query
+7e2f6d8 feat: implement folder system frontend (TDD)
+5e2aa45 feat: implement folder system backend (TDD)
+2b3f933 docs: add detailed TDD implementation plan
+aefcfc2 docs: finalize folder system design (V4)
+```
+
 ---
 
-## 下一步计划：文件夹系统实施
+## 下一步计划：拖拽移动笔记
 
-### Phase 1: 数据库层 (TDD)
-1. 创建 `collections` 表 + RLS
-2. 创建 `folders` 表 + RLS
-3. 修改 `notes` 表添加 `folder_id`
-4. 创建新用户触发器 (Eager Create)
-5. 迁移现有数据
+**TDD 计划**: `docs/plans/2026-01-21-drag-drop-notes-tdd-plan.md`
 
-### Phase 2: 后端层 (TDD)
-1. 定义 TypeScript 类型 (`Collection`, `Folder`)
-2. Folder CRUD Server Actions
-3. 笔记移动功能 (`moveNote`)
-4. 获取默认 Folder 函数
+### 技术方案
+- 使用 **@dnd-kit** 库实现拖拽
+- `DraggableNote` - 可拖拽的笔记组件
+- `DroppableFolder` - 可接收拖入的文件夹组件
+- 集成现有 `moveNote()` Server Action
 
-### Phase 3: 前端层 (TDD)
-1. Sidebar 重构 - 渐进显示逻辑
-2. 创建文件夹对话框
-3. 笔记移动 UI
-4. Favorites 视图
+### 预估时间
+2.5 - 3 小时
+
+### 验证方式
+- 自动化测试 (Vitest + React Testing Library)
+- 手动验证拖拽流程
 
 ---
 
