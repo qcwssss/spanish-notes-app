@@ -7,6 +7,7 @@ import { Folder } from '@/types/folder';
 import { Note } from '@/types/note';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
 import { moveNote } from '@/utils/notes/actions';
+import { renameFolder } from '@/utils/folders/actions';
 import DroppableFolder from './DroppableFolder';
 import DraggableNote from './DraggableNote';
 
@@ -49,6 +50,10 @@ export default function FolderList({ folders, notes, showHierarchy = true }: Fol
       }
       return next;
     });
+  };
+
+  const handleRenameFolder = async (folderId: string, newName: string) => {
+    await renameFolder(folderId, newName);
   };
 
   const getNotesForFolder = (folderId: string) => {
@@ -104,6 +109,7 @@ export default function FolderList({ folders, notes, showHierarchy = true }: Fol
             folder={folder}
             isExpanded={isExpanded}
             onToggle={toggleFolder}
+            onRename={handleRenameFolder}
             noteCount={folderNotes.length}
           >
             {folderNotes.map(note => (
