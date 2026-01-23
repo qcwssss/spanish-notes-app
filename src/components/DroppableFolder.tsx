@@ -39,6 +39,9 @@ export default function DroppableFolder({
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (isRenaming) {
+      return;
+    }
     setDisplayName(folder.name);
     setNewName(folder.name);
   }, [folder.name]);
@@ -51,6 +54,10 @@ export default function DroppableFolder({
   }, [isRenaming]);
 
   useEffect(() => {
+    if (!showMenu) {
+      return;
+    }
+
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setShowMenu(false);
@@ -61,7 +68,7 @@ export default function DroppableFolder({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [showMenu]);
 
   const handleRenameSubmit = async () => {
     const trimmedName = newName.trim();
@@ -97,41 +104,56 @@ export default function DroppableFolder({
     <div ref={setNodeRef} data-testid="droppable-folder">
       <div
         className={clsx(
-          "w-full flex items-center gap-2 p-2 rounded-lg transition-colors cursor-pointer group relative",
+          "w-full flex items-center gap-2 p-2 rounded-lg transition-colors group relative",
           isOver ? "bg-slate-700 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"
         )}
-        onClick={() => !isRenaming && onToggle(folder.id)}
       >
-        {isExpanded ? (
-          <ChevronDown className="w-4 h-4 shrink-0" />
-        ) : (
-          <ChevronRight className="w-4 h-4 shrink-0" />
-        )}
-        <FolderIcon className="w-4 h-4 shrink-0" />
-        
-        {isRenaming ? (
-          <input
-            ref={inputRef}
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            onBlur={handleRenameSubmit}
-            onKeyDown={handleKeyDown}
-            onClick={(e) => e.stopPropagation()}
-            className="flex-1 bg-slate-900 text-white px-2 py-0.5 rounded border border-slate-600 focus:border-blue-500 outline-none text-sm min-w-0"
-          />
-        ) : (
-          <span 
-            className="flex-1 text-left truncate select-none"
-            onDoubleClick={(e) => {
-              e.stopPropagation();
-              setNewName(displayName);
-              setIsRenaming(true);
-            }}
-          >
-            {displayName}
-          </span>
-        )}
+        <button
+          type="button"
+          onClick={() => !isRenaming && onToggle(folder.id)}
+          onKeyDown={(event) => {
+            if (isRenaming) {
+              return;
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              onToggle(folder.id);
+            }
+          }}
+          className="flex min-w-0 flex-1 items-center gap-2 text-left"
+          aria-expanded={isExpanded}
+        >
+          {isExpanded ? (
+            <ChevronDown className="w-4 h-4 shrink-0" />
+          ) : (
+            <ChevronRight className="w-4 h-4 shrink-0" />
+          )}
+          <FolderIcon className="w-4 h-4 shrink-0" />
+
+          {isRenaming ? (
+            <input
+              ref={inputRef}
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onBlur={handleRenameSubmit}
+              onKeyDown={handleKeyDown}
+              onClick={(e) => e.stopPropagation()}
+              className="flex-1 bg-slate-900 text-white px-2 py-0.5 rounded border border-slate-600 focus:border-blue-500 outline-none text-sm min-w-0"
+            />
+          ) : (
+            <span 
+              className="flex-1 text-left truncate select-none"
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                setNewName(displayName);
+                setIsRenaming(true);
+              }}
+            >
+              {displayName}
+            </span>
+          )}
+        </button>
         
         {!isRenaming && (
           <div className="flex items-center gap-2">
