@@ -11,6 +11,7 @@ import CreateFolderDialog from './CreateFolderDialog';
 import { shouldShowHierarchy } from '@/utils/folders/display';
 import { createFolder } from '@/utils/folders/actions';
 import { FolderPlus } from 'lucide-react';
+import { ToastProvider, Toast, ToastViewport, ToastTitle, ToastDescription, ToastClose } from './Toast';
 
 interface SidebarProps {
   notes: Note[];
@@ -20,15 +21,23 @@ interface SidebarProps {
 
 export default function Sidebar({ notes, folders, profile }: SidebarProps) {
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const showHierarchy = shouldShowHierarchy(folders);
 
   const handleCreateFolder = async (name: string) => {
-    await createFolder(name);
-    setIsCreateFolderOpen(false);
+    setError(null);
+    try {
+      await createFolder(name);
+      setIsCreateFolderOpen(false);
+    } catch (error) {
+      console.error('Failed to create folder:', error);
+      setError(error instanceof Error ? error.message : 'Failed to create folder');
+    }
   };
 
   return (
-    <aside className="w-64 border-r border-slate-700 bg-slate-900 h-screen flex flex-col flex-shrink-0">
+    <ToastProvider>
+      <aside className="w-64 border-r border-slate-700 bg-slate-900 h-screen flex flex-col flex-shrink-0">
       <div className="p-4 border-b border-slate-700">
         <h2 className="text-xl font-bold text-slate-100 mb-4">My Notes</h2>
         <CreateNoteButton isActive={profile?.is_active || false} />
@@ -56,6 +65,16 @@ export default function Sidebar({ notes, folders, profile }: SidebarProps) {
         onClose={() => setIsCreateFolderOpen(false)}
         onCreate={handleCreateFolder}
       />
+
+      <Toast open={!!error} onOpenChange={() => setError(null)}>
+        <div className="grid gap-1">
+          <ToastTitle>Error</ToastTitle>
+          <ToastDescription>{error}</ToastDescription>
+        </div>
+        <ToastClose />
+      </Toast>
+      <ToastViewport />
     </aside>
+    </ToastProvider>
   );
 }
