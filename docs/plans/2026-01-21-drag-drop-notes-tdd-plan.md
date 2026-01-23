@@ -1,6 +1,7 @@
 # 拖拽移动笔记 TDD 实施计划
 
 **日期**: 2026-01-21  
+**状态**: 已完成（合并到 `master`）
 **前置依赖**: 文件夹系统已实现，`moveNote()` Server Action 已存在  
 **方法论**: Test-Driven Development (Red → Green → Refactor)
 
@@ -462,6 +463,17 @@ npm test -- --grep "Drag"
 | 快速连续拖拽 | 应正确处理，无 race condition |
 | 网络错误 | 显示错误提示，笔记回到原位 |
 | 触摸设备 | 长按触发拖拽（需要 @dnd-kit/touch 传感器） |
+
+---
+
+## 交付结果
+
+- 新增组件：`DraggableNote`、`DroppableFolder`
+- `FolderList` 集成 DnD（客户端挂载以避免 hydration mismatch）
+- 测试覆盖：
+  - `tests/components/folders/DraggableNote.test.tsx`
+  - `tests/components/folders/DroppableFolder.test.tsx`
+  - `tests/components/folders/FolderList.test.tsx`
 
 ---
 
