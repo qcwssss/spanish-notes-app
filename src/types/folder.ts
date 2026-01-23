@@ -17,5 +17,9 @@ export interface Folder {
   created_at: string;
 }
 
+// SYNC WARNING: These values are also defined in SQL migrations:
+// - supabase/migrations/002_migrate_notes_to_folders.sql
+// - supabase/migrations/003_create_new_user_trigger.sql
+// Keep them in sync if you change these values.
 export const DEFAULT_COLLECTION_NAME = 'My Collection';
 export const DEFAULT_FOLDER_NAME = 'My Notes';

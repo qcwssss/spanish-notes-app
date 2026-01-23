@@ -28,10 +28,7 @@ WHERE f.user_id = n.user_id AND f.is_default = true AND n.folder_id IS NULL;
 -- Step 5: Add is_favorite column (NOT NULL with default)
 ALTER TABLE public.notes ADD COLUMN IF NOT EXISTS is_favorite boolean NOT NULL DEFAULT false;
 
--- Step 6: Make folder_id NOT NULL (only after data is migrated)
--- WARNING: Only run this after verifying all notes have folder_id
+-- Step 6 & 7: Already executed manually in Supabase Dashboard (2026-01-22)
 -- ALTER TABLE public.notes ALTER COLUMN folder_id SET NOT NULL;
-
--- Step 7: Add foreign key constraint
 -- ALTER TABLE public.notes ADD CONSTRAINT fk_folder 
 --   FOREIGN KEY (folder_id) REFERENCES public.folders(id) ON DELETE RESTRICT;

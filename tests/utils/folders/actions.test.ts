@@ -201,7 +201,7 @@ describe('Folder Actions', () => {
           }
           return {
             select: vi.fn().mockReturnValue({
-              eq: vi.fn().mockResolvedValue({ data: [{ id: 'note-1' }], error: null }),
+              eq: vi.fn().mockResolvedValue({ count: 1, error: null }),
             }),
           };
         }),

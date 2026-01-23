@@ -89,12 +89,16 @@ export async function deleteFolder(id: string): Promise<void> {
     throw new Error('Cannot delete default folder');
   }
 
-  const { data: notes } = await supabase
+  const { count, error: countError } = await supabase
     .from('notes')
-    .select('id')
+    .select('*', { count: 'exact', head: true })
     .eq('folder_id', id);
 
-  if (notes && notes.length > 0) {
+  if (countError) {
+    throw new Error(countError.message);
+  }
+
+  if (count && count > 0) {
     throw new Error('Cannot delete folder with notes');
   }
 
