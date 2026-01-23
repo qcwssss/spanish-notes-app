@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getUserProfile, updateTargetLanguage, calculateStorageUsed } from '@/utils/profile/queries';
 
+vi.mock('next/cache', () => ({
+  revalidatePath: vi.fn(),
+}));
+
 // Mock Supabase
 vi.mock('@/utils/supabase/server', () => ({
   createServerClient: vi.fn(() => ({

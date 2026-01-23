@@ -24,6 +24,10 @@ vi.mock('@/utils/profile/queries', () => ({
   getUserProfile: vi.fn(() => Promise.resolve(null)),
 }));
 
+vi.mock('@/utils/folders/queries', () => ({
+  getFolders: vi.fn(() => Promise.resolve([])),
+}));
+
 describe('Home page auth gate', () => {
   it('renders AuthGate', async () => {
     const ui = await Home({ searchParams: Promise.resolve({}) });

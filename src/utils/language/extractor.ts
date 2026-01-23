@@ -22,8 +22,10 @@ export function extractTargetText(text: string, language: string | null | undefi
   const key = language && LANGUAGE_CHARSETS[language] ? language : DEFAULT_LANGUAGE;
   const allowed = LANGUAGE_CHARSETS[key];
 
-  const cleaned = Array.from(text)
-    .map((char) => (allowed.test(char) || /\s/.test(char) || char === "'" || char === "’" ? char : ' '))
+  const withoutParentheses = text.replace(/[（(][^）)]*[）)]/g, '');
+
+  const cleaned = Array.from(withoutParentheses)
+    .map((char) => (allowed.test(char) || /\s/.test(char) || /[\u0027\u2018\u2019]/.test(char) ? char : ' '))
     .join('')
     .replace(/\s+/g, ' ')
     .trim();
