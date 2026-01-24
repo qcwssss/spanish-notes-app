@@ -6,7 +6,11 @@ import { Note } from '@/types/note';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
 import { getDefaultFolder } from '@/utils/folders/queries';
 
-export async function createNote(title: string = UNTITLED_NOTE_TITLE, content: string = '') {
+export async function createNote(
+  title: string = UNTITLED_NOTE_TITLE,
+  content: string = '',
+  folderId?: string
+) {
   const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -14,9 +18,13 @@ export async function createNote(title: string = UNTITLED_NOTE_TITLE, content: s
     throw new Error('User not authenticated');
   }
 
-  const defaultFolder = await getDefaultFolder();
-  if (!defaultFolder) {
-    throw new Error('Default folder not found');
+  let targetFolderId = folderId;
+  if (!targetFolderId) {
+    const defaultFolder = await getDefaultFolder();
+    if (!defaultFolder) {
+      throw new Error('Default folder not found');
+    }
+    targetFolderId = defaultFolder.id;
   }
 
   const { data, error } = await supabase
@@ -26,7 +34,7 @@ export async function createNote(title: string = UNTITLED_NOTE_TITLE, content: s
         user_id: user.id,
         title,
         content,
-        folder_id: defaultFolder.id,
+        folder_id: targetFolderId,
       },
     ])
     .select()

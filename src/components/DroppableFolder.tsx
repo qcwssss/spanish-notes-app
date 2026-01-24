@@ -15,6 +15,7 @@ interface DroppableFolderProps {
   folder: Folder;
   isExpanded: boolean;
   onToggle: (folderId: string) => void;
+  onSelect?: (folder: Folder) => void;
   onRename: (folderId: string, newName: string) => Promise<void>;
   noteCount: number;
   children: React.ReactNode;
@@ -24,6 +25,7 @@ export default function DroppableFolder({
   folder,
   isExpanded,
   onToggle,
+  onSelect,
   onRename,
   noteCount,
   children
@@ -198,7 +200,12 @@ export default function DroppableFolder({
           ) : (
             <button
               type="button"
-              onClick={() => !isRenaming && onToggle(folder.id)}
+              onClick={() => {
+                if (!isRenaming) {
+                  onToggle(folder.id);
+                  onSelect?.(folder);
+                }
+              }}
               onKeyDown={(event) => {
                 if (isRenaming) {
                   return;
@@ -206,6 +213,7 @@ export default function DroppableFolder({
                 if (event.key === 'Enter' || event.key === ' ') {
                   event.preventDefault();
                   onToggle(folder.id);
+                  onSelect?.(folder);
                 }
               }}
               className="flex min-w-0 flex-1 items-center gap-2 text-left"
