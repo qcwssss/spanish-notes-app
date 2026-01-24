@@ -41,9 +41,16 @@ export default function DroppableFolder({
   const inputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const lastFolderName = useRef(folder.name);
+  const isMountedRef = useRef(true);
 
   const { toast } = useToast();
   useOnClickOutside(menuRef, () => setShowMenu(false), showMenu);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (isRenaming || isSubmitting) {
@@ -81,6 +88,9 @@ export default function DroppableFolder({
     try {
       await onRename(folder.id, trimmedName);
     } catch (error) {
+      if (!isMountedRef.current) {
+        return;
+      }
       console.error('Failed to rename folder:', error);
       setDisplayName(originalName);
       setNewName(originalName);
@@ -90,7 +100,9 @@ export default function DroppableFolder({
         variant: 'destructive',
       });
     } finally {
-      setIsSubmitting(false);
+      if (isMountedRef.current) {
+        setIsSubmitting(false);
+      }
     }
   };
 
