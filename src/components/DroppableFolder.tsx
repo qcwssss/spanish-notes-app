@@ -34,6 +34,7 @@ export default function DroppableFolder({
   });
 
   const [isRenaming, setIsRenaming] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [displayName, setDisplayName] = useState(folder.name);
   const [newName, setNewName] = useState(folder.name);
   const [showMenu, setShowMenu] = useState(false);
@@ -45,7 +46,7 @@ export default function DroppableFolder({
   useOnClickOutside(menuRef, () => setShowMenu(false), showMenu);
 
   useEffect(() => {
-    if (isRenaming) {
+    if (isRenaming || isSubmitting) {
       return;
     }
     if (folder.name === lastFolderName.current) {
@@ -54,7 +55,7 @@ export default function DroppableFolder({
     lastFolderName.current = folder.name;
     setDisplayName(folder.name);
     setNewName(folder.name);
-  }, [folder.name, isRenaming]);
+  }, [folder.name, isRenaming, isSubmitting]);
 
   useEffect(() => {
     if (isRenaming && inputRef.current) {
@@ -74,7 +75,8 @@ export default function DroppableFolder({
     
     setIsRenaming(false);
     setDisplayName(trimmedName);
-    
+
+    setIsSubmitting(true);
     try {
       await onRename(folder.id, trimmedName);
     } catch (error) {
@@ -86,10 +88,15 @@ export default function DroppableFolder({
         description: error instanceof Error ? error.message : 'Failed to rename folder',
         variant: 'destructive',
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (isSubmitting) {
+      return;
+    }
     if (e.key === 'Enter') {
       handleRenameSubmit();
     } else if (e.key === 'Escape') {
@@ -138,6 +145,7 @@ export default function DroppableFolder({
               onKeyDown={handleKeyDown}
               onClick={(e) => e.stopPropagation()}
               className="flex-1 bg-slate-900 text-white px-2 py-0.5 rounded border border-slate-600 focus:border-blue-500 outline-none text-sm min-w-0"
+              disabled={isSubmitting}
             />
           ) : (
             <span 
