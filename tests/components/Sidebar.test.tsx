@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Sidebar from '@/components/Sidebar';
 import type { Folder } from '@/types/folder';
+import { useToast } from '@/components/ToastProvider';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -11,6 +12,10 @@ vi.mock('next/link', () => ({
   default: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),
+}));
+
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: vi.fn(),
 }));
 
 const mockProfile = {
@@ -34,9 +39,15 @@ const mockDefaultFolder: Folder = {
 
 describe('Sidebar', () => {
   const mockNotes = [
-    { id: '1', title: 'Note 1', updated_at: '2023-01-01', folder_id: 'default-folder' },
-    { id: '2', title: 'Long Note Title That Should Be Truncated Maybe', updated_at: '2023-01-02', folder_id: 'default-folder' },
+    { id: '1', title: 'Note 1', updated_at: '2023-01-01', folder_id: 'default-folder', is_favorite: false },
+    { id: '2', title: 'Long Note Title That Should Be Truncated Maybe', updated_at: '2023-01-02', folder_id: 'default-folder', is_favorite: false },
   ];
+
+  beforeEach(() => {
+    (useToast as any).mockReturnValue({
+      toast: vi.fn(),
+    });
+  });
 
   it('renders the sidebar header', () => {
     render(<Sidebar profile={mockProfile} notes={[]} folders={[mockDefaultFolder]} />);
@@ -58,7 +69,7 @@ describe('Sidebar', () => {
   });
 
   it('renders "Untitled Note" for empty titles', () => {
-    const notes = [{ id: '3', title: '', updated_at: '2023-01-03', folder_id: 'default-folder' }];
+    const notes = [{ id: '3', title: '', updated_at: '2023-01-03', folder_id: 'default-folder', is_favorite: false }];
     render(<Sidebar profile={mockProfile} notes={notes} folders={[mockDefaultFolder]} />);
     expect(screen.getByText('Untitled Note')).toBeDefined();
   });

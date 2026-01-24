@@ -1,7 +1,13 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DndContext } from '@dnd-kit/core';
 import DroppableFolder from '@/components/DroppableFolder';
+import { useToast } from '@/components/ToastProvider';
+
+// Mock useToast
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: vi.fn(),
+}));
 
 describe('DroppableFolder', () => {
   const mockFolder = {
@@ -12,6 +18,15 @@ describe('DroppableFolder', () => {
     collection_id: 'collection-1',
     created_at: '2026-01-01',
   };
+
+  const mockToast = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    (useToast as any).mockReturnValue({
+      toast: mockToast,
+    });
+  });
 
   const renderWithDnd = (ui: React.ReactElement) => {
     return render(<DndContext>{ui}</DndContext>);
@@ -115,5 +130,23 @@ describe('DroppableFolder', () => {
     expect(screen.getByText('Fast Update')).toBeInTheDocument();
     
     expect(slowRename).toHaveBeenCalledWith('folder-1', 'Fast Update');
+  });
+
+  it('shows toast on rename error', async () => {
+    const errorRename = vi.fn().mockRejectedValue(new Error('Rename failed'));
+    renderWithDnd(<DroppableFolder {...defaultProps} onRename={errorRename} />);
+    
+    fireEvent.doubleClick(screen.getByText('My Notes'));
+    const input = screen.getByRole('textbox');
+    
+    fireEvent.change(input, { target: { value: 'Error Update' } });
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    
+    await waitFor(() => {
+      expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
+        title: 'Error',
+        variant: 'destructive',
+      }));
+    });
   });
 });
