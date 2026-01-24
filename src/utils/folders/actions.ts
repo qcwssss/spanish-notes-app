@@ -114,3 +114,49 @@ export async function deleteFolder(id: string): Promise<void> {
 
   revalidatePath('/');
 }
+
+export async function deleteFolderAndMoveNotes(
+  folderId: string,
+  defaultFolderId: string
+): Promise<void> {
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  if (folderId === defaultFolderId) {
+    throw new Error('Cannot delete default folder');
+  }
+
+  const { error } = await supabase.rpc('move_notes_and_delete_folder', {
+    input_folder_id: folderId,
+    input_default_folder_id: defaultFolderId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/');
+}
+
+export async function deleteFolderAndNotes(folderId: string): Promise<void> {
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  const { error } = await supabase.rpc('delete_folder_and_notes', {
+    input_folder_id: folderId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/');
+}

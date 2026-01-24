@@ -4,15 +4,37 @@ import { DndContext } from '@dnd-kit/core';
 import DroppableFolder from '@/components/DroppableFolder';
 import { useToast } from '@/components/ToastProvider';
 
+const mockDeleteFolderAndMoveNotes = vi.fn();
+const mockDeleteFolderAndNotes = vi.fn();
+const mockGetDefaultFolder = vi.fn();
+
 // Mock useToast
 vi.mock('@/components/ToastProvider', () => ({
   useToast: vi.fn(),
+}));
+
+vi.mock('@/utils/folders/actions', () => ({
+  deleteFolderAndMoveNotes: (...args: unknown[]) => mockDeleteFolderAndMoveNotes(...args),
+  deleteFolderAndNotes: (...args: unknown[]) => mockDeleteFolderAndNotes(...args),
+}));
+
+vi.mock('@/utils/folders/queries', () => ({
+  getDefaultFolder: () => mockGetDefaultFolder(),
 }));
 
 describe('DroppableFolder', () => {
   const mockFolder = {
     id: 'folder-1',
     name: 'My Notes',
+    is_default: false,
+    user_id: 'user-1',
+    collection_id: 'collection-1',
+    created_at: '2026-01-01',
+  };
+
+  const defaultFolder = {
+    id: 'default-folder',
+    name: 'Default Folder',
     is_default: true,
     user_id: 'user-1',
     collection_id: 'collection-1',
@@ -23,6 +45,7 @@ describe('DroppableFolder', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetDefaultFolder.mockResolvedValue(defaultFolder);
     (useToast as any).mockReturnValue({
       toast: mockToast,
     });
@@ -95,11 +118,25 @@ describe('DroppableFolder', () => {
     expect(screen.getByLabelText('Folder options')).toBeInTheDocument();
   });
 
-  it('renders correct menu item label', () => {
+  it('renders menu items', () => {
     renderWithDnd(<DroppableFolder {...defaultProps} />);
     const menuButton = screen.getByLabelText('Folder options');
     fireEvent.click(menuButton);
-    expect(screen.getByText('Edit folder name')).toBeInTheDocument();
+    expect(screen.getByText('Edit')).toBeInTheDocument();
+    expect(screen.getByText('Delete')).toBeInTheDocument();
+  });
+
+  it('hides delete for default folder', () => {
+    renderWithDnd(
+      <DroppableFolder
+        {...defaultProps}
+        folder={{ ...defaultFolder, name: 'My Notes' }}
+      />
+    );
+    const menuButton = screen.getByLabelText('Folder options');
+    fireEvent.click(menuButton);
+    expect(screen.getByText('Edit')).toBeInTheDocument();
+    expect(screen.queryByText('Delete')).not.toBeInTheDocument();
   });
 
   it('updates display name when folder prop changes', () => {
@@ -151,5 +188,44 @@ describe('DroppableFolder', () => {
 
     expect(screen.getByText('My Notes')).toBeInTheDocument();
     expect(screen.queryByText('Error Update')).not.toBeInTheDocument();
+  });
+
+  it('deletes folder and keeps notes', async () => {
+    renderWithDnd(<DroppableFolder {...defaultProps} />);
+    fireEvent.click(screen.getByLabelText('Folder options'));
+    fireEvent.click(screen.getByText('Delete'));
+
+    expect(screen.getByText('Delete folder')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Delete folder (keep notes)'));
+
+    await waitFor(() => {
+      expect(mockDeleteFolderAndMoveNotes).toHaveBeenCalledWith('folder-1', 'default-folder');
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Delete folder')).not.toBeInTheDocument();
+    });
+  });
+
+  it('requires confirmation before deleting all notes', async () => {
+    renderWithDnd(<DroppableFolder {...defaultProps} />);
+    fireEvent.click(screen.getByLabelText('Folder options'));
+    fireEvent.click(screen.getByText('Delete'));
+
+    fireEvent.click(screen.getByText('Delete folder and all notes'));
+
+    expect(screen.getByText('Delete folder and notes?')).toBeInTheDocument();
+    expect(screen.getByText('This will permanently delete all notes in this folder.')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Delete'));
+
+    await waitFor(() => {
+      expect(mockDeleteFolderAndNotes).toHaveBeenCalledWith('folder-1');
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Delete folder and notes?')).not.toBeInTheDocument();
+    });
   });
 });

@@ -1,8 +1,8 @@
 # 项目进展报告 (Progress Report)
 
 ## 当前状态摘要
-**日期**: 2026年1月23日
-**当前版本**: Phase 7 - 拖拽与重命名 UI 完成
+**日期**: 2026年1月24日
+**当前版本**: Phase 8 - 文件夹删除流程完成
 **主要分支**: `master`
 
 ## 已达成的里程碑
@@ -90,10 +90,24 @@ aefcfc2 docs: finalize folder system design (V4)
 
 ### 7. 文件夹重命名 UI ✅
 **实现内容**:
-- 文件夹行右侧三点菜单（Edit folder name）
+- 文件夹行右侧三点菜单（Edit）
 - 双击名称进入 inline rename
 - Enter 保存 / Esc 取消 / Blur 提交
 - UI 立即更新，失败时回滚
+
+**测试覆盖**:
+- `tests/components/folders/DroppableFolder.test.tsx`
+
+### 8. 文件夹删除流程 ✅
+**实现内容**:
+- 三点菜单提供 Delete 入口（默认文件夹不可删）
+- 两条路径：保留笔记（移动到默认文件夹）/ 删除全部笔记
+- 删除全部笔记需二次确认
+- 失败提示使用 Toast
+
+**数据库**:
+- Supabase RPC：`move_notes_and_delete_folder`, `delete_folder_and_notes`
+- SQL 文件：`@supabase/2026-01-24-folder-delete-rpcs.sql`
 
 **测试覆盖**:
 - `tests/components/folders/DroppableFolder.test.tsx`
@@ -103,7 +117,6 @@ aefcfc2 docs: finalize folder system design (V4)
 ## 下一步计划
 - 搜索功能（全文检索）
 - Favorites 视图
-- 删除文件夹 UI（带确认与空文件夹校验）
 
 ---
 
@@ -113,4 +126,4 @@ aefcfc2 docs: finalize folder system design (V4)
 - **`useTTS`**: 封装了复杂的语音发现与选择逻辑，支持跨设备一致性。
 
 ---
-*由 Antigravity AI 生成 | 最后更新: 2026-01-21*
+*由 Antigravity AI 生成 | 最后更新: 2026-01-24*
