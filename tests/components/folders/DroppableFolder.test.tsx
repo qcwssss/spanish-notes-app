@@ -148,5 +148,8 @@ describe('DroppableFolder', () => {
         variant: 'destructive',
       }));
     });
+
+    expect(screen.getByText('My Notes')).toBeInTheDocument();
+    expect(screen.queryByText('Error Update')).not.toBeInTheDocument();
   });
 });

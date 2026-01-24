@@ -66,10 +66,11 @@ export default function DroppableFolder({
 
   const handleRenameSubmit = async () => {
     const trimmedName = newName.trim();
+    const originalName = displayName;
 
-    if (!trimmedName || trimmedName === displayName) {
+    if (!trimmedName || trimmedName === originalName) {
       setIsRenaming(false);
-      setNewName(displayName);
+      setNewName(originalName);
       return;
     }
     
@@ -81,8 +82,8 @@ export default function DroppableFolder({
       await onRename(folder.id, trimmedName);
     } catch (error) {
       console.error('Failed to rename folder:', error);
-      setDisplayName(folder.name);
-      setNewName(folder.name);
+      setDisplayName(originalName);
+      setNewName(originalName);
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to rename folder',
