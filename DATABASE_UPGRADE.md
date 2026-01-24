@@ -202,6 +202,7 @@ ON CONFLICT (code) DO NOTHING;
 ## Folder Deletion RPCs (Atomic)
 
 These functions ensure folder deletion is all-or-nothing.
+SQL file: `@supabase/2026-01-24-folder-delete-rpcs.sql`
 
 ```sql
 CREATE OR REPLACE FUNCTION move_notes_and_delete_folder(
