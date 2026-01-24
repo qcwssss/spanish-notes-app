@@ -131,16 +131,10 @@ export default function DroppableFolder({
     setShowDeleteDialog(true);
   };
 
-  const handleDeleteKeepNotes = async () => {
+  const handleDeleteApiCall = async (apiCall: () => Promise<void>) => {
     setIsDeleting(true);
     try {
-      const defaultFolder = await getDefaultFolder();
-      if (!defaultFolder) {
-        throw new Error('Default folder not found');
-      }
-      
-      await deleteFolderAndMoveNotes(folder.id, defaultFolder.id);
-      setShowDeleteDialog(false);
+      await apiCall();
     } catch (error) {
       toast({
         title: 'Error',
@@ -151,27 +145,26 @@ export default function DroppableFolder({
       setIsDeleting(false);
     }
   };
+
+  const handleDeleteKeepNotes = () => handleDeleteApiCall(async () => {
+    const defaultFolder = await getDefaultFolder();
+    if (!defaultFolder) {
+      throw new Error('Default folder not found');
+    }
+
+    await deleteFolderAndMoveNotes(folder.id, defaultFolder.id);
+    setShowDeleteDialog(false);
+  });
 
   const handleDeleteAllInit = () => {
     setShowDeleteDialog(false);
     setShowConfirmDeleteAllDialog(true);
   };
 
-  const handleDeleteAllConfirm = async () => {
-    setIsDeleting(true);
-    try {
-      await deleteFolderAndNotes(folder.id);
-      setShowConfirmDeleteAllDialog(false);
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to delete folder',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+  const handleDeleteAllConfirm = () => handleDeleteApiCall(async () => {
+    await deleteFolderAndNotes(folder.id);
+    setShowConfirmDeleteAllDialog(false);
+  });
 
   return (
     <>
@@ -299,7 +292,6 @@ export default function DroppableFolder({
           <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
           <Dialog.Content
             className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md z-50 shadow-xl focus:outline-none"
-            aria-describedby={undefined}
           >
             <Dialog.Title className="text-xl font-bold text-slate-100 mb-4">
               Delete folder
