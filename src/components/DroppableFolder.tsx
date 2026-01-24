@@ -168,6 +168,11 @@ export default function DroppableFolder({
     setShowConfirmDeleteAllDialog(false);
   });
 
+  const handleFolderActivate = () => {
+    onToggle(folder.id);
+    onSelect?.(folder);
+  };
+
   return (
     <>
       <div ref={setNodeRef} data-testid="droppable-folder">
@@ -202,8 +207,7 @@ export default function DroppableFolder({
               type="button"
               onClick={() => {
                 if (!isRenaming) {
-                  onToggle(folder.id);
-                  onSelect?.(folder);
+                  handleFolderActivate();
                 }
               }}
               onKeyDown={(event) => {
@@ -212,8 +216,7 @@ export default function DroppableFolder({
                 }
                 if (event.key === 'Enter' || event.key === ' ') {
                   event.preventDefault();
-                  onToggle(folder.id);
-                  onSelect?.(folder);
+                  handleFolderActivate();
                 }
               }}
               className="flex min-w-0 flex-1 items-center gap-2 text-left"
