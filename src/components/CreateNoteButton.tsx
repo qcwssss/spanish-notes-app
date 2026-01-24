@@ -5,12 +5,23 @@ import { createNote } from '@/utils/notes/queries';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
+import { DEFAULT_FOLDER_NAME } from '@/types/folder';
 
 interface CreateNoteButtonProps {
   isActive: boolean;
+  targetFolderId?: string | null;
+  targetFolderName?: string | null;
+  defaultFolderId?: string | null;
+  defaultFolderName?: string;
 }
 
-export default function CreateNoteButton({ isActive }: CreateNoteButtonProps) {
+export default function CreateNoteButton({ 
+  isActive, 
+  targetFolderId, 
+  targetFolderName,
+  defaultFolderId,
+  defaultFolderName = DEFAULT_FOLDER_NAME
+}: CreateNoteButtonProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [showActivationDialog, setShowActivationDialog] = useState(false);
   const router = useRouter();
@@ -23,7 +34,8 @@ export default function CreateNoteButton({ isActive }: CreateNoteButtonProps) {
 
     setIsCreating(true);
     try {
-      const newNote = await createNote(UNTITLED_NOTE_TITLE, '');
+      const folderId = targetFolderId ?? defaultFolderId ?? undefined;
+      const newNote = await createNote(UNTITLED_NOTE_TITLE, '', folderId);
       router.push(`/?noteId=${newNote.id}&mode=edit`);
     } catch (e) {
       console.error(e);
@@ -33,6 +45,11 @@ export default function CreateNoteButton({ isActive }: CreateNoteButtonProps) {
     }
   };
 
+  const folderName = targetFolderName ?? defaultFolderName;
+  const buttonLabel = isCreating
+    ? 'Creating...'
+    : (folderName ? `New note in ${folderName}` : 'New Note');
+
   return (
     <>
       <button
@@ -40,7 +57,7 @@ export default function CreateNoteButton({ isActive }: CreateNoteButtonProps) {
         disabled={isCreating}
         className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors disabled:opacity-50 font-medium"
       >
-        {isCreating ? 'Creating...' : '+ New Note'}
+        {buttonLabel}
       </button>
 
       {!isActive && (

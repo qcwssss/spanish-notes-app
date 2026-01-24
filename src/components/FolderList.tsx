@@ -15,9 +15,15 @@ interface FolderListProps {
   folders: Folder[];
   notes: Note[];
   showHierarchy?: boolean;
+  onSelectFolder?: (folder: Folder) => void;
 }
 
-export default function FolderList({ folders, notes, showHierarchy = true }: FolderListProps) {
+export default function FolderList({ 
+  folders, 
+  notes, 
+  showHierarchy = true,
+  onSelectFolder
+}: FolderListProps) {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     new Set(folders.map(f => f.id))
   );
@@ -109,6 +115,7 @@ export default function FolderList({ folders, notes, showHierarchy = true }: Fol
             folder={folder}
             isExpanded={isExpanded}
             onToggle={toggleFolder}
+            onSelect={onSelectFolder}
             onRename={handleRenameFolder}
             noteCount={folderNotes.length}
           >
