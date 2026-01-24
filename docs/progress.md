@@ -1,9 +1,9 @@
 # 项目进展报告 (Progress Report)
 
 ## 当前状态摘要
-**日期**: 2026年1月21日
-**当前版本**: Phase 6 - 文件夹系统 MVP 完成
-**主要分支**: `feat/folder`
+**日期**: 2026年1月23日
+**当前版本**: Phase 7 - 拖拽与重命名 UI 完成
+**主要分支**: `master`
 
 ## 已达成的里程碑
 
@@ -74,22 +74,36 @@ aefcfc2 docs: finalize folder system design (V4)
 
 ---
 
-## 下一步计划：拖拽移动笔记
-
+### 6. 拖拽移动笔记 ✅
 **TDD 计划**: `docs/plans/2026-01-21-drag-drop-notes-tdd-plan.md`
 
-### 技术方案
-- 使用 **@dnd-kit** 库实现拖拽
-- `DraggableNote` - 可拖拽的笔记组件
-- `DroppableFolder` - 可接收拖入的文件夹组件
-- 集成现有 `moveNote()` Server Action
+**实现内容**:
+- 使用 **@dnd-kit** 实现拖拽移动
+- `DraggableNote` / `DroppableFolder` 组件
+- `FolderList` 集成 DnD（仅客户端挂载，避免 hydration mismatch）
+- 创建文件夹失败时 Toast 提示
 
-### 预估时间
-2.5 - 3 小时
+**测试覆盖**:
+- `tests/components/folders/DraggableNote.test.tsx`
+- `tests/components/folders/DroppableFolder.test.tsx`
+- `tests/components/folders/FolderList.test.tsx`
 
-### 验证方式
-- 自动化测试 (Vitest + React Testing Library)
-- 手动验证拖拽流程
+### 7. 文件夹重命名 UI ✅
+**实现内容**:
+- 文件夹行右侧三点菜单（Edit folder name）
+- 双击名称进入 inline rename
+- Enter 保存 / Esc 取消 / Blur 提交
+- UI 立即更新，失败时回滚
+
+**测试覆盖**:
+- `tests/components/folders/DroppableFolder.test.tsx`
+
+---
+
+## 下一步计划
+- 搜索功能（全文检索）
+- Favorites 视图
+- 删除文件夹 UI（带确认与空文件夹校验）
 
 ---
 

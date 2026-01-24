@@ -30,6 +30,7 @@ const mockNotes: Note[] = [
     folder_id: 'default-folder',
     title: 'Note in Default',
     updated_at: '2026-01-21T00:00:00Z',
+    is_favorite: false,
   },
   {
     id: 'note-2',
@@ -37,12 +38,17 @@ const mockNotes: Note[] = [
     folder_id: 'work-folder',
     title: 'Work Note',
     updated_at: '2026-01-21T00:00:00Z',
+    is_favorite: false,
   },
 ];
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
   useSearchParams: () => new URLSearchParams(),
+}));
+
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: () => ({ toast: vi.fn() }),
 }));
 
 describe('FolderList', () => {
