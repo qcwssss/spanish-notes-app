@@ -113,29 +113,14 @@ export default function DroppableFolder({
           isOver ? "bg-slate-700 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"
         )}
       >
-        <button
-          type="button"
-          onClick={() => !isRenaming && onToggle(folder.id)}
-          onKeyDown={(event) => {
-            if (isRenaming) {
-              return;
-            }
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              onToggle(folder.id);
-            }
-          }}
-          className="flex min-w-0 flex-1 items-center gap-2 text-left"
-          aria-expanded={isExpanded}
-        >
-          {isExpanded ? (
-            <ChevronDown className="w-4 h-4 shrink-0" />
-          ) : (
-            <ChevronRight className="w-4 h-4 shrink-0" />
-          )}
-          <FolderIcon className="w-4 h-4 shrink-0" />
-
-          {isRenaming ? (
+        {isRenaming ? (
+          <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
+            {isExpanded ? (
+              <ChevronDown className="w-4 h-4 shrink-0" />
+            ) : (
+              <ChevronRight className="w-4 h-4 shrink-0" />
+            )}
+            <FolderIcon className="w-4 h-4 shrink-0" />
             <input
               ref={inputRef}
               type="text"
@@ -147,10 +132,35 @@ export default function DroppableFolder({
               className="flex-1 bg-slate-900 text-white px-2 py-0.5 rounded border border-slate-600 focus:border-blue-500 outline-none text-sm min-w-0"
               disabled={isSubmitting}
             />
-          ) : (
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => !isRenaming && onToggle(folder.id)}
+            onKeyDown={(event) => {
+              if (isRenaming) {
+                return;
+              }
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onToggle(folder.id);
+              }
+            }}
+            className="flex min-w-0 flex-1 items-center gap-2 text-left"
+            aria-expanded={isExpanded}
+          >
+            {isExpanded ? (
+              <ChevronDown className="w-4 h-4 shrink-0" />
+            ) : (
+              <ChevronRight className="w-4 h-4 shrink-0" />
+            )}
+            <FolderIcon className="w-4 h-4 shrink-0" />
             <span 
               className="flex-1 text-left truncate select-none"
               onDoubleClick={(e) => {
+                if (isSubmitting) {
+                  return;
+                }
                 e.stopPropagation();
                 setNewName(displayName);
                 setIsRenaming(true);
@@ -158,10 +168,10 @@ export default function DroppableFolder({
             >
               {displayName}
             </span>
-          )}
-        </button>
+          </button>
+        )}
         
-        {!isRenaming && (
+        {!isRenaming && !isSubmitting && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-slate-500">{noteCount}</span>
             <div className="relative" ref={menuRef}>
@@ -181,6 +191,9 @@ export default function DroppableFolder({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (isSubmitting) {
+                        return;
+                      }
                       setNewName(displayName);
                       setIsRenaming(true);
                       setShowMenu(false);
