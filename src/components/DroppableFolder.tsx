@@ -5,6 +5,8 @@ import { ChevronDown, ChevronRight, Folder as FolderIcon, MoreVertical } from 'l
 import { Folder } from '@/types/folder';
 import { clsx } from 'clsx';
 import { useState, useRef, useEffect } from 'react';
+import { useOnClickOutside } from '@/hooks/useOnClickOutside';
+import { useToast } from '@/components/ToastProvider';
 
 interface DroppableFolderProps {
   folder: Folder;
@@ -37,14 +39,22 @@ export default function DroppableFolder({
   const [showMenu, setShowMenu] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const lastFolderName = useRef(folder.name);
+
+  const { toast } = useToast();
+  useOnClickOutside(menuRef, () => setShowMenu(false), showMenu);
 
   useEffect(() => {
     if (isRenaming) {
       return;
     }
+    if (folder.name === lastFolderName.current) {
+      return;
+    }
+    lastFolderName.current = folder.name;
     setDisplayName(folder.name);
     setNewName(folder.name);
-  }, [folder.name]);
+  }, [folder.name, isRenaming]);
 
   useEffect(() => {
     if (isRenaming && inputRef.current) {
@@ -52,23 +62,6 @@ export default function DroppableFolder({
       inputRef.current.select();
     }
   }, [isRenaming]);
-
-  useEffect(() => {
-    if (!showMenu) {
-      return;
-    }
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowMenu(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showMenu]);
 
   const handleRenameSubmit = async () => {
     const trimmedName = newName.trim();
@@ -88,6 +81,11 @@ export default function DroppableFolder({
       console.error('Failed to rename folder:', error);
       setDisplayName(folder.name);
       setNewName(folder.name);
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to rename folder',
+        variant: 'destructive',
+      });
     }
   };
 
