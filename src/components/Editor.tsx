@@ -37,7 +37,45 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
     }
 
     isFirstMount.current = false;
-  }, [note.id, note.title, note.content, initialEditMode]);
+  }, [note.id, initialEditMode]);
+
+  const AUTO_TITLE_MAX_LENGTH = 60;
+
+  const normalizeTitle = (value: string) => {
+    return value
+      .replace(/^\s{0,3}(#{1,6}|>|\*|-|\+|\d+\.)\s+/u, '')
+      .replace(/[`*_]/g, '')
+      .trim();
+  };
+
+  const buildAutoTitle = (value: string) => {
+    const firstLine = value
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .find((line) => line.length > 0);
+
+    if (!firstLine) {
+      return null;
+    }
+
+    const cleanedLine = normalizeTitle(firstLine);
+    if (!cleanedLine) {
+      return null;
+    }
+
+    const words = cleanedLine.split(/\s+/);
+
+    let result = '';
+    for (const word of words) {
+      const next = result ? `${result} ${word}` : word;
+      if (next.length > AUTO_TITLE_MAX_LENGTH) {
+        break;
+      }
+      result = next;
+    }
+
+    return result || cleanedLine;
+  };
 
   const handleSave = async () => {
     if (!isActive) {
@@ -47,7 +85,14 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
 
     setIsSaving(true);
     try {
-      await updateNote(note.id, { title, content });
+      const trimmedTitle = title.trim();
+      const isTitleEmpty = trimmedTitle.length === 0 || trimmedTitle === UNTITLED_NOTE_TITLE;
+      const nextTitle = isTitleEmpty
+        ? buildAutoTitle(content) ?? UNTITLED_NOTE_TITLE
+        : trimmedTitle;
+
+      await updateNote(note.id, { title: nextTitle, content });
+      setTitle(nextTitle);
       setIsEditing(false);
     } catch (e) {
       console.error(e);
