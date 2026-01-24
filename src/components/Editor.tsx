@@ -74,11 +74,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
       result = next;
     }
 
-    if (result) {
-      return result;
-    }
-
-    return cleanedLine;
+    return result || cleanedLine;
   };
 
   const handleSave = async () => {
@@ -93,7 +89,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
       const isTitleEmpty = trimmedTitle.length === 0 || trimmedTitle === UNTITLED_NOTE_TITLE;
       const nextTitle = isTitleEmpty
         ? buildAutoTitle(content) ?? UNTITLED_NOTE_TITLE
-        : title;
+        : trimmedTitle;
 
       await updateNote(note.id, { title: nextTitle, content });
       setTitle(nextTitle);
