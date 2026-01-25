@@ -13,6 +13,8 @@ import { createFolder } from '@/utils/folders/actions';
 import { FolderPlus, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useToast } from './ToastProvider';
 
+const SIDEBAR_COLLAPSE_KEY = 'app-sidebar-collapsed';
+
 interface SidebarProps {
   notes: Note[];
   folders: Folder[];
@@ -50,7 +52,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
   }, [folders, notes, selectedFolderId, selectedNoteId]);
 
   useEffect(() => {
-    const savedState = localStorage.getItem('app-sidebar-collapsed');
+    const savedState = localStorage.getItem(SIDEBAR_COLLAPSE_KEY);
     if (savedState) {
       try {
         setIsCollapsed(JSON.parse(savedState));
@@ -60,26 +62,11 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     }
   }, []);
 
-  useEffect(() => {
-    if (selectedFolderId && !folders.find(f => f.id === selectedFolderId)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedFolderId(null);
-    }
-  }, [folders, selectedFolderId]);
-
-  const handleCreateFolder = async (name: string) => {
-    try {
-      await createFolder(name);
-      setIsCreateFolderOpen(false);
-    } catch (error) {
-      console.error('Failed to create folder:', error);
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to create folder',
-        variant: 'destructive',
-      });
-    }
+  const handleCollapse = (collapsed: boolean) => {
+    setIsCollapsed(collapsed);
+    localStorage.setItem(SIDEBAR_COLLAPSE_KEY, JSON.stringify(collapsed));
   };
+
 
   const handleCollapse = (collapsed: boolean) => {
     setIsCollapsed(collapsed);
