@@ -262,7 +262,7 @@ export default function DroppableFolder({
               )}
               <FolderIcon className="w-4 h-4 shrink-0" />
               <span 
-                className="flex-1 min-w-0 text-left truncate select-none transition-all max-w-full group-hover:max-w-[140px]"
+                className="flex-1 min-w-0 text-left truncate select-none transition-all max-w-full group-hover:max-w-folder-action"
                 onDoubleClick={(e) => {
                   if (isSubmitting) {
                     return;
