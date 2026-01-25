@@ -60,11 +60,6 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     }
   }, []);
 
-  const toggleSidebar = (collapsed: boolean) => {
-    setIsCollapsed(collapsed);
-    localStorage.setItem('app-sidebar-collapsed', JSON.stringify(collapsed));
-  };
-
   useEffect(() => {
     if (selectedFolderId && !folders.find(f => f.id === selectedFolderId)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
