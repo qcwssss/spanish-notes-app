@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Note } from '@/types/note';
 import { Folder, DEFAULT_FOLDER_NAME } from '@/types/folder';
 import { UserProfile } from '@/types/profile';
@@ -24,25 +24,30 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   
   const { toast } = useToast();
   const showHierarchy = shouldShowHierarchy(folders);
 
-  const defaultFolder = folders.find(f => f.is_default);
-  const selectedFolderName = selectedFolderId
-    ? folders.find(folder => folder.id === selectedFolderId)?.name ?? null
-    : null;
-  const selectedNote = selectedNoteId
-    ? notes.find(note => note.id === selectedNoteId)
-    : null;
-  const selectedNoteFolderId = selectedNote?.folder_id ?? null;
-  const selectedNoteFolderName = selectedNoteFolderId
-    ? folders.find(folder => folder.id === selectedNoteFolderId)?.name ?? null
-    : null;
-  const defaultFolderName = defaultFolder?.name ?? DEFAULT_FOLDER_NAME;
-  const targetFolderId = selectedFolderId ?? selectedNoteFolderId;
-  const targetFolderName = selectedFolderName ?? selectedNoteFolderName;
+  const {
+    defaultFolder,
+    defaultFolderName,
+    targetFolderId,
+    targetFolderName,
+  } = useMemo(() => {
+    const defaultFolder = folders.find(f => f.is_default);
+    const selectedFolder = selectedFolderId ? folders.find(f => f.id === selectedFolderId) : null;
+    
+    const selectedNote = selectedNoteId ? notes.find(n => n.id === selectedNoteId) : null;
+    const selectedNoteFolderId = selectedNote?.folder_id ?? null;
+    const selectedNoteFolder = selectedNoteFolderId ? folders.find(f => f.id === selectedNoteFolderId) : null;
+
+    return {
+      defaultFolder,
+      defaultFolderName: defaultFolder?.name ?? DEFAULT_FOLDER_NAME,
+      targetFolderId: selectedFolderId ?? selectedNoteFolderId,
+      targetFolderName: selectedFolder?.name ?? selectedNoteFolder?.name ?? null,
+    };
+  }, [folders, notes, selectedFolderId, selectedNoteId]);
 
   useEffect(() => {
     const savedState = localStorage.getItem('app-sidebar-collapsed');
