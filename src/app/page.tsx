@@ -40,7 +40,12 @@ export default async function Home({
   return (
     <div className="flex min-h-screen bg-slate-950 text-slate-100">
       <AuthGate />
-      <Sidebar notes={notes || []} folders={folders} profile={profile} />
+      <Sidebar
+        notes={notes || []}
+        folders={folders}
+        profile={profile}
+        selectedNoteId={selectedNoteId ?? null}
+      />
 
       <main className="flex-1 p-8 overflow-y-auto h-screen">
         {activeNote ? (

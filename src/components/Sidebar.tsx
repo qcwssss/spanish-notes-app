@@ -17,9 +17,10 @@ interface SidebarProps {
   notes: Note[];
   folders: Folder[];
   profile: UserProfile | null;
+  selectedNoteId?: string | null;
 }
 
-export default function Sidebar({ notes, folders, profile }: SidebarProps) {
+export default function Sidebar({ notes, folders, profile, selectedNoteId }: SidebarProps) {
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
   const { toast } = useToast();
@@ -29,7 +30,16 @@ export default function Sidebar({ notes, folders, profile }: SidebarProps) {
   const selectedFolderName = selectedFolderId
     ? folders.find(folder => folder.id === selectedFolderId)?.name ?? null
     : null;
+  const selectedNote = selectedNoteId
+    ? notes.find(note => note.id === selectedNoteId)
+    : null;
+  const selectedNoteFolderId = selectedNote?.folder_id ?? null;
+  const selectedNoteFolderName = selectedNoteFolderId
+    ? folders.find(folder => folder.id === selectedNoteFolderId)?.name ?? null
+    : null;
   const defaultFolderName = defaultFolder?.name ?? DEFAULT_FOLDER_NAME;
+  const targetFolderId = selectedFolderId ?? selectedNoteFolderId;
+  const targetFolderName = selectedFolderName ?? selectedNoteFolderName;
 
   useEffect(() => {
     if (selectedFolderId && !folders.find(f => f.id === selectedFolderId)) {
@@ -57,8 +67,8 @@ export default function Sidebar({ notes, folders, profile }: SidebarProps) {
         <h2 className="text-xl font-bold text-slate-100 mb-4">My Notes</h2>
         <CreateNoteButton 
           isActive={profile?.is_active || false} 
-          targetFolderId={selectedFolderId}
-          targetFolderName={selectedFolderName}
+          targetFolderId={targetFolderId}
+          targetFolderName={targetFolderName}
           defaultFolderId={defaultFolder?.id ?? null}
           defaultFolderName={defaultFolderName}
         />
