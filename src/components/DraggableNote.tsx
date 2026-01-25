@@ -39,6 +39,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
       router.push('/');
     } catch (error) {
       console.error('Failed to delete note:', error);
+      alert('Failed to delete note. Please try again.');
     }
   };
 

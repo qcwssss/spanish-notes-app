@@ -135,7 +135,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
             </div>
           </div>
           
-          <nav className="p-2 space-y-1 flex-1 overflow-y-auto pb-10">
+          <nav className="p-2 space-y-1 flex-1 overflow-y-auto pb-16">
             <FolderList 
               folders={folders} 
               notes={notes} 
@@ -148,7 +148,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
             <div className="relative">
               <button
                 onClick={() => setIsCreateFolderOpen(true)}
-                className="absolute -top-14 right-3 p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg transition-all hover:scale-105 z-20"
+                className="absolute bottom-full right-3 mb-3 p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg transition-all hover:scale-105 z-20"
                 title="Create folder"
                 aria-label="Create folder"
               >

@@ -18,11 +18,10 @@ export default function UserInfoCard({ profile }: UserInfoCardProps) {
     return (
       <>
         <div className="p-4 border-t border-slate-700 bg-slate-900/50 space-y-3">
-      
-      <div className="flex items-center gap-2 text-sm text-yellow-400">
-        <span>⚠️</span>
-        <span>账户未激活</span>
-      </div>
+          <div className="flex items-center gap-2 text-sm text-yellow-400">
+            <span>⚠️</span>
+            <span>账户未激活</span>
+          </div>
 
           <button
             onClick={() => setShowActivationDialog(true)}
