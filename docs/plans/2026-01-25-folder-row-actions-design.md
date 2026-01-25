@@ -19,7 +19,7 @@ Add Notion-style hover actions to folder rows in the sidebar:
 - Folder row uses `group` to control hover states.
 - Folder name:
   - Non-hover: `flex-1` + `truncate`.
-  - Hover: apply `max-w-[Npx]` (fixed width) + `truncate`.
+  - Hover: apply `max-w-[140px]` (fixed width) + `truncate`.
 - Action buttons:
   - `opacity-0 group-hover:opacity-100` to show on hover only.
   - Right-aligned, compact icon buttons.

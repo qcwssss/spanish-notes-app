@@ -286,7 +286,7 @@ export default function DroppableFolder({
                     e.stopPropagation();
                     setShowMenu(!showMenu);
                   }}
-                  className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
+                className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
                   aria-label="Folder options"
                 >
                   <MoreVertical className="w-4 h-4" />
@@ -324,7 +324,7 @@ export default function DroppableFolder({
                 type="button"
                 onClick={handleCreateNote}
                 disabled={isCreatingNote}
-                className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
                 aria-label={`Create note in ${displayName}`}
                 title={`Create note in ${displayName}`}
               >
