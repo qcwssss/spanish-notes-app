@@ -103,33 +103,33 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
       </button>
 
       <aside 
-        className={`bg-slate-900 h-screen flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${
+        className={`bg-slate-900 h-screen flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden group/sidebar ${
           isCollapsed ? 'w-0 border-none opacity-0' : 'w-64 border-r border-slate-700 opacity-100'
         }`}
       >
         <div className="flex flex-col h-full w-64 overflow-hidden">
           <div className="p-4 border-b border-slate-700 flex items-center justify-between">
             <h2 className="text-xl font-bold text-slate-100">My Notes</h2>
-            <button
-              onClick={() => setIsCollapsed(true)}
-              className="text-slate-400 hover:text-white transition-colors p-1 rounded-md hover:bg-slate-800"
-              aria-label="Collapse Sidebar"
-              title="Collapse Sidebar"
-            >
-              <PanelLeftClose className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setIsCollapsed(true)}
+                className="text-slate-400 hover:text-white transition-all p-1 rounded-md hover:bg-slate-800 opacity-0 group-hover/sidebar:opacity-100"
+                aria-label="Collapse Sidebar"
+                title="Collapse Sidebar"
+              >
+                <PanelLeftClose className="w-5 h-5" />
+              </button>
+              <CreateNoteButton 
+                isActive={profile?.is_active || false} 
+                targetFolderId={targetFolderId}
+                targetFolderName={targetFolderName}
+                defaultFolderId={defaultFolder?.id ?? null}
+                defaultFolderName={defaultFolderName}
+                variant="icon"
+              />
+            </div>
           </div>
           
-          <div className="px-4 pb-4">
-            <CreateNoteButton 
-              isActive={profile?.is_active || false} 
-              targetFolderId={targetFolderId}
-              targetFolderName={targetFolderName}
-              defaultFolderId={defaultFolder?.id ?? null}
-              defaultFolderName={defaultFolderName}
-            />
-          </div>
-
           <nav className="p-2 space-y-1 flex-1 overflow-y-auto">
             <FolderList 
               folders={folders} 
