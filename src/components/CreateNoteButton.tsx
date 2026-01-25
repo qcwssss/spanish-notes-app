@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
 import { DEFAULT_FOLDER_NAME } from '@/types/folder';
+import { SquarePen } from 'lucide-react';
 
 interface CreateNoteButtonProps {
   isActive: boolean;
@@ -13,6 +14,7 @@ interface CreateNoteButtonProps {
   targetFolderName?: string | null;
   defaultFolderId?: string | null;
   defaultFolderName?: string;
+  variant?: 'button' | 'icon';
 }
 
 export default function CreateNoteButton({ 
@@ -20,7 +22,8 @@ export default function CreateNoteButton({
   targetFolderId, 
   targetFolderName,
   defaultFolderId,
-  defaultFolderName = DEFAULT_FOLDER_NAME
+  defaultFolderName = DEFAULT_FOLDER_NAME,
+  variant = 'button'
 }: CreateNoteButtonProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [showActivationDialog, setShowActivationDialog] = useState(false);
@@ -50,6 +53,30 @@ export default function CreateNoteButton({
     ? 'Creating...'
     : (folderName ? `New note in ${folderName}` : 'New Note');
 
+  const activationDialog = !isActive && (
+    <ActivationDialog 
+      open={showActivationDialog} 
+      onOpenChange={setShowActivationDialog}
+    />
+  );
+
+  if (variant === 'icon') {
+    return (
+      <>
+        <button
+          onClick={handleCreate}
+          disabled={isCreating}
+          className="p-1 text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors disabled:opacity-50"
+          title={buttonLabel}
+          aria-label={buttonLabel}
+        >
+          <SquarePen className="w-5 h-5" />
+        </button>
+        {activationDialog}
+      </>
+    );
+  }
+
   return (
     <>
       <button
@@ -59,13 +86,7 @@ export default function CreateNoteButton({
       >
         {buttonLabel}
       </button>
-
-      {!isActive && (
-        <ActivationDialog 
-          open={showActivationDialog} 
-          onOpenChange={setShowActivationDialog}
-        />
-      )}
+      {activationDialog}
     </>
   );
 }
