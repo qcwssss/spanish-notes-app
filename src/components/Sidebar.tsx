@@ -25,7 +25,23 @@ interface SidebarProps {
 export default function Sidebar({ notes, folders, profile, selectedNoteId }: SidebarProps) {
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    const savedState = localStorage.getItem(SIDEBAR_COLLAPSE_KEY);
+    if (!savedState) {
+      return false;
+    }
+
+    try {
+      return JSON.parse(savedState);
+    } catch (e) {
+      console.error('Failed to parse sidebar state', e);
+      return false;
+    }
+  });
   
   const { toast } = useToast();
   const showHierarchy = shouldShowHierarchy(folders);
@@ -52,25 +68,29 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
   }, [folders, notes, selectedFolderId, selectedNoteId]);
 
   useEffect(() => {
-    const savedState = localStorage.getItem(SIDEBAR_COLLAPSE_KEY);
-    if (savedState) {
-      try {
-        setIsCollapsed(JSON.parse(savedState));
-      } catch (e) {
-        console.error('Failed to parse sidebar state', e);
-      }
+    if (selectedFolderId && !folders.find(f => f.id === selectedFolderId)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedFolderId(null);
     }
-  }, []);
+  }, [folders, selectedFolderId]);
+
+  const handleCreateFolder = async (name: string) => {
+    try {
+      await createFolder(name);
+      setIsCreateFolderOpen(false);
+    } catch (error) {
+      console.error('Failed to create folder:', error);
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to create folder',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const handleCollapse = (collapsed: boolean) => {
     setIsCollapsed(collapsed);
     localStorage.setItem(SIDEBAR_COLLAPSE_KEY, JSON.stringify(collapsed));
-  };
-
-
-  const handleCollapse = (collapsed: boolean) => {
-    setIsCollapsed(collapsed);
-    localStorage.setItem('app-sidebar-collapsed', JSON.stringify(collapsed));
   };
 
   return (
