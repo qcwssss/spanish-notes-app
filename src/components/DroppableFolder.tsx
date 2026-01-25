@@ -1,7 +1,7 @@
 'use client';
 
 import { useDroppable } from '@dnd-kit/core';
-import { ChevronDown, ChevronRight, Folder as FolderIcon, MoreVertical } from 'lucide-react';
+import { ChevronDown, ChevronRight, Folder as FolderIcon, MoreVertical, Plus } from 'lucide-react';
 import { Folder } from '@/types/folder';
 import { clsx } from 'clsx';
 import { useState, useRef, useEffect } from 'react';
@@ -10,10 +10,15 @@ import { useToast } from '@/components/ToastProvider';
 import * as Dialog from '@radix-ui/react-dialog';
 import { deleteFolderAndMoveNotes, deleteFolderAndNotes } from '@/utils/folders/actions';
 import { getDefaultFolder } from '@/utils/folders/queries';
+import { createNote } from '@/utils/notes/queries';
+import { useRouter } from 'next/navigation';
+import ActivationDialog from '@/components/ActivationDialog';
+import { UNTITLED_NOTE_TITLE } from '@/constants';
 
 interface DroppableFolderProps {
   folder: Folder;
   isExpanded: boolean;
+  isActive: boolean;
   onToggle: (folderId: string) => void;
   onSelect?: (folder: Folder) => void;
   onRename: (folderId: string, newName: string) => Promise<void>;
@@ -24,6 +29,7 @@ interface DroppableFolderProps {
 export default function DroppableFolder({
   folder,
   isExpanded,
+  isActive,
   onToggle,
   onSelect,
   onRename,
@@ -38,8 +44,11 @@ export default function DroppableFolder({
     },
   });
 
+  const router = useRouter();
   const [isRenaming, setIsRenaming] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCreatingNote, setIsCreatingNote] = useState(false);
+  const [showActivationDialog, setShowActivationDialog] = useState(false);
   const [displayName, setDisplayName] = useState(folder.name);
   const [newName, setNewName] = useState(folder.name);
   const [showMenu, setShowMenu] = useState(false);
@@ -168,6 +177,33 @@ export default function DroppableFolder({
     setShowConfirmDeleteAllDialog(false);
   });
 
+  const handleCreateNote = async (event: React.MouseEvent) => {
+    event.stopPropagation();
+
+    if (!isActive) {
+      setShowActivationDialog(true);
+      return;
+    }
+
+    setIsCreatingNote(true);
+    try {
+      const newNote = await createNote(UNTITLED_NOTE_TITLE, '', folder.id);
+      router.push(`/?noteId=${newNote.id}&mode=edit`);
+    } catch (error) {
+      if (!isMountedRef.current) return;
+      console.error('Failed to create note:', error);
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to create note',
+        variant: 'destructive',
+      });
+    } finally {
+      if (isMountedRef.current) {
+        setIsCreatingNote(false);
+      }
+    }
+  };
+
   const handleFolderActivate = () => {
     onToggle(folder.id);
     onSelect?.(folder);
@@ -229,7 +265,7 @@ export default function DroppableFolder({
               )}
               <FolderIcon className="w-4 h-4 shrink-0" />
               <span 
-                className="flex-1 text-left truncate select-none"
+                className="flex-1 min-w-0 text-left truncate select-none transition-all max-w-full group-hover:max-w-folder-action"
                 onDoubleClick={(e) => {
                   if (isSubmitting) {
                     return;
@@ -253,7 +289,7 @@ export default function DroppableFolder({
                     e.stopPropagation();
                     setShowMenu(!showMenu);
                   }}
-                  className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
+                className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
                   aria-label="Folder options"
                 >
                   <MoreVertical className="w-4 h-4" />
@@ -287,6 +323,16 @@ export default function DroppableFolder({
                   </div>
                 )}
               </div>
+              <button
+                type="button"
+                onClick={handleCreateNote}
+                disabled={isCreatingNote}
+                className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
+                aria-label={`Create note in ${displayName}`}
+                title={`Create note in ${displayName}`}
+              >
+                <Plus className="w-4 h-4" />
+              </button>
             </div>
           )}
         </div>
@@ -371,6 +417,12 @@ export default function DroppableFolder({
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
+      {!isActive && (
+        <ActivationDialog
+          open={showActivationDialog}
+          onOpenChange={setShowActivationDialog}
+        />
+      )}
     </>
   );
 }

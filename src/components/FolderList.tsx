@@ -14,6 +14,7 @@ import DraggableNote from './DraggableNote';
 interface FolderListProps {
   folders: Folder[];
   notes: Note[];
+  isActive: boolean;
   showHierarchy?: boolean;
   onSelectFolder?: (folder: Folder) => void;
 }
@@ -21,6 +22,7 @@ interface FolderListProps {
 export default function FolderList({ 
   folders, 
   notes, 
+  isActive,
   showHierarchy = true,
   onSelectFolder
 }: FolderListProps) {
@@ -114,6 +116,7 @@ export default function FolderList({
             key={folder.id}
             folder={folder}
             isExpanded={isExpanded}
+            isActive={isActive}
             onToggle={toggleFolder}
             onSelect={onSelectFolder}
             onRename={handleRenameFolder}

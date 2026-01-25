@@ -139,6 +139,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
             <FolderList 
               folders={folders} 
               notes={notes} 
+              isActive={profile?.is_active || false}
               showHierarchy={showHierarchy} 
               onSelectFolder={(folder) => setSelectedFolderId(folder.id)}
             />
