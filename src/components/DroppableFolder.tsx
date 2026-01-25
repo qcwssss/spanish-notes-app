@@ -280,16 +280,6 @@ export default function DroppableFolder({
           {!isRenaming && !isSubmitting && (
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500">{noteCount}</span>
-              <button
-                type="button"
-                onClick={handleCreateNote}
-                disabled={isCreatingNote}
-                className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                aria-label={`Create note in ${displayName}`}
-                title={`Create note in ${displayName}`}
-              >
-                <Plus className="w-4 h-4" />
-              </button>
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={(e) => {
@@ -330,6 +320,16 @@ export default function DroppableFolder({
                   </div>
                 )}
               </div>
+              <button
+                type="button"
+                onClick={handleCreateNote}
+                disabled={isCreatingNote}
+                className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label={`Create note in ${displayName}`}
+                title={`Create note in ${displayName}`}
+              >
+                <Plus className="w-4 h-4" />
+              </button>
             </div>
           )}
         </div>
