@@ -36,7 +36,7 @@ Implement a collapsible sidebar similar to Notion.
 - **Floating Button**: `fixed top-4 left-4 z-50` (or similar).
 
 ### React Best Practices (Skill Application)
-- **`client-localstorage-schema`**: Use a consistent key `app-sidebar-state`.
+- **`client-localstorage-schema`**: Use a consistent key `app-sidebar-collapsed`.
 - **`rendering-content-visibility`**: Ensure hidden content doesn't affect layout performance.
 - **`rerender-move-effect-to-event`**: We can update localStorage in the toggle handler, not just a `useEffect`.
 
