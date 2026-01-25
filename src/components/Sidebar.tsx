@@ -108,7 +108,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
       </button>
 
       <aside 
-        className={`bg-slate-900 h-screen flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden group/sidebar ${
+        className={`bg-slate-900 h-screen flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden group/sidebar relative ${
           isCollapsed ? 'w-0 border-none opacity-0' : 'w-64 border-r border-slate-700 opacity-100'
         }`}
       >
@@ -135,7 +135,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
             </div>
           </div>
           
-          <nav className="p-2 space-y-1 flex-1 overflow-y-auto">
+          <nav className="p-2 space-y-1 flex-1 overflow-y-auto pb-16">
             <FolderList 
               folders={folders} 
               notes={notes} 
@@ -144,18 +144,19 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
             />
           </nav>
 
-          <div className="p-2 border-t border-slate-700">
-            <button
-              onClick={() => setIsCreateFolderOpen(true)}
-              className="w-full flex items-center gap-2 p-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
-              aria-label="Create Folder"
-            >
-              <FolderPlus className="w-4 h-4" />
-              <span>Create Folder</span>
-            </button>
-          </div>
-
-          {profile && <UserInfoCard profile={profile} />}
+          {profile && (
+            <div className="relative">
+              <button
+                onClick={() => setIsCreateFolderOpen(true)}
+                className="absolute bottom-full right-3 mb-3 p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg transition-all hover:scale-105 z-20"
+                title="Create folder"
+                aria-label="Create folder"
+              >
+                <FolderPlus className="w-5 h-5" />
+              </button>
+              <UserInfoCard profile={profile} />
+            </div>
+          )}
         </div>
 
         <CreateFolderDialog
