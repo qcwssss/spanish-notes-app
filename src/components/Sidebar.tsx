@@ -45,8 +45,6 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
   const targetFolderName = selectedFolderName ?? selectedNoteFolderName;
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsMounted(true);
     const savedState = localStorage.getItem('app-sidebar-collapsed');
     if (savedState) {
       try {
@@ -57,11 +55,10 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     }
   }, []);
 
-  useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem('app-sidebar-collapsed', JSON.stringify(isCollapsed));
-    }
-  }, [isCollapsed, isMounted]);
+  const toggleSidebar = (collapsed: boolean) => {
+    setIsCollapsed(collapsed);
+    localStorage.setItem('app-sidebar-collapsed', JSON.stringify(collapsed));
+  };
 
   useEffect(() => {
     if (selectedFolderId && !folders.find(f => f.id === selectedFolderId)) {
@@ -84,15 +81,15 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     }
   };
 
-  // Prevent hydration mismatch by rendering a consistent server state initially
-  // effectively delaying the collapse logic until client-side hydration
-  // However, we want to maintain layout stability.
-  // The 'w-64' is the server default.
+  const handleCollapse = (collapsed: boolean) => {
+    setIsCollapsed(collapsed);
+    localStorage.setItem('app-sidebar-collapsed', JSON.stringify(collapsed));
+  };
 
   return (
     <>
       <button
-        onClick={() => setIsCollapsed(false)}
+        onClick={() => handleCollapse(false)}
         className={`fixed top-4 left-4 z-50 p-2 bg-slate-800/80 hover:bg-slate-700 backdrop-blur-sm rounded-lg text-slate-400 hover:text-white border border-slate-700 transition-all duration-300 shadow-lg ${
           isCollapsed ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
         }`}
@@ -112,7 +109,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
             <h2 className="text-xl font-bold text-slate-100">My Notes</h2>
             <div className="flex items-center gap-1">
               <button
-                onClick={() => setIsCollapsed(true)}
+                onClick={() => handleCollapse(true)}
                 className="text-slate-400 hover:text-white transition-all p-1 rounded-md hover:bg-slate-800 opacity-0 group-hover/sidebar:opacity-100"
                 aria-label="Collapse Sidebar"
                 title="Collapse Sidebar"
