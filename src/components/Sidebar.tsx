@@ -36,7 +36,8 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     }
 
     try {
-      return JSON.parse(savedState);
+      const parsedState = JSON.parse(savedState);
+      return typeof parsedState === 'boolean' ? parsedState : false;
     } catch (e) {
       console.error('Failed to parse sidebar state', e);
       return false;
