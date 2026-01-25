@@ -10,7 +10,7 @@ import FolderList from './FolderList';
 import CreateFolderDialog from './CreateFolderDialog';
 import { shouldShowHierarchy } from '@/utils/folders/display';
 import { createFolder } from '@/utils/folders/actions';
-import { FolderPlus } from 'lucide-react';
+import { FolderPlus, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useToast } from './ToastProvider';
 
 interface SidebarProps {
@@ -23,6 +23,9 @@ interface SidebarProps {
 export default function Sidebar({ notes, folders, profile, selectedNoteId }: SidebarProps) {
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  
   const { toast } = useToast();
   const showHierarchy = shouldShowHierarchy(folders);
 
@@ -42,7 +45,27 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
   const targetFolderName = selectedFolderName ?? selectedNoteFolderName;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true);
+    const savedState = localStorage.getItem('app-sidebar-collapsed');
+    if (savedState) {
+      try {
+        setIsCollapsed(JSON.parse(savedState));
+      } catch (e) {
+        console.error('Failed to parse sidebar state', e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem('app-sidebar-collapsed', JSON.stringify(isCollapsed));
+    }
+  }, [isCollapsed, isMounted]);
+
+  useEffect(() => {
     if (selectedFolderId && !folders.find(f => f.id === selectedFolderId)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedFolderId(null);
     }
   }, [folders, selectedFolderId]);
@@ -61,46 +84,81 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     }
   };
 
+  // Prevent hydration mismatch by rendering a consistent server state initially
+  // effectively delaying the collapse logic until client-side hydration
+  // However, we want to maintain layout stability.
+  // The 'w-64' is the server default.
+
   return (
-    <aside className="w-64 border-r border-slate-700 bg-slate-900 h-screen flex flex-col flex-shrink-0">
-      <div className="p-4 border-b border-slate-700">
-        <h2 className="text-xl font-bold text-slate-100 mb-4">My Notes</h2>
-        <CreateNoteButton 
-          isActive={profile?.is_active || false} 
-          targetFolderId={targetFolderId}
-          targetFolderName={targetFolderName}
-          defaultFolderId={defaultFolder?.id ?? null}
-          defaultFolderName={defaultFolderName}
+    <>
+      <button
+        onClick={() => setIsCollapsed(false)}
+        className={`fixed top-4 left-4 z-50 p-2 bg-slate-800/80 hover:bg-slate-700 backdrop-blur-sm rounded-lg text-slate-400 hover:text-white border border-slate-700 transition-all duration-300 shadow-lg ${
+          isCollapsed ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
+        }`}
+        aria-label="Expand Sidebar"
+        title="Expand Sidebar"
+      >
+        <PanelLeftOpen className="w-5 h-5" />
+      </button>
+
+      <aside 
+        className={`bg-slate-900 h-screen flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${
+          isCollapsed ? 'w-0 border-none opacity-0' : 'w-64 border-r border-slate-700 opacity-100'
+        }`}
+      >
+        <div className="flex flex-col h-full w-64 overflow-hidden">
+          <div className="p-4 border-b border-slate-700 flex items-center justify-between">
+            <h2 className="text-xl font-bold text-slate-100">My Notes</h2>
+            <button
+              onClick={() => setIsCollapsed(true)}
+              className="text-slate-400 hover:text-white transition-colors p-1 rounded-md hover:bg-slate-800"
+              aria-label="Collapse Sidebar"
+              title="Collapse Sidebar"
+            >
+              <PanelLeftClose className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="px-4 pb-4">
+            <CreateNoteButton 
+              isActive={profile?.is_active || false} 
+              targetFolderId={targetFolderId}
+              targetFolderName={targetFolderName}
+              defaultFolderId={defaultFolder?.id ?? null}
+              defaultFolderName={defaultFolderName}
+            />
+          </div>
+
+          <nav className="p-2 space-y-1 flex-1 overflow-y-auto">
+            <FolderList 
+              folders={folders} 
+              notes={notes} 
+              showHierarchy={showHierarchy} 
+              onSelectFolder={(folder) => setSelectedFolderId(folder.id)}
+            />
+          </nav>
+
+          <div className="p-2 border-t border-slate-700">
+            <button
+              onClick={() => setIsCreateFolderOpen(true)}
+              className="w-full flex items-center gap-2 p-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+              aria-label="Create Folder"
+            >
+              <FolderPlus className="w-4 h-4" />
+              <span>Create Folder</span>
+            </button>
+          </div>
+
+          {profile && <UserInfoCard profile={profile} />}
+        </div>
+
+        <CreateFolderDialog
+          isOpen={isCreateFolderOpen}
+          onClose={() => setIsCreateFolderOpen(false)}
+          onCreate={handleCreateFolder}
         />
-      </div>
-
-      <nav className="p-2 space-y-1 flex-1 overflow-y-auto">
-        <FolderList 
-          folders={folders} 
-          notes={notes} 
-          showHierarchy={showHierarchy} 
-          onSelectFolder={(folder) => setSelectedFolderId(folder.id)}
-        />
-      </nav>
-
-      <div className="p-2 border-t border-slate-700">
-        <button
-          onClick={() => setIsCreateFolderOpen(true)}
-          className="w-full flex items-center gap-2 p-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
-          aria-label="Create Folder"
-        >
-          <FolderPlus className="w-4 h-4" />
-          <span>Create Folder</span>
-        </button>
-      </div>
-
-      {profile && <UserInfoCard profile={profile} />}
-
-      <CreateFolderDialog
-        isOpen={isCreateFolderOpen}
-        onClose={() => setIsCreateFolderOpen(false)}
-        onCreate={handleCreateFolder}
-      />
-    </aside>
+      </aside>
+    </>
   );
 }
