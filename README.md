@@ -1,91 +1,96 @@
-# Spanish Notes App (西语笔记应用)
+**English Version** | [中文版本](./README_zh.md)
 
-本项目是一个为语言学习者（特别是西班牙语）设计的智能笔记应用。它集成了 Markdown 渲染、交互式点读（Point-and-Read）和多语言语音合成（TTS）功能，帮助用户在阅读和记录笔记的同时，更直观地学习外语发音和语法。
+---
 
-## 1. 项目简介
+# Note Lingo
 
-本应用采用 Next.js (App Router) 构建，利用 Supabase 进行身份验证和数据存储，并部署在 Cloudflare Pages 上。其核心亮点在于**交互式文本处理**——能够自动识别笔记中的目标语言短语，并将其转化为可点击的交互元素，触发高质量的语音朗读。
+**Note Lingo** is a smart note-taking application designed for language learners. While originally built with Spanish in mind, it **supports any language compatible with your browser's Text-to-Speech (TTS) engine**. It integrates Markdown rendering, interactive Point-and-Read, and multilingual TTS capabilities, helping users intuitively learn pronunciation and grammar while reading and taking notes.
 
-## 2. 已完成功能
+## 1. Project Introduction
 
-- **身份验证与用户系统**:
-  - 集成 Google OAuth 登录。
-  - 用户配置管理（Target Language 选择）。
-  - 存储空间配额跟踪（Storage tracking）。
-  - 激活码系统（Activation Dialog）。
+Built with Next.js (App Router), this application uses Supabase for authentication and data storage, and is deployed on Cloudflare Pages. Its core highlight is **Interactive Text Processing**—automatically identifying target language phrases in notes and converting them into clickable interactive elements that trigger high-quality speech synthesis.
 
-- **笔记管理**:
-  - 完整的 CRUD 功能（创建、读取、更新、删除）。
-  - 文件夹组织（创建 / 重命名 / 删除）。
-  - 拖拽移动笔记到文件夹。
-  - 文件夹重命名（双击或三点菜单）。
-  - 响应式侧边栏和编辑界面。
+Depending on your browser (Chrome, Safari, Edge, etc.), it can support dozens of languages out of the box.
 
-- **核心交互功能**:
-  - **交互式 Markdown 渲染**: 重写了 Markdown 组件，支持对段落、列表、标题等块级元素进行递归解析，实现词级/句级的交互。
-  - **智能文本分割 (Text Segmentation)**: 基于不同语言的字符集（Alphabets），动态构建正则匹配模式，将目标语言短语与解释说明（如中文、英文翻译）分离。
-  - **多语言点读 (TTS)**:
-    - 支持 7 种语言：西班牙语 (es)、法语 (fr)、德语 (de)、英语 (en)、葡萄牙语 (pt)、意大利语 (it)、荷兰语 (nl)。
-    - 智能声音选择逻辑：优先匹配本地高质量声音。
-    - 交互式朗读：点击即可发音，自动取消当前播放并切换到新内容。
+## 2. Completed Features
 
-- **工程化建设**:
-  - **测试套件**: 使用 Vitest + React Testing Library 进行单元测试和组件测试。
-  - **目录重构**: 建立了清晰的项目结构，将测试文件迁移至独立的 `tests/` 目录。
-  - **部署自动化**: 通过 Cloudflare Pages 实现 CI/CD。
+- **Authentication & User System**:
+  - Integrated Google OAuth login.
+  - User profile management (Target Language selection).
+  - Storage quota tracking.
+  - Activation code system (Activation Dialog).
 
-## 3. 技术实现详解
+- **Note Management**:
+  - Full CRUD functionality (Create, Read, Update, Delete).
+  - Folder organization (Create / Rename / Delete).
+  - Drag-and-drop notes into folders.
+  - Folder renaming (Double-click or via menu).
+  - Responsive sidebar and editing interface.
 
-### 交互式渲染流程 (`MarkdownRenderer.tsx`)
-应用通过递归遍历 React 元素树，将所有字符串节点替换为 `TextSplitter` 组件。这种方法不仅支持纯文本，还能处理嵌套在粗体、斜体或链接中的文字，确保交互性无处不在。
+- **Core Interactive Features**:
+  - **Interactive Markdown Rendering**: Rewrote Markdown components to recursively parse block-level elements like paragraphs, lists, and headers, implementing word/sentence-level interactivity.
+  - **Smart Text Segmentation**: Dynamically builds regex matching patterns based on character sets (Alphabets) to separate target language phrases from explanations.
+  - **Browser-Native TTS (Point-and-Read)**:
+    - **Universal Support**: Levarges the Web Speech API to support any language installed in your browser/OS (e.g., Spanish, French, German, English, Portuguese, Italian, Dutch, Japanese, Chinese, etc.).
+    - **Smart Voice Selection**: Automatically prioritizes high-quality local voices provided by the system.
+    - **Interactive Reading**: Click to pronounce, automatically cancelling current playback and switching to new content.
 
-### 语言感知分割 (`segmenter.ts` & `extractor.ts`)
-分割逻辑不再是简单的按行分割，而是“按语言”分割：
-1. **动态正则生成**: 根据用户设置的目标语言，从 `extractor.ts` 获取对应的字母表范围。
-2. **短语捕获**: 正则表达式会捕获连贯的目标语言短语（包括标点符号、连字符和省略号），而保留括号内的翻译或注释为普通文本。
+- **Engineering**:
+  - **Testing Suite**: Unit and component tests using Vitest + React Testing Library.
+  - **Directory Refactoring**: Established a clear project structure, moving test files to a standalone `tests/` directory.
+  - **Automated Deployment**: CI/CD via Cloudflare Pages.
 
-### 多语言 TTS 引擎 (`useTTS.ts`)
-一个封装了浏览器 `speechSynthesis` API 的自定义 Hook：
-- **文本清洗**: 在发送给 TTS 引擎之前，会通过 `extractTargetText` 剔除不属于该语言的干扰字符（如元注释）。
-- **持久化**: 自动记住用户为每种语言选择的最佳声音。
+## 3. Technical Implementation Details
 
-## 4. 当前开发状态
+### Interactive Rendering Flow (`MarkdownRenderer.tsx`)
+The application recursively traverses the React element tree, replacing all string nodes with the `TextSplitter` component. This approach supports not just plain text, but also handles identifying text nested within bold, italic, or links, ensuring interactivity is everywhere.
 
-- **当前分支**: `master`
-- **最近更新**:
-  - 文件夹系统已完成并上线。
-  - 支持拖拽移动笔记到文件夹。
-  - 文件夹支持 inline 重命名（双击或菜单）。
-  - 部署域名: [https://note-lingo-app.pages.dev](https://note-lingo-app.pages.dev)
+### Language-Aware Segmentation (`segmenter.ts` & `extractor.ts`)
+Segmentation logic is "language-based":
+1. **Dynamic Regex Generation**: Retrieves corresponding alphabet ranges from `extractor.ts` based on the user's target language setting.
+2. **Phrase Capture**: Regular expressions capture coherent target language phrases (including punctuation, hyphens, and ellipses), while preserving translations or annotations in parentheses as normal text.
 
-## 5. 待完成事项 (Roadmap)
+### Multilingual TTS Engine (`useTTS.ts`)
+A custom Hook encapsulating the browser's `speechSynthesis` API:
+- **Text Cleaning**: Removes non-language interference characters (like meta-comments) via `extractTargetText` before sending to the TTS engine.
+- **Persistence**: Automatically remembers the user's preferred voice for each language.
 
-- [ ] **搜索功能**: 全文搜索笔记内容。
-- [ ] **Favorites 视图**: 收藏笔记视图。
-- [ ] **删除文件夹 UI**: 带确认与空文件夹校验。
-- [ ] **激活策略优化**: 评估是否需要在 OAuth 登录时自动激活。
-- [ ] **离线支持**: 探索 PWA 可能性，支持离线阅读笔记。
+## 4. Current Development Status
 
-## 6. 开发工作流 (Workflow)
+- **Current Branch**: `master`
+- **Recent Updates**:
+  - Folder system completed and live.
+  - Support for dragging notes into folders.
+  - Folder support for inline renaming (double-click or menu).
+  - Folder deletion with confirmation dialog.
+  - Deployment URL: [https://note-lingo-app.pages.dev](https://note-lingo-app.pages.dev)
 
-本项目遵循一套标准化的工程工作流，以确保代码质量并减少低级错误：
-- **实现阶段**: 修改 `.tsx` 代码时运行 `react-impl-review` 技能。
-- **审查阶段**: 创建 PR 前运行 `pr-code-review` 技能。
-- **发布阶段**: 使用 `git-ship` 技能自动化提交、推送并创建 PR。
+## 5. Roadmap
 
-详细说明请参考 [Workflow Convention](docs/WORKFLOW.md)。
+- [ ] **Favorites View**: View for bookmarked notes.
+- [ ] **Expanded Language Support**: Add definitions for more languages (Asian languages, Cyrillic, etc.) in `extractor.ts`.
+- [ ] **Offline Support**: Explore PWA possibilities for offline note reading.
 
-## 7. 开发环境运行
+## 6. Workflow
+
+This project follows a standardized engineering workflow to ensure code quality and reduce low-level errors:
+- **Implementation Phase**: Run `react-impl-review` skill when modifying `.tsx` code.
+- **Review Phase**: Run `pr-code-review` skill before creating a PR.
+- **Release Phase**: Use `git-ship` skill to automate commit, push, and PR creation.
+
+For detailed instructions, see [Workflow Convention](docs/WORKFLOW.md).
+
+## 7. Development Setup
 
 ```bash
 npm install
 npm run dev
 ```
 
-运行测试：
+Run tests:
 ```bash
 npm test
 ```
 
 ---
-*最后更新日期: 2026-01-24*
+*Last updated: 2026-01-27*
