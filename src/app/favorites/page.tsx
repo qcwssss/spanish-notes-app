@@ -15,6 +15,7 @@ export default async function FavoritesPage() {
   const { data: notes } = await supabase
     .from('notes')
     .select('id, title, updated_at, folder_id, is_favorite')
+    .eq('is_favorite', true)
     .order('updated_at', { ascending: false });
 
   return (
