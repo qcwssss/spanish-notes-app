@@ -49,5 +49,6 @@ export async function toggleFavorite(noteId: string, isFavorite: boolean): Promi
   }
 
   revalidatePath('/');
+  revalidatePath('/favorites');
   return data as Note;
 }

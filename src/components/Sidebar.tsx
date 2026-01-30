@@ -1,17 +1,20 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { Note } from '@/types/note';
 import { Folder, DEFAULT_FOLDER_NAME } from '@/types/folder';
 import { UserProfile } from '@/types/profile';
 import CreateNoteButton from './CreateNoteButton';
 import UserInfoCard from './UserInfoCard';
 import FolderList from './FolderList';
+import FavoritesSection from './FavoritesSection';
 import CreateFolderDialog from './CreateFolderDialog';
 import { shouldShowHierarchy } from '@/utils/folders/display';
 import { createFolder } from '@/utils/folders/actions';
 import { FolderPlus, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useToast } from './ToastProvider';
+import { usePathname } from 'next/navigation';
 
 const SIDEBAR_COLLAPSE_KEY = 'app-sidebar-collapsed';
 
@@ -23,6 +26,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ notes, folders, profile, selectedNoteId }: SidebarProps) {
+  const pathname = usePathname();
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(() => {
@@ -46,6 +50,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
   
   const { toast } = useToast();
   const showHierarchy = shouldShowHierarchy(folders);
+  const isFavoritesView = pathname === '/favorites';
 
   const {
     defaultFolder,
@@ -135,7 +140,30 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
             </div>
           </div>
           
-          <nav className="p-2 space-y-1 flex-1 overflow-y-auto pb-16">
+          <nav className="p-2 space-y-3 flex-1 overflow-y-auto pb-16">
+            <div className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 p-1 text-sm">
+              <Link
+                href="/"
+                className={`flex-1 rounded-lg px-3 py-2 text-center transition ${
+                  isFavoritesView
+                    ? 'text-slate-400 hover:text-slate-200'
+                    : 'bg-slate-800 text-white'
+                }`}
+              >
+                All Notes
+              </Link>
+              <Link
+                href="/favorites"
+                className={`flex-1 rounded-lg px-3 py-2 text-center transition ${
+                  isFavoritesView
+                    ? 'bg-slate-800 text-white'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Favorites
+              </Link>
+            </div>
+            <FavoritesSection notes={notes} />
             <FolderList 
               folders={folders} 
               notes={notes} 

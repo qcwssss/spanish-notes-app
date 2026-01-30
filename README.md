@@ -25,6 +25,7 @@ Depending on your browser (Chrome, Safari, Edge, etc.), it can support dozens of
   - Folder organization (Create / Rename / Delete).
   - Drag-and-drop notes into folders.
   - Folder renaming (Double-click or via menu).
+  - Favorites view with sortable list (Newest/Oldest).
   - Responsive sidebar and editing interface.
 
 - **Core Interactive Features**:
@@ -63,11 +64,12 @@ A custom Hook encapsulating the browser's `speechSynthesis` API:
   - Support for dragging notes into folders.
   - Folder support for inline renaming (double-click or menu).
   - Folder deletion with confirmation dialog.
+  - Favorites view with sidebar switch and sortable list.
   - Deployment URL: [https://note-lingo-app.pages.dev](https://note-lingo-app.pages.dev)
 
 ## 5. Roadmap
 
-- [ ] **Favorites View**: View for bookmarked notes.
+- [x] **Favorites View**: View for bookmarked notes.
 - [ ] **Expanded Language Support**: Add definitions for more languages (Asian languages, Cyrillic, etc.) in `extractor.ts`.
 - [ ] **Offline Support**: Explore PWA possibilities for offline note reading.
 
@@ -93,4 +95,4 @@ npm test
 ```
 
 ---
-*Last updated: 2026-01-27*
+*Last updated: 2026-01-30*

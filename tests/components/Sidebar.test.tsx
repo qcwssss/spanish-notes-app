@@ -6,6 +6,7 @@ import { useToast } from '@/components/ToastProvider';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
+  usePathname: () => '/',
 }));
 
 vi.mock('next/link', () => ({
@@ -62,7 +63,9 @@ describe('Sidebar', () => {
 
   it('renders correct links', () => {
     render(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
-    const links = screen.getAllByRole('link', { name: /note/i });
+    const links = screen
+      .getAllByRole('link')
+      .filter(link => link.getAttribute('href')?.startsWith('/?noteId='));
     expect(links).toHaveLength(2);
     expect(links[0].getAttribute('href')).toBe('/?noteId=1');
     expect(links[1].getAttribute('href')).toBe('/?noteId=2');
@@ -72,5 +75,11 @@ describe('Sidebar', () => {
     const notes = [{ id: '3', title: '', updated_at: '2023-01-03', folder_id: 'default-folder', is_favorite: false }];
     render(<Sidebar profile={mockProfile} notes={notes} folders={[mockDefaultFolder]} />);
     expect(screen.getByText('Untitled Note')).toBeDefined();
+  });
+
+  it('renders a favorites view link', () => {
+    render(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
+    const link = screen.getByRole('link', { name: 'Favorites' });
+    expect(link.getAttribute('href')).toBe('/favorites');
   });
 });

@@ -5,6 +5,11 @@
 **当前版本**: Phase 8 - 文件夹删除流程完成
 **主要分支**: `master`
 
+## 2026-01-30
+- 完成收藏视图（独立页面）与侧边栏视图切换（All Notes / Favorites）
+- 收藏列表支持更新时间排序切换（Newest/Oldest），并将选择持久化到 localStorage
+- 新增收藏视图测试覆盖
+
 ## 已达成的里程碑
 
 ### 1. 交互式学习引擎升级 ✅
@@ -116,7 +121,8 @@ aefcfc2 docs: finalize folder system design (V4)
 
 ## 下一步计划
 - 搜索功能（全文检索）
-- Favorites 视图
+- 扩展语言支持（更多语言字符集）
+- 离线支持（PWA）
 
 ---
 
