@@ -30,6 +30,7 @@ const mockNotes: Note[] = [
     folder_id: 'default-folder',
     title: 'Test Note',
     updated_at: '2026-01-21T00:00:00Z',
+    is_favorite: false,
   },
 ];
 
@@ -46,6 +47,11 @@ const mockProfile: UserProfile = {
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
   useSearchParams: () => new URLSearchParams(),
+  usePathname: () => '/',
+}));
+
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: () => ({ toast: vi.fn() }),
 }));
 
 describe('Sidebar Progressive Display', () => {

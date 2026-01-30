@@ -56,3 +56,24 @@
 | What's the goal? | Move tests into tests/ directory |
 | What have I learned? | See findings.md |
 | What have I done? | See above |
+
+## Session: 2026-01-30
+
+### Phase: Favorites View Delivery
+- **Status:** complete
+- Actions taken:
+  - Added Favorites view route and main content list
+  - Added sidebar view switch (All Notes / Favorites)
+  - Added sortable favorites list (Newest/Oldest) with localStorage persistence
+  - Added/updated tests for favorites view and sidebar changes
+- Files created/modified:
+  - `src/components/FavoritesView.tsx`
+  - `src/app/favorites/page.tsx`
+  - `src/components/Sidebar.tsx`
+  - `tests/components/FavoritesView.test.tsx`
+  - `tests/components/Sidebar.test.tsx`
+  - `tests/components/folders/Sidebar.test.tsx`
+  - `docs/progress.md`
+  - `README.md`
+  - `README_zh.md`
+  - `docs/plans/2026-01-21-folder-system-tdd-plan.md`

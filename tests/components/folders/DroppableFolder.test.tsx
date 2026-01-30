@@ -4,6 +4,10 @@ import { DndContext } from '@dnd-kit/core';
 import DroppableFolder from '@/components/DroppableFolder';
 import { useToast } from '@/components/ToastProvider';
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
+
 const mockDeleteFolderAndMoveNotes = vi.fn();
 const mockDeleteFolderAndNotes = vi.fn();
 const mockGetDefaultFolder = vi.fn();
@@ -58,6 +62,7 @@ describe('DroppableFolder', () => {
   const defaultProps = {
     folder: mockFolder,
     isExpanded: true,
+    isActive: true,
     onToggle: vi.fn(),
     onRename: vi.fn(),
     noteCount: 5,

@@ -6,8 +6,13 @@ vi.mock('@/components/AuthGate', () => ({
   default: () => <div>AuthGate</div>,
 }));
 
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: () => ({ toast: vi.fn() }),
+}));
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
+  usePathname: () => '/',
 }));
 
 vi.mock('@/utils/supabase/server', () => ({

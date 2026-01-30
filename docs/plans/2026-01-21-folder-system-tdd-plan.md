@@ -425,7 +425,7 @@ describe('FavoritesView', () => {
 - [ ] 所有前端测试通过
 - [ ] Sidebar 渐进显示正常
 - [ ] 对话框交互正常
-- [ ] Favorites 视图正常
+- [x] Favorites 视图正常
 
 ---
 

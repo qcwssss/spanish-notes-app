@@ -6,8 +6,9 @@ import { CSS } from '@dnd-kit/utilities';
 import Link from 'next/link';
 import { Note } from '@/types/note';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Star } from 'lucide-react';
 import { deleteNote } from '@/utils/notes/queries';
+import { toggleFavorite } from '@/utils/notes/actions';
 import { useRouter } from 'next/navigation';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useToast } from '@/components/ToastProvider';
@@ -21,6 +22,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
   const { toast } = useToast();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: note.id,
@@ -39,6 +41,27 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
     e.preventDefault();
     e.stopPropagation();
     setShowDeleteDialog(true);
+  };
+
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isTogglingFavorite) return;
+    
+    setIsTogglingFavorite(true);
+    try {
+      await toggleFavorite(note.id, !note.is_favorite);
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update favorite status.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsTogglingFavorite(false);
+    }
   };
 
   const handleConfirmDelete = async () => {
@@ -69,12 +92,27 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
       >
         <Link
           href={`/?noteId=${note.id}`}
-          className="block p-2 pr-9 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors truncate text-sm cursor-grab active:cursor-grabbing"
+          className="block p-2 pr-16 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors truncate text-sm cursor-grab active:cursor-grabbing"
           {...listeners}
           {...attributes}
         >
           {note.title || UNTITLED_NOTE_TITLE}
         </Link>
+        <button
+          type="button"
+          onClick={handleToggleFavorite}
+          onPointerDown={(event) => event.stopPropagation()}
+          disabled={isTogglingFavorite}
+          className={`absolute right-8 top-1/2 -translate-y-1/2 p-1.5 rounded transition-all z-10 ${
+            note.is_favorite 
+              ? 'text-yellow-400 hover:text-yellow-300' 
+              : 'text-slate-400 hover:text-yellow-400 opacity-0 group-hover:opacity-100'
+          }`}
+          title={note.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={note.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          <Star className={`w-4 h-4 ${note.is_favorite ? 'fill-current' : ''}`} />
+        </button>
         <button
           type="button"
           onClick={handleDeleteClick}

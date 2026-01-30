@@ -1,11 +1,18 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DndContext } from '@dnd-kit/core';
 import DraggableNote from '@/components/DraggableNote';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
+import { GlobalToastProvider } from '@/components/ToastProvider';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
+}));
+
+const mockToggleFavorite = vi.fn();
+vi.mock('@/utils/notes/actions', () => ({
+  toggleFavorite: (...args: unknown[]) => mockToggleFavorite(...args),
 }));
 
 describe('DraggableNote', () => {
@@ -21,8 +28,16 @@ describe('DraggableNote', () => {
   };
 
   const renderWithDnd = (ui: React.ReactElement) => {
-    return render(<DndContext>{ui}</DndContext>);
+    return render(
+      <GlobalToastProvider>
+        <DndContext>{ui}</DndContext>
+      </GlobalToastProvider>
+    );
   };
+
+  beforeEach(() => {
+    mockToggleFavorite.mockReset();
+  });
 
   it('should render the note title', () => {
     renderWithDnd(<DraggableNote note={mockNote} />);
@@ -42,7 +57,51 @@ describe('DraggableNote', () => {
 
   it('should include note id in the link href', () => {
     renderWithDnd(<DraggableNote note={mockNote} />);
-    const link = screen.getByRole('link');
+    const link = screen.getByRole('button', { name: 'Test Note' });
     expect(link).toHaveAttribute('href', '/?noteId=note-1');
+  });
+
+  describe('Favorite toggle', () => {
+    it('should show star button on hover', async () => {
+      renderWithDnd(<DraggableNote note={mockNote} />);
+      const noteElement = screen.getByTestId('draggable-note');
+      
+      fireEvent.mouseEnter(noteElement);
+      
+      const starButton = screen.getByRole('button', { name: /favorite/i });
+      expect(starButton).toBeInTheDocument();
+    });
+
+    it('should show empty star for non-favorite note', () => {
+      renderWithDnd(<DraggableNote note={mockNote} />);
+      const starButton = screen.getByLabelText(/add to favorites/i);
+      expect(starButton).toBeInTheDocument();
+    });
+
+    it('should show filled star for favorite note', () => {
+      renderWithDnd(<DraggableNote note={{ ...mockNote, is_favorite: true }} />);
+      const starButton = screen.getByLabelText(/remove from favorites/i);
+      expect(starButton).toBeInTheDocument();
+    });
+
+    it('should call toggleFavorite when star is clicked', async () => {
+      const user = userEvent.setup();
+      renderWithDnd(<DraggableNote note={mockNote} />);
+      
+      const starButton = screen.getByRole('button', { name: /favorite/i });
+      await user.click(starButton);
+      
+      expect(mockToggleFavorite).toHaveBeenCalledWith('note-1', true);
+    });
+
+    it('should call toggleFavorite with false when unfavoriting', async () => {
+      const user = userEvent.setup();
+      renderWithDnd(<DraggableNote note={{ ...mockNote, is_favorite: true }} />);
+      
+      const starButton = screen.getByRole('button', { name: /favorite/i });
+      await user.click(starButton);
+      
+      expect(mockToggleFavorite).toHaveBeenCalledWith('note-1', false);
+    });
   });
 });
