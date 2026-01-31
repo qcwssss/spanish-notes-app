@@ -215,7 +215,9 @@ export default function DroppableFolder({
         <div
           className={clsx(
             "w-full flex items-center gap-2 p-2 rounded-lg transition-colors group relative",
-            isOver ? "bg-slate-700 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"
+            isOver
+              ? "bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-white"
+              : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
           )}
         >
           {isRenaming ? (
@@ -234,7 +236,7 @@ export default function DroppableFolder({
                 onBlur={handleRenameSubmit}
                 onKeyDown={handleKeyDown}
                 onClick={(e) => e.stopPropagation()}
-                className="flex-1 bg-slate-900 text-white px-2 py-0.5 rounded border border-slate-600 focus:border-blue-500 outline-none text-sm min-w-0"
+                className="flex-1 min-w-0 rounded border border-slate-200 bg-white px-2 py-0.5 text-sm text-slate-900 outline-none focus:border-blue-500 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
                 disabled={isSubmitting}
               />
             </div>
@@ -282,21 +284,21 @@ export default function DroppableFolder({
           
           {!isRenaming && !isSubmitting && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-500">{noteCount}</span>
+              <span className="text-xs text-slate-500 dark:text-slate-500">{noteCount}</span>
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowMenu(!showMenu);
                   }}
-                className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
+                className="rounded p-1 opacity-0 transition-opacity hover:bg-slate-200 focus:opacity-100 group-hover:opacity-100 dark:hover:bg-slate-700"
                   aria-label="Folder options"
                 >
                   <MoreVertical className="w-4 h-4" />
                 </button>
                 
                 {showMenu && (
-                  <div className="absolute right-0 top-full mt-1 w-32 bg-slate-800 border border-slate-700 rounded-md shadow-lg z-50 py-1 flex flex-col">
+                  <div className="absolute right-0 top-full mt-1 w-32 rounded-md border border-slate-200 bg-white py-1 shadow-lg z-50 flex flex-col text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -307,7 +309,7 @@ export default function DroppableFolder({
                         setIsRenaming(true);
                         setShowMenu(false);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white"
+                      className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
                     >
                       Edit
                     </button>
@@ -315,7 +317,7 @@ export default function DroppableFolder({
                       <button
                         onClick={handleDeleteClick}
                         disabled={isSubmitting}
-                        className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-slate-700 hover:text-red-300 disabled:opacity-50"
+                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50 dark:text-red-400 dark:hover:bg-slate-700 dark:hover:text-red-300"
                       >
                         Delete
                       </button>
@@ -327,7 +329,7 @@ export default function DroppableFolder({
                 type="button"
                 onClick={handleCreateNote}
                 disabled={isCreatingNote}
-                className="p-1 hover:bg-slate-700 rounded opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
+                className="rounded p-1 opacity-0 transition-opacity hover:bg-slate-200 focus:opacity-100 group-hover:opacity-100 dark:hover:bg-slate-700"
                 aria-label={`Create note in ${displayName}`}
                 title={`Create note in ${displayName}`}
               >
@@ -348,9 +350,9 @@ export default function DroppableFolder({
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
           <Dialog.Content
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md z-50 shadow-xl focus:outline-none"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
-            <Dialog.Title className="text-xl font-bold text-slate-100 mb-4">
+            <Dialog.Title className="mb-4 text-xl font-bold text-slate-900 dark:text-slate-100">
               Delete folder
             </Dialog.Title>
             
@@ -358,16 +360,16 @@ export default function DroppableFolder({
               <button
                 onClick={handleDeleteKeepNotes}
                 disabled={isDeleting}
-                className="w-full flex flex-col items-start p-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-lg transition-colors text-left"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-colors hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-700/50 dark:hover:bg-slate-700"
               >
-                <span className="text-slate-200 font-medium">Delete folder (keep notes)</span>
-                <span className="text-slate-400 text-sm mt-1">Notes will move to your default folder.</span>
+                <span className="font-medium text-slate-900 dark:text-slate-200">Delete folder (keep notes)</span>
+                <span className="mt-1 text-sm text-slate-500 dark:text-slate-400">Notes will move to your default folder.</span>
               </button>
 
               <button
                 onClick={handleDeleteAllInit}
                 disabled={isDeleting}
-                className="w-full p-4 bg-red-900/20 hover:bg-red-900/30 border border-red-900/50 hover:border-red-800 rounded-lg transition-colors text-red-400 font-medium text-left"
+                className="w-full rounded-lg border border-red-200 bg-red-50 p-4 text-left font-medium text-red-700 transition-colors hover:border-red-300 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 dark:hover:border-red-800"
               >
                 Delete folder and all notes
               </button>
@@ -377,7 +379,7 @@ export default function DroppableFolder({
               <button
                 onClick={() => setShowDeleteDialog(false)}
                 disabled={isDeleting}
-                className="px-4 py-2 text-slate-400 hover:text-slate-200 transition-colors"
+                className="px-4 py-2 text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
               >
                 Cancel
               </button>
@@ -389,12 +391,12 @@ export default function DroppableFolder({
       <Dialog.Root open={showConfirmDeleteAllDialog} onOpenChange={setShowConfirmDeleteAllDialog}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md z-50 shadow-xl focus:outline-none">
-            <Dialog.Title className="text-xl font-bold text-slate-100 mb-2">
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+            <Dialog.Title className="mb-2 text-xl font-bold text-slate-900 dark:text-slate-100">
               Delete folder and notes?
             </Dialog.Title>
             
-            <Dialog.Description className="text-slate-300 mb-6">
+            <Dialog.Description className="mb-6 text-slate-600 dark:text-slate-300">
               This will permanently delete all notes in this folder.
             </Dialog.Description>
 
@@ -402,14 +404,14 @@ export default function DroppableFolder({
               <button
                 onClick={() => setShowConfirmDeleteAllDialog(false)}
                 disabled={isDeleting}
-                className="px-4 py-2 text-slate-400 hover:text-slate-200 transition-colors"
+                className="px-4 py-2 text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteAllConfirm}
                 disabled={isDeleting}
-                className="px-6 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors disabled:opacity-50 font-medium"
+                className="rounded-lg bg-red-600 px-6 py-2 font-medium text-white transition-colors hover:bg-red-500 disabled:opacity-50"
               >
                 {isDeleting ? 'Deleting...' : 'Delete'}
               </button>

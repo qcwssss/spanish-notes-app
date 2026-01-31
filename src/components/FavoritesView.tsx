@@ -39,23 +39,23 @@ export default function FavoritesView({ notes }: FavoritesViewProps) {
   if (favoriteNotes.length === 0) {
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-slate-500">No favorites yet</p>
+        <p className="text-slate-500 dark:text-slate-400">No favorites yet</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-        <div className="flex items-center gap-2 text-slate-100">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4 dark:border-slate-800">
+        <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
           <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
           <h1 className="text-2xl font-semibold">Favorites</h1>
-          <span className="text-sm text-slate-500">{sortedNotes.length}</span>
+          <span className="text-sm text-slate-500 dark:text-slate-500">{sortedNotes.length}</span>
         </div>
         <button
           type="button"
           onClick={() => setIsAscending(prev => !prev)}
-          className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-sm text-slate-300 hover:border-slate-600 hover:text-white transition"
+          className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-700 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
           aria-label={isAscending ? 'Oldest' : 'Newest'}
         >
           <ArrowUpDown className="h-4 w-4" />
@@ -69,7 +69,7 @@ export default function FavoritesView({ notes }: FavoritesViewProps) {
             key={note.id}
             href={`/?noteId=${note.id}`}
             data-testid="favorite-note"
-            className="group flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-slate-200 transition hover:border-slate-700 hover:bg-slate-900"
+            className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-900"
           >
             <div className="min-w-0">
               <div className="flex items-center gap-2">
@@ -78,9 +78,9 @@ export default function FavoritesView({ notes }: FavoritesViewProps) {
                   {note.title || UNTITLED_NOTE_TITLE}
                 </span>
               </div>
-              <p className="mt-1 text-xs text-slate-500">Updated {new Date(note.updated_at).toLocaleDateString()}</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">Updated {new Date(note.updated_at).toLocaleDateString()}</p>
             </div>
-            <span className="text-xs text-slate-500 group-hover:text-slate-300">Open</span>
+            <span className="text-xs text-slate-500 group-hover:text-slate-700 dark:text-slate-500 dark:group-hover:text-slate-300">Open</span>
           </Link>
         ))}
       </div>

@@ -13,7 +13,7 @@ export default async function SettingsPage() {
 
   if (!profile.is_active) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex items-center justify-center">
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-bold">⚠️ 账户未激活</h1>
           <p className="text-slate-400">请先激活账户才能访问设置</p>
@@ -29,7 +29,7 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <div className="max-w-2xl mx-auto p-8 space-y-8">
         <div>
           <a

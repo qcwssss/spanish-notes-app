@@ -17,15 +17,15 @@ export default function UserInfoCard({ profile }: UserInfoCardProps) {
   if (!profile.is_active) {
     return (
       <>
-        <div className="p-4 border-t border-slate-700 bg-slate-900/50 space-y-3">
-          <div className="flex items-center gap-2 text-sm text-yellow-400">
+        <div className="space-y-3 border-t border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/50">
+          <div className="flex items-center gap-2 text-sm text-yellow-600 dark:text-yellow-400">
             <span>⚠️</span>
             <span>账户未激活</span>
           </div>
 
           <button
             onClick={() => setShowActivationDialog(true)}
-            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors font-medium text-sm"
+            className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-500"
           >
             🔓 输入激活码
           </button>
@@ -44,12 +44,12 @@ export default function UserInfoCard({ profile }: UserInfoCardProps) {
   const usedCharacters = Math.floor(profile.storage_used / 2);
 
   return (
-    <div className="p-4 border-t border-slate-700 bg-slate-900/50 space-y-3">
+    <div className="space-y-3 border-t border-slate-200 bg-slate-50 p-4 text-slate-900 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100">
       {language && (
-        <div className="flex items-center gap-2 text-sm text-slate-300">
+        <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
           <span>{language.flag}</span>
           <span>{language.name}</span>
-          <span className="text-slate-500">({profile.plan_type === 'free' ? 'Free' : 'Pro'})</span>
+          <span className="text-slate-500 dark:text-slate-500">({profile.plan_type === 'free' ? 'Free' : 'Pro'})</span>
         </div>
       )}
 
@@ -57,7 +57,7 @@ export default function UserInfoCard({ profile }: UserInfoCardProps) {
 
       <Link
         href="/settings"
-        className="block w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors text-center text-sm"
+        className="block w-full rounded-lg bg-white px-4 py-2 text-center text-sm text-slate-700 shadow-sm transition-colors hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
       >
         ⚙️ Settings
       </Link>

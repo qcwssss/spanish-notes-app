@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Sidebar from '@/components/Sidebar';
 import type { Folder } from '@/types/folder';
@@ -48,6 +48,8 @@ describe('Sidebar', () => {
     (useToast as any).mockReturnValue({
       toast: vi.fn(),
     });
+    localStorage.clear();
+    document.documentElement.classList.remove('dark');
   });
 
   it('renders the sidebar header', () => {
@@ -81,5 +83,22 @@ describe('Sidebar', () => {
     render(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
     const link = screen.getByRole('link', { name: 'Favorites' });
     expect(link.getAttribute('href')).toBe('/favorites');
+  });
+
+  it('toggles theme and persists preference', () => {
+    localStorage.setItem('app-theme', 'light');
+
+    render(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
+
+    const toggleButton = screen.getByRole('button', { name: 'Toggle theme' });
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+
+    fireEvent.click(toggleButton);
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(localStorage.getItem('app-theme')).toBe('dark');
+
+    fireEvent.click(toggleButton);
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    expect(localStorage.getItem('app-theme')).toBe('light');
   });
 });

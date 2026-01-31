@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { Toast, ToastTitle, ToastDescription, ToastClose, ToastViewport, ToastProvider as RadixToastProvider } from './Toast';
 
 type ToastMessage = { 
@@ -44,7 +44,7 @@ export function GlobalToastProvider({ children }: { children: ReactNode }) {
           <Toast 
             key={id} 
             duration={5000}
-            className={variant === 'destructive' ? 'border-red-900 bg-red-950 text-red-100' : ''}
+            className={variant === 'destructive' ? 'border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-950 dark:text-red-100' : ''}
             onOpenChange={(open) => {
               if (!open) removeToast(id);
             }}

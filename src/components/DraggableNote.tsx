@@ -92,7 +92,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
       >
         <Link
           href={`/?noteId=${note.id}`}
-          className="block p-2 pr-16 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors truncate text-sm cursor-grab active:cursor-grabbing"
+          className="block p-2 pr-16 rounded-lg text-sm text-slate-600 transition-colors truncate cursor-grab active:cursor-grabbing hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           {...listeners}
           {...attributes}
         >
@@ -106,7 +106,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
           className={`absolute right-8 top-1/2 -translate-y-1/2 p-1.5 rounded transition-all z-10 ${
             note.is_favorite 
               ? 'text-yellow-400 hover:text-yellow-300' 
-              : 'text-slate-400 hover:text-yellow-400 opacity-0 group-hover:opacity-100'
+              : 'text-slate-500 opacity-0 group-hover:opacity-100 hover:text-yellow-500 dark:text-slate-400 dark:hover:text-yellow-400'
           }`}
           title={note.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
           aria-label={note.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
@@ -117,7 +117,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
           type="button"
           onClick={handleDeleteClick}
           onPointerDown={(event) => event.stopPropagation()}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-red-400 hover:bg-slate-900 rounded opacity-0 group-hover:opacity-100 transition-all z-10"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded text-slate-500 opacity-0 transition-all group-hover:opacity-100 hover:bg-slate-100 hover:text-red-500 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-red-400 z-10"
           title="Delete note"
           aria-label="Delete note"
         >
@@ -128,12 +128,12 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
       <Dialog.Root open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md z-50 shadow-xl focus:outline-none">
-            <Dialog.Title className="text-xl font-bold text-slate-100 mb-2">
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+            <Dialog.Title className="mb-2 text-xl font-bold text-slate-900 dark:text-slate-100">
               Delete note?
             </Dialog.Title>
             
-            <Dialog.Description className="text-slate-300 mb-6">
+            <Dialog.Description className="mb-6 text-slate-600 dark:text-slate-300">
               This will permanently delete this note.
             </Dialog.Description>
 
@@ -141,14 +141,14 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
               <button
                 onClick={() => setShowDeleteDialog(false)}
                 disabled={isDeleting}
-                className="px-4 py-2 text-slate-400 hover:text-slate-200 transition-colors"
+                className="px-4 py-2 text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
-                className="px-6 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors disabled:opacity-50 font-medium"
+                className="rounded-lg bg-red-600 px-6 py-2 font-medium text-white transition-colors hover:bg-red-500 disabled:opacity-50"
               >
                 {isDeleting ? 'Deleting...' : 'Delete'}
               </button>

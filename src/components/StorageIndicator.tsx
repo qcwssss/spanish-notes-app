@@ -17,11 +17,11 @@ export default function StorageIndicator({ used, limit }: StorageIndicatorProps)
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center justify-between text-xs text-slate-400">
+      <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
         <span>📝 {formatCharacterCount(used)}/{formatCharacterCount(limit)} characters</span>
         <span>{percentage}%</span>
       </div>
-      <div className="w-full bg-slate-700 rounded-full h-1.5">
+      <div className="w-full rounded-full bg-slate-200 h-1.5 dark:bg-slate-700">
         <div 
           className={`${barColor} h-1.5 rounded-full transition-all duration-300`}
           style={{ width: `${percentage}%` }}
