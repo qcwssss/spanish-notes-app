@@ -195,15 +195,11 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
               >
                 <FolderPlus className="w-5 h-5" />
               </button>
-              <button
-                onClick={handleThemeToggle}
-                className="absolute bottom-full left-4 mb-3 px-3 py-2 text-xs text-slate-600 border border-slate-300 rounded-lg hover:text-slate-900 hover:border-slate-400 transition-colors dark:text-slate-300 dark:border-slate-700 dark:hover:text-white dark:hover:border-slate-500"
-                aria-label="Toggle theme"
-                title="Toggle theme"
-              >
-                Toggle theme
-              </button>
-              <UserInfoCard profile={profile} />
+              <UserInfoCard 
+                profile={profile} 
+                theme={theme}
+                onToggleTheme={handleThemeToggle}
+              />
             </div>
           )}
         </div>

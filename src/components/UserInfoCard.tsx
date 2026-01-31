@@ -6,12 +6,16 @@ import { getCharacterLimit } from '@/utils/storage/limits';
 import StorageIndicator from './StorageIndicator';
 import ActivationDialog from './ActivationDialog';
 import Link from 'next/link';
+import { Moon, Sun } from 'lucide-react';
+import { ThemePreference } from '@/utils/theme';
 
 interface UserInfoCardProps {
   profile: UserProfile;
+  theme: ThemePreference;
+  onToggleTheme: () => void;
 }
 
-export default function UserInfoCard({ profile }: UserInfoCardProps) {
+export default function UserInfoCard({ profile, theme, onToggleTheme }: UserInfoCardProps) {
   const [showActivationDialog, setShowActivationDialog] = useState(false);
 
   if (!profile.is_active) {
@@ -21,6 +25,13 @@ export default function UserInfoCard({ profile }: UserInfoCardProps) {
           <div className="flex items-center gap-2 text-sm text-yellow-600 dark:text-yellow-400">
             <span>⚠️</span>
             <span>账户未激活</span>
+            <button
+              onClick={onToggleTheme}
+              className="ml-auto rounded-md p-1.5 text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
           </div>
 
           <button
@@ -55,12 +66,26 @@ export default function UserInfoCard({ profile }: UserInfoCardProps) {
 
       <StorageIndicator used={usedCharacters} limit={characterLimit} />
 
-      <Link
-        href="/settings"
-        className="block w-full rounded-lg bg-white px-4 py-2 text-center text-sm text-slate-700 shadow-sm transition-colors hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-      >
-        ⚙️ Settings
-      </Link>
+      <div className="flex items-center gap-2">
+        <Link
+          href="/settings"
+          className="block flex-1 rounded-lg bg-white px-4 py-2 text-center text-sm text-slate-700 shadow-sm transition-colors hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+        >
+          ⚙️ Settings
+        </Link>
+        <button
+          onClick={onToggleTheme}
+          className="flex h-[38px] w-[38px] items-center justify-center rounded-lg bg-white shadow-sm transition-colors hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700"
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? (
+            <Sun className="h-4 w-4 text-slate-200" />
+          ) : (
+            <Moon className="h-4 w-4 text-slate-700" />
+          )}
+        </button>
+      </div>
     </div>
   );
 }
