@@ -30,24 +30,22 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
   const pathname = usePathname();
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  // Restore collapsed state from local storage (Client-side only)
+  useEffect(() => {
     const savedState = localStorage.getItem(SIDEBAR_COLLAPSE_KEY);
-    if (!savedState) {
-      return false;
+    if (savedState) {
+      try {
+        const parsedState = JSON.parse(savedState);
+        if (typeof parsedState === 'boolean') {
+          setIsCollapsed(parsedState);
+        }
+      } catch (e) {
+        console.error('Failed to parse sidebar state', e);
+      }
     }
-
-    try {
-      const parsedState = JSON.parse(savedState);
-      return typeof parsedState === 'boolean' ? parsedState : false;
-    } catch (e) {
-      console.error('Failed to parse sidebar state', e);
-      return false;
-    }
-  });
+  }, []);
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme() ?? 'dark');
   
   const { toast } = useToast();
