@@ -113,17 +113,23 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
   
   const [isMobile, setIsMobile] = useState(false);
 
-  // Handle window resize to detect mobile
+  // Handle window resize to detect mobile using matchMedia
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    
+    // Initial check
+    setIsMobile(mediaQuery.matches);
+
+    // Handler for change
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
     };
 
-    // Initial check
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    // Modern browsers support addEventListener on MediaQueryList
+    // (Safari 14+, Chrome 39+, Firefox 55+)
+    mediaQuery.addEventListener('change', handleChange);
+    
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   // Auto-close sidebar on mobile when navigating
