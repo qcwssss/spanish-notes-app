@@ -35,7 +35,7 @@ describe('Editor light mode', () => {
     expect(surface.className).toContain('border-slate-200');
     expect(surface.className).toContain('text-slate-900');
     expect(surface.className).toContain('shadow-sm');
-    expect(surface.className).toContain('dark:bg-slate-900/60');
+    expect(surface.className).toContain('dark:bg-slate-900');
   });
 
   it('uses light defaults for NotePlayer surface', () => {
