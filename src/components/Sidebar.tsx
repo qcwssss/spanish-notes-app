@@ -30,24 +30,22 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
   const pathname = usePathname();
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  // Restore collapsed state from local storage (Client-side only)
+  useEffect(() => {
     const savedState = localStorage.getItem(SIDEBAR_COLLAPSE_KEY);
-    if (!savedState) {
-      return false;
+    if (savedState) {
+      try {
+        const parsedState = JSON.parse(savedState);
+        if (typeof parsedState === 'boolean') {
+          setIsCollapsed(parsedState);
+        }
+      } catch (e) {
+        console.error('Failed to parse sidebar state', e);
+      }
     }
-
-    try {
-      const parsedState = JSON.parse(savedState);
-      return typeof parsedState === 'boolean' ? parsedState : false;
-    } catch (e) {
-      console.error('Failed to parse sidebar state', e);
-      return false;
-    }
-  });
+  }, []);
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme() ?? 'dark');
   
   const { toast } = useToast();
@@ -111,13 +109,67 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     setStoredTheme(nextTheme);
   };
   
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle window resize to detect mobile using matchMedia
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    
+    // Initial check
+    setIsMobile(mediaQuery.matches);
+
+    // Handler for change
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+    };
+
+    // Modern browsers support addEventListener on MediaQueryList
+    // (Safari 14+, Chrome 39+, Firefox 55+)
+    mediaQuery.addEventListener('change', handleChange);
+    
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Auto-close sidebar on mobile when navigating
+  useEffect(() => {
+    if (isMobile) {
+      setIsCollapsed(true);
+    }
+  }, [pathname, isMobile]);
+
+  // Handle hydration mismatch for local storage
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Determine sidebar visibility class using Tailwind responsive prefixes
+  // Mobile (default): Fixed, toggle via transform
+  // Desktop (md): Relative, toggle via width
+  const sidebarClasses = `
+    fixed inset-y-0 left-0 z-40
+    h-screen w-64
+    bg-white dark:bg-slate-900
+    shadow-xl
+    transition-all duration-300 ease-in-out
+    ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}
+
+    md:relative md:inset-auto md:shadow-none
+    md:translate-x-0 md:transform-none
+    ${isCollapsed ? 'md:w-0 md:opacity-0 md:border-none' : 'md:w-64 md:opacity-100 md:border-r md:border-slate-200 md:dark:border-slate-700'}
+  `;
+
   return (
     <>
+      {/* Mobile Backdrop */}
+      {isMobile && !isCollapsed && (
+        <div 
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm transition-opacity"
+          onClick={() => handleCollapse(true)}
+        />
+      )}
+
+      {/* Toggle Button (Visible when sidebar is hidden) */}
       <button
         onClick={() => handleCollapse(false)}
         className={`fixed top-4 left-4 z-50 p-2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-lg text-slate-500 hover:text-slate-900 border border-slate-200 transition-all duration-300 shadow-lg dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-slate-400 dark:hover:text-white dark:border-slate-700 ${
@@ -129,18 +181,14 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
         <PanelLeftOpen className="w-5 h-5" />
       </button>
 
-      <aside 
-        className={`bg-white text-slate-900 h-screen flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden group/sidebar relative dark:bg-slate-900 dark:text-slate-100 ${
-          isCollapsed ? 'w-0 border-none opacity-0' : 'w-64 border-r border-slate-200 dark:border-slate-700 opacity-100'
-        }`}
-      >
+      <aside className={sidebarClasses}>
         <div className="flex flex-col h-full w-64 overflow-hidden">
           <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">My Notes</h2>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => handleCollapse(true)}
-                className="text-slate-500 hover:text-slate-900 transition-all p-1 rounded-md hover:bg-slate-100 opacity-0 group-hover/sidebar:opacity-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
+                className="text-slate-500 hover:text-slate-900 transition-all p-1 rounded-md hover:bg-slate-100 opacity-100 md:opacity-0 md:group-hover/sidebar:opacity-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
                 aria-label="Collapse Sidebar"
                 title="Collapse Sidebar"
               >

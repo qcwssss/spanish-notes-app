@@ -47,7 +47,7 @@ export default async function Home({
         selectedNoteId={selectedNoteId ?? null}
       />
 
-      <main className="flex-1 p-8 overflow-y-auto h-screen">
+      <main className="flex-1 px-0 py-4 md:p-8 overflow-y-auto h-screen">
         {activeNote ? (
           <Editor
             note={activeNote}
@@ -57,7 +57,7 @@ export default async function Home({
           />
         ) : (
           <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-500">
-            <p>Select a note to start practicing</p>
+            <p className="px-4 text-center">Select a note to start practicing</p>
           </div>
         )}
       </main>
