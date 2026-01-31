@@ -121,25 +121,25 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
         className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
       >
         {/* Header / Toolbar */}
-        <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-700">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-700">
         {isEditing ? (
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="flex-1 bg-transparent text-3xl font-bold text-slate-900 border-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white placeholder-slate-400 dark:text-slate-100 dark:placeholder-slate-500 dark:focus-visible:ring-offset-slate-900"
+            className="w-full bg-transparent text-2xl md:text-3xl font-bold text-slate-900 border-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white placeholder-slate-400 dark:text-slate-100 dark:placeholder-slate-500 dark:focus-visible:ring-offset-slate-900"
             placeholder="Note Title"
           />
         ) : (
-          <h1 className="text-3xl font-bold text-slate-900 flex-1 truncate dark:text-slate-100">{title}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 flex-1 truncate dark:text-slate-100">{title}</h1>
         )}
 
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2 self-end md:self-auto flex-shrink-0">
             {!isEditing ? (
                 <>
                 <button 
                     onClick={() => setIsEditing(true)}
-                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-colors border border-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600"
+                    className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-colors border border-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600"
                 >
                     Edit
                 </button>
