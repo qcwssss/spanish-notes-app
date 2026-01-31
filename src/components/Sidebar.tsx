@@ -110,6 +110,11 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     setTheme(nextTheme);
     setStoredTheme(nextTheme);
   };
+  
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -197,7 +202,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
               </button>
               <UserInfoCard 
                 profile={profile} 
-                theme={theme}
+                theme={mounted ? theme : 'dark'} // Default safely to dark or matching server, but better to delay render
                 onToggleTheme={handleThemeToggle}
               />
             </div>
