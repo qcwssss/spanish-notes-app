@@ -47,7 +47,7 @@ export default async function Home({
         selectedNoteId={selectedNoteId ?? null}
       />
 
-      <main className="flex-1 p-4 md:p-8 overflow-y-auto h-screen">
+      <main className="flex-1 px-0 py-4 md:p-8 overflow-y-auto h-screen">
         {activeNote ? (
           <Editor
             note={activeNote}
