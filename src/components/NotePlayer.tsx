@@ -16,7 +16,7 @@ export default function NotePlayer({ content, targetLanguage }: NotePlayerProps)
   };
 
   return (
-    <div className="bg-white backdrop-blur-md border border-slate-200 rounded-xl p-6 min-h-[500px] text-slate-900 dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-100">
+    <div className="bg-white backdrop-blur-md border border-slate-200 rounded-xl p-6 min-h-[500px] text-slate-900 shadow-sm dark:bg-slate-900/60 dark:border-slate-700 dark:text-slate-100">
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-6 border-b border-slate-200 pb-4 dark:border-slate-700">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Practice Mode</h2>

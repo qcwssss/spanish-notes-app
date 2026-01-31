@@ -118,7 +118,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
     <div className="max-w-4xl mx-auto">
       <div
         data-testid="editor-surface"
-        className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+        className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100"
       >
         {/* Header / Toolbar */}
         <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-700">
@@ -127,7 +127,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="flex-1 bg-transparent text-3xl font-bold text-slate-900 border-none focus:ring-0 outline-none placeholder-slate-400 dark:text-slate-100 dark:placeholder-slate-600"
+            className="flex-1 bg-transparent text-3xl font-bold text-slate-900 border-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white placeholder-slate-400 dark:text-slate-100 dark:placeholder-slate-500 dark:focus-visible:ring-offset-slate-900"
             placeholder="Note Title"
           />
         ) : (
@@ -139,13 +139,13 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                 <>
                 <button 
                     onClick={() => setIsEditing(true)}
-                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors border border-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-600"
+                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-colors border border-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600"
                 >
                     Edit
                 </button>
                 <button
                     onClick={handleDelete}
-                    className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors border border-red-200 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 dark:border-red-900/30"
+                    className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors border border-red-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 dark:border-red-900/30"
                 >
                     Delete
                 </button>
@@ -174,14 +174,14 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                             setContent(note.content || '');
                         }
                     }}
-                    className="px-4 py-2 text-slate-500 hover:text-slate-700 transition-colors dark:text-slate-400 dark:hover:text-slate-200"
+                    className="px-4 py-2 text-slate-500 hover:text-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 dark:text-slate-400 dark:hover:text-slate-100"
                 >
                     Cancel
                 </button>
                 <button 
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors disabled:opacity-50 font-medium"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors disabled:opacity-50 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70"
                 >
                     {isSaving ? 'Saving...' : 'Save'}
                 </button>
@@ -195,7 +195,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
           <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full h-[calc(100vh-200px)] bg-white border border-slate-200 rounded-xl p-6 text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none leading-relaxed placeholder-slate-400 dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-200 dark:placeholder-slate-600"
+              className="w-full h-[calc(100vh-200px)] bg-white border border-slate-200 rounded-xl p-6 text-slate-900 font-mono placeholder-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white resize-none leading-relaxed dark:bg-slate-900/40 dark:border-slate-700 dark:text-slate-100 dark:placeholder-slate-500 dark:focus-visible:ring-offset-slate-900"
               placeholder="Write your Spanish notes here... Format:
 ## Heading
 Spanish text

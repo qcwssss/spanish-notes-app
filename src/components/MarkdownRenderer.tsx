@@ -68,27 +68,27 @@ const HEADING_CONFIG: Record<string, string> = {
 
 export default function MarkdownRenderer({ content, targetLanguage, onSpeak }: MarkdownRendererProps) {
   const components: any = {
-    p: createInteractiveBlock('p', 'text-slate-700 dark:text-slate-300 mb-4 leading-relaxed', targetLanguage, onSpeak),
-    li: createInteractiveBlock('li', 'text-slate-700 dark:text-slate-300 mb-1', targetLanguage, onSpeak),
-    td: createInteractiveBlock('td', 'px-4 py-3 text-slate-700 dark:text-slate-300', targetLanguage, onSpeak),
+    p: createInteractiveBlock('p', 'text-slate-800 dark:text-slate-200 mb-4 leading-relaxed', targetLanguage, onSpeak),
+    li: createInteractiveBlock('li', 'text-slate-800 dark:text-slate-200 mb-1', targetLanguage, onSpeak),
+    td: createInteractiveBlock('td', 'px-4 py-3 text-slate-700 dark:text-slate-200', targetLanguage, onSpeak),
     
     // Structure elements that don't need text splitting themselves but contain it
-    ul: ({ children }: any) => <ul className="list-disc pl-6 space-y-2 text-slate-700 dark:text-slate-300 mb-4">{children}</ul>,
-    ol: ({ children }: any) => <ol className="list-decimal pl-6 space-y-2 text-slate-700 dark:text-slate-300 mb-4">{children}</ol>,
+    ul: ({ children }: any) => <ul className="list-disc pl-6 space-y-2 text-slate-800 dark:text-slate-200 mb-4">{children}</ul>,
+    ol: ({ children }: any) => <ol className="list-decimal pl-6 space-y-2 text-slate-800 dark:text-slate-200 mb-4">{children}</ol>,
     blockquote: ({ children }: any) => (
-      <blockquote className="border-l-4 border-slate-200 pl-4 py-1 my-4 text-slate-600 italic bg-slate-50 rounded-r dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800/30">
+      <blockquote className="border-l-4 border-slate-200 pl-4 py-1 my-4 text-slate-600 italic bg-slate-50 rounded-r dark:border-slate-700 dark:text-slate-300 dark:bg-slate-900/40">
         {renderWithInteractivity(children, targetLanguage, onSpeak)}
       </blockquote>
     ),
     table: ({ children }: any) => (
-      <div className="overflow-x-auto rounded-lg border border-slate-200 my-4 shadow-sm dark:border-slate-700">
+      <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white my-4 shadow-sm dark:border-slate-700 dark:bg-slate-900/40">
         <table className="w-full text-sm text-left">{children}</table>
       </div>
     ),
-    thead: ({ children }: any) => <thead className="bg-slate-100 text-slate-600 font-medium dark:bg-slate-800 dark:text-slate-400">{children}</thead>,
-    tbody: ({ children }: any) => <tbody className="divide-y divide-slate-200 bg-white/60 dark:divide-slate-700 dark:bg-slate-900/30">{children}</tbody>,
-    tr: ({ children }: any) => <tr className="hover:bg-slate-100 transition-colors dark:hover:bg-slate-800/50">{children}</tr>,
-    th: ({ children }: any) => <th className="px-4 py-2 font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">{children}</th>,
+    thead: ({ children }: any) => <thead className="bg-slate-100 text-slate-700 font-medium dark:bg-slate-800/80 dark:text-slate-300">{children}</thead>,
+    tbody: ({ children }: any) => <tbody className="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900/40">{children}</tbody>,
+    tr: ({ children }: any) => <tr className="hover:bg-slate-50 transition-colors dark:hover:bg-slate-800/60">{children}</tr>,
+    th: ({ children }: any) => <th className="px-4 py-2 font-medium bg-slate-100 text-slate-700 dark:bg-slate-800/80 dark:text-slate-200">{children}</th>,
     
     // Inline elements usually just pass through, but we want to ensure their text is also split
     strong: ({ children }: any) => <strong className="font-bold text-slate-900 dark:text-slate-200">{renderWithInteractivity(children, targetLanguage, onSpeak)}</strong>,
