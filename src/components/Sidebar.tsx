@@ -182,7 +182,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
       </button>
 
       <aside className={sidebarClasses}>
-        <div className="flex flex-col h-full w-64 overflow-hidden bg-white dark:bg-slate-900">
+        <div className="flex flex-col h-full w-64 overflow-hidden">
           <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">My Notes</h2>
             <div className="flex items-center gap-1">
