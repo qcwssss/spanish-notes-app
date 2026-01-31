@@ -42,23 +42,29 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-4">
+      <div
+        data-testid="settings-card"
+        className="bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4"
+      >
         <h2 className="text-xl font-semibold flex items-center gap-2">
           👤 Account
         </h2>
-        <div className="text-slate-300">
-          <span className="text-slate-400 text-sm block mb-1">Email</span>
+        <div className="text-slate-700 dark:text-slate-300">
+          <span className="text-slate-600 dark:text-slate-400 text-sm block mb-1">Email</span>
           <span className="font-medium">{profile.email}</span>
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-4">
+      <div className="bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4">
         <h2 className="text-xl font-semibold flex items-center gap-2">
           🌍 学习语言
         </h2>
 
         <div>
-          <label htmlFor="target-language" className="block text-sm text-slate-400 mb-2">
+          <label
+            htmlFor="target-language"
+            className="block text-sm text-slate-600 dark:text-slate-400 mb-2"
+          >
             目标语言
           </label>
           <select
@@ -66,7 +72,7 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
             value={selectedLanguage}
             onChange={(event) => setSelectedLanguage(event.target.value)}
             disabled={isLanguageLocked}
-            className="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
           >
             <option value="">请选择语言</option>
             {LANGUAGES.map((language) => (
@@ -86,13 +92,13 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
         </button>
       </div>
 
-      <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-4">
+      <div className="bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4">
         <h2 className="text-xl font-semibold flex items-center gap-2">
           📊 存储使用情况
         </h2>
 
         <div className="space-y-2">
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             已用: {usedCharacters.toLocaleString()} / {characterLimit.toLocaleString()} 字符
           </p>
           <StorageIndicator used={usedCharacters} limit={characterLimit} />

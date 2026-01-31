@@ -32,10 +32,13 @@ export default function AuthGate() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 text-slate-100 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/20 backdrop-blur-sm dark:bg-black/60">
+      <div
+        data-testid="auth-card"
+        className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+      >
         <h1 className="text-2xl font-bold">请使用 Google 登录</h1>
-        <p className="mt-2 text-slate-400">登录后即可使用笔记功能</p>
+        <p className="mt-2 text-slate-600 dark:text-slate-400">登录后即可使用笔记功能</p>
         <button
           onClick={handleLogin}
           className="mt-6 w-full rounded-lg bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-500"

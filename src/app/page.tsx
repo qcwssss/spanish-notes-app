@@ -38,7 +38,7 @@ export default async function Home({
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-100">
+    <div className="flex min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <AuthGate />
       <Sidebar
         notes={notes || []}
@@ -56,7 +56,7 @@ export default async function Home({
             initialEditMode={isEditMode}
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-slate-500">
+          <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-500">
             <p>Select a note to start practicing</p>
           </div>
         )}
