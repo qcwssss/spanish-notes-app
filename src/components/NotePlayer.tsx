@@ -25,7 +25,7 @@ export default function NotePlayer({ content, targetLanguage }: NotePlayerProps)
           <select 
             value={selectedVoiceIndex}
             onChange={(e) => setSelectedVoiceIndex(Number(e.target.value))}
-            className="bg-white text-slate-700 text-sm rounded-lg px-3 py-1 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600"
+            className="bg-white text-slate-700 text-sm rounded-lg px-3 py-1 border border-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600 dark:focus-visible:ring-offset-slate-900"
           >
             {voices.map((voice, idx) => (
               <option key={voice.voiceURI} value={idx}>

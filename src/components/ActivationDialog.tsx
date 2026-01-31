@@ -42,7 +42,7 @@ export default function ActivationDialog({ open, onOpenChange }: ActivationDialo
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
+        <Dialog.Overlay className="fixed inset-0 bg-slate-950/20 backdrop-blur-sm z-50 dark:bg-black/50" />
         <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white border border-slate-200 rounded-xl p-6 w-full max-w-md z-50 shadow-xl text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100">
           <Dialog.Title className="text-2xl font-bold mb-4 flex items-center gap-2 text-slate-900 dark:text-slate-100">
             🔓 激活你的账户

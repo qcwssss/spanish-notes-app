@@ -26,7 +26,7 @@ export default function CreateFolderDialog({ isOpen, onClose, onCreate }: Create
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-slate-950/20 flex items-center justify-center z-50 dark:bg-black/50">
       <div className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-6 text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Create Folder</h2>
