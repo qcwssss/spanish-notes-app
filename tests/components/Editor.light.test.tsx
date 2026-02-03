@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import Editor from '@/components/Editor';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import NotePlayer from '@/components/NotePlayer';
+import { renderWithI18n } from '../utils/renderWithI18n';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -12,7 +13,7 @@ vi.mock('next/navigation', () => ({
 
 describe('Editor light mode', () => {
   it('uses light defaults for editor surface', () => {
-    const { container } = render(
+    const { container } = renderWithI18n(
       <Editor
         note={{
           id: '1',
@@ -39,7 +40,7 @@ describe('Editor light mode', () => {
   });
 
   it('uses light defaults for NotePlayer surface', () => {
-    const { container } = render(
+    const { container } = renderWithI18n(
       <NotePlayer content="Hola" targetLanguage="es" />
     );
 

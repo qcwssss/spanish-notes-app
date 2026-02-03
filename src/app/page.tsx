@@ -4,6 +4,8 @@ import { getFolders } from '@/utils/folders/queries';
 import Sidebar from '@/components/Sidebar';
 import Editor from '@/components/Editor';
 import AuthGate from '@/components/AuthGate';
+import { getServerLocale } from '@/i18n/server';
+import { createTranslator } from '@/i18n/translator';
 
 export const runtime = 'edge';
 
@@ -15,6 +17,8 @@ export default async function Home({
   const supabase = await createServerClient();
   const profile = await getUserProfile();
   const folders = await getFolders();
+  const locale = await getServerLocale();
+  const t = createTranslator(locale);
 
   // 1. Fetch Notes List
   const { data: notes } = await supabase
@@ -57,7 +61,7 @@ export default async function Home({
           />
         ) : (
           <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-500">
-            <p className="px-4 text-center">Select a note to start practicing</p>
+            <p className="px-4 text-center">{t('app.selectNote')}</p>
           </div>
         )}
       </main>

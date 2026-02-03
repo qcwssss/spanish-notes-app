@@ -37,8 +37,6 @@ describe('useTTS', () => {
   });
 
   it('persists voice selection changes', async () => {
-    const setItemSpy = vi.spyOn(window.localStorage.__proto__, 'setItem');
-
     const { result } = renderHook(() => useTTS('es'));
 
     await waitFor(() => {
@@ -49,7 +47,7 @@ describe('useTTS', () => {
       result.current.setSelectedVoiceIndex(1);
     });
 
-    expect(setItemSpy).toHaveBeenCalledWith('ttsVoiceURI:es', 'voice-b');
+    expect(window.localStorage.getItem('ttsVoiceURI:es')).toBe('voice-b');
   });
 
   it('selects preferred local voice by default', async () => {

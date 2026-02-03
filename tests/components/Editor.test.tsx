@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import Editor from '@/components/Editor';
 import { updateNote } from '@/utils/notes/queries';
+import { renderWithI18n } from '../utils/renderWithI18n';
 
 vi.mock('@/utils/notes/queries', () => ({
   updateNote: vi.fn(() => Promise.resolve()),
@@ -20,7 +21,14 @@ vi.mock('@/components/ActivationDialog', () => ({
   default: ({ open }: { open: boolean }) => (open ? <div>ActivationDialogOpen</div> : null),
 }));
 
-const note = { id: '1', title: 'Test Note', content: 'Hola', updated_at: '2026-01-15T00:00:00Z' };
+const note = {
+  id: '1',
+  title: 'Test Note',
+  content: 'Hola',
+  updated_at: '2026-01-15T00:00:00Z',
+  folder_id: 'folder-1',
+  is_favorite: false,
+};
 
 describe('Editor activation guard', () => {
   beforeEach(() => {
@@ -28,7 +36,7 @@ describe('Editor activation guard', () => {
   });
 
   it('opens activation dialog when inactive user saves', async () => {
-    render(<Editor note={note} isActive={false} targetLanguage="es" />);
+    renderWithI18n(<Editor note={note} isActive={false} targetLanguage="es" />);
 
     await act(async () => {
       fireEvent.click(screen.getByText('Edit'));
@@ -43,7 +51,7 @@ describe('Editor activation guard', () => {
   });
 
   it('saves when user is active', async () => {
-    render(<Editor note={note} isActive targetLanguage="es" />);
+    renderWithI18n(<Editor note={note} isActive targetLanguage="es" />);
 
     await act(async () => {
       fireEvent.click(screen.getByText('Edit'));

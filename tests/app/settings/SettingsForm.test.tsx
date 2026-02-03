@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import SettingsForm from '@/app/settings/SettingsForm';
+import { renderWithI18n } from '../../utils/renderWithI18n';
 
 vi.mock('@/utils/profile/queries', () => ({
   updateTargetLanguage: vi.fn(() => Promise.resolve()),
@@ -26,10 +27,10 @@ const profile = {
 
 describe('SettingsForm', () => {
   it('enables save after selecting a language', () => {
-    render(<SettingsForm profile={profile} />);
+    renderWithI18n(<SettingsForm profile={profile} />);
 
-    expect(screen.getByRole('button', { name: '保存设置' })).toBeDisabled();
-    fireEvent.change(screen.getByLabelText('目标语言'), { target: { value: 'es' } });
-    expect(screen.getByRole('button', { name: '保存设置' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Save settings' })).toBeDisabled();
+    fireEvent.change(screen.getByLabelText('Target language'), { target: { value: 'es' } });
+    expect(screen.getByRole('button', { name: 'Save settings' })).toBeEnabled();
   });
 });

@@ -7,6 +7,7 @@ import ActivationDialog from './ActivationDialog';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
 import { DEFAULT_FOLDER_NAME } from '@/types/folder';
 import { SquarePen } from 'lucide-react';
+import { useI18n } from '@/components/I18nProvider';
 
 interface CreateNoteButtonProps {
   isActive: boolean;
@@ -25,6 +26,7 @@ export default function CreateNoteButton({
   defaultFolderName = DEFAULT_FOLDER_NAME,
   variant = 'button'
 }: CreateNoteButtonProps) {
+  const { t } = useI18n();
   const [isCreating, setIsCreating] = useState(false);
   const [showActivationDialog, setShowActivationDialog] = useState(false);
   const router = useRouter();
@@ -42,7 +44,7 @@ export default function CreateNoteButton({
       router.push(`/?noteId=${newNote.id}&mode=edit`);
     } catch (e) {
       console.error(e);
-      alert('Failed to create note');
+      alert(t('notes.createFailed'));
     } finally {
       setIsCreating(false);
     }
@@ -50,8 +52,8 @@ export default function CreateNoteButton({
 
   const folderName = targetFolderName ?? defaultFolderName;
   const buttonLabel = isCreating
-    ? 'Creating...'
-    : (folderName ? `New note in ${folderName}` : 'New Note');
+    ? t('notes.creating')
+    : (folderName ? t('notes.newNoteIn', { folder: folderName }) : t('notes.newNote'));
 
   const activationDialog = !isActive && (
     <ActivationDialog 

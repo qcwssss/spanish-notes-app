@@ -14,6 +14,7 @@ import { createNote } from '@/utils/notes/queries';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from '@/components/ActivationDialog';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
+import { useI18n } from '@/components/I18nProvider';
 
 interface DroppableFolderProps {
   folder: Folder;
@@ -36,6 +37,7 @@ export default function DroppableFolder({
   noteCount,
   children
 }: DroppableFolderProps) {
+  const { t } = useI18n();
   const { isOver, setNodeRef } = useDroppable({
     id: folder.id,
     data: {
@@ -113,8 +115,8 @@ export default function DroppableFolder({
       setDisplayName(originalName);
       setNewName(originalName);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to rename folder',
+        title: t('toast.error'),
+        description: error instanceof Error ? error.message : t('folders.renameFailed'),
         variant: 'destructive',
       });
     } finally {
@@ -148,8 +150,8 @@ export default function DroppableFolder({
       await apiCall();
     } catch (error) {
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to delete folder',
+        title: t('toast.error'),
+        description: error instanceof Error ? error.message : t('folders.deleteFailed'),
         variant: 'destructive',
       });
     } finally {
@@ -160,7 +162,7 @@ export default function DroppableFolder({
   const handleDeleteKeepNotes = () => handleDeleteApiCall(async () => {
     const defaultFolder = await getDefaultFolder();
     if (!defaultFolder) {
-      throw new Error('Default folder not found');
+      throw new Error(t('folders.defaultFolderMissing'));
     }
 
     await deleteFolderAndMoveNotes(folder.id, defaultFolder.id);
@@ -193,8 +195,8 @@ export default function DroppableFolder({
       if (!isMountedRef.current) return;
       console.error('Failed to create note:', error);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to create note',
+        title: t('toast.error'),
+        description: error instanceof Error ? error.message : t('folders.createNoteFailed'),
         variant: 'destructive',
       });
     } finally {
@@ -292,7 +294,7 @@ export default function DroppableFolder({
                     setShowMenu(!showMenu);
                   }}
                 className="rounded p-1 opacity-0 transition-opacity hover:bg-slate-200 focus:opacity-100 group-hover:opacity-100 dark:hover:bg-slate-700"
-                  aria-label="Folder options"
+                   aria-label={t('folders.folderOptions')}
                 >
                   <MoreVertical className="w-4 h-4" />
                 </button>
@@ -311,7 +313,7 @@ export default function DroppableFolder({
                       }}
                       className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
                     >
-                      Edit
+                      {t('folders.edit')}
                     </button>
                     {!folder.is_default && (
                       <button
@@ -319,7 +321,7 @@ export default function DroppableFolder({
                         disabled={isSubmitting}
                         className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50 dark:text-red-400 dark:hover:bg-slate-700 dark:hover:text-red-300"
                       >
-                        Delete
+                        {t('folders.delete')}
                       </button>
                     )}
                   </div>
@@ -330,8 +332,8 @@ export default function DroppableFolder({
                 onClick={handleCreateNote}
                 disabled={isCreatingNote}
                 className="rounded p-1 opacity-0 transition-opacity hover:bg-slate-200 focus:opacity-100 group-hover:opacity-100 dark:hover:bg-slate-700"
-                aria-label={`Create note in ${displayName}`}
-                title={`Create note in ${displayName}`}
+                aria-label={t('folders.createNoteIn', { folder: displayName })}
+                title={t('folders.createNoteIn', { folder: displayName })}
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -353,7 +355,7 @@ export default function DroppableFolder({
             className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             <Dialog.Title className="mb-4 text-xl font-bold text-slate-900 dark:text-slate-100">
-              Delete folder
+              {t('folders.deleteFolderTitle')}
             </Dialog.Title>
             
             <div className="space-y-3">
@@ -362,8 +364,8 @@ export default function DroppableFolder({
                 disabled={isDeleting}
                 className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-colors hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-700/50 dark:hover:bg-slate-700"
               >
-                <span className="font-medium text-slate-900 dark:text-slate-200">Delete folder (keep notes)</span>
-                <span className="mt-1 text-sm text-slate-500 dark:text-slate-400">Notes will move to your default folder.</span>
+                <span className="font-medium text-slate-900 dark:text-slate-200">{t('folders.deleteKeepNotes')}</span>
+                <span className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('folders.deleteKeepNotesDesc')}</span>
               </button>
 
               <button
@@ -371,7 +373,7 @@ export default function DroppableFolder({
                 disabled={isDeleting}
                 className="w-full rounded-lg border border-red-200 bg-red-50 p-4 text-left font-medium text-red-700 transition-colors hover:border-red-300 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 dark:hover:border-red-800"
               >
-                Delete folder and all notes
+                {t('folders.deleteAll')}
               </button>
             </div>
 
@@ -381,7 +383,7 @@ export default function DroppableFolder({
                 disabled={isDeleting}
                 className="px-4 py-2 text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
               >
-                Cancel
+                {t('editor.cancel')}
               </button>
             </div>
           </Dialog.Content>
@@ -393,11 +395,11 @@ export default function DroppableFolder({
           <Dialog.Overlay className="fixed inset-0 bg-slate-950/20 backdrop-blur-sm z-50 dark:bg-black/50" />
           <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
             <Dialog.Title className="mb-2 text-xl font-bold text-slate-900 dark:text-slate-100">
-              Delete folder and notes?
+              {t('folders.deleteConfirmTitle')}
             </Dialog.Title>
             
             <Dialog.Description className="mb-6 text-slate-600 dark:text-slate-300">
-              This will permanently delete all notes in this folder.
+              {t('folders.deleteConfirmDesc')}
             </Dialog.Description>
 
             <div className="flex justify-end gap-3">
@@ -406,14 +408,14 @@ export default function DroppableFolder({
                 disabled={isDeleting}
                 className="px-4 py-2 text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
               >
-                Cancel
+                {t('editor.cancel')}
               </button>
               <button
                 onClick={handleDeleteAllConfirm}
                 disabled={isDeleting}
                 className="rounded-lg bg-red-600 px-6 py-2 font-medium text-white transition-colors hover:bg-red-500 disabled:opacity-50"
               >
-                {isDeleting ? 'Deleting...' : 'Delete'}
+                {isDeleting ? t('folders.deleting') : t('editor.delete')}
               </button>
             </div>
           </Dialog.Content>

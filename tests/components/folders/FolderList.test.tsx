@@ -1,8 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import FolderList from '@/components/FolderList';
 import type { Folder } from '@/types/folder';
 import type { Note } from '@/types/note';
+import { renderWithI18n } from '../../utils/renderWithI18n';
 
 const mockFolders: Folder[] = [
   {
@@ -53,14 +54,14 @@ vi.mock('@/components/ToastProvider', () => ({
 
 describe('FolderList', () => {
   it('should render all folders', () => {
-    render(<FolderList folders={mockFolders} notes={mockNotes} />);
+    renderWithI18n(<FolderList folders={mockFolders} notes={mockNotes} isActive />);
     
     expect(screen.getByText('My Notes')).toBeInTheDocument();
     expect(screen.getByText('Work')).toBeInTheDocument();
   });
 
   it('should show notes count for each folder', () => {
-    render(<FolderList folders={mockFolders} notes={mockNotes} />);
+    renderWithI18n(<FolderList folders={mockFolders} notes={mockNotes} isActive />);
     
     const defaultFolder = screen.getByText('My Notes').closest('div');
     const workFolder = screen.getByText('Work').closest('div');
@@ -70,7 +71,7 @@ describe('FolderList', () => {
   });
 
   it('should render notes under their folders when expanded', () => {
-    render(<FolderList folders={mockFolders} notes={mockNotes} showHierarchy={true} />);
+    renderWithI18n(<FolderList folders={mockFolders} notes={mockNotes} showHierarchy={true} isActive />);
     
     expect(screen.getByText('Note in Default')).toBeInTheDocument();
     expect(screen.getByText('Work Note')).toBeInTheDocument();

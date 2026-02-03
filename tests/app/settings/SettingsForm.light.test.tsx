@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import SettingsForm from '@/app/settings/SettingsForm';
+import { renderWithI18n } from '../../utils/renderWithI18n';
 
 vi.mock('@/utils/profile/queries', () => ({
   updateTargetLanguage: vi.fn(() => Promise.resolve()),
@@ -26,7 +27,7 @@ const profile = {
 
 describe('SettingsForm light mode', () => {
   it('uses light defaults for card and language select', () => {
-    render(<SettingsForm profile={profile} />);
+    renderWithI18n(<SettingsForm profile={profile} />);
 
     const card = screen.getByTestId('settings-card');
     expect(card.className).toContain('bg-white');
@@ -36,7 +37,7 @@ describe('SettingsForm light mode', () => {
     expect(card.className).toContain('dark:border-slate-700');
     expect(card.className).toContain('dark:text-slate-100');
 
-    const select = screen.getByLabelText('目标语言');
+    const select = screen.getByLabelText('Target language');
     expect(select.className).toContain('bg-white');
     expect(select.className).toContain('border-slate-200');
     expect(select.className).toContain('text-slate-900');

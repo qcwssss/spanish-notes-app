@@ -2,6 +2,7 @@
 
 import { useTTS } from '../hooks/useTTS';
 import MarkdownRenderer from './MarkdownRenderer';
+import { useI18n } from '@/components/I18nProvider';
 
 interface NotePlayerProps {
   content: string;
@@ -9,6 +10,7 @@ interface NotePlayerProps {
 }
 
 export default function NotePlayer({ content, targetLanguage }: NotePlayerProps) {
+  const { t } = useI18n();
   const { voices, selectedVoiceIndex, setSelectedVoiceIndex, speak } = useTTS(targetLanguage);
 
   const handleSpeak = (text: string) => {
@@ -19,9 +21,9 @@ export default function NotePlayer({ content, targetLanguage }: NotePlayerProps)
     <div className="bg-white backdrop-blur-md md:border md:border-slate-200 md:rounded-xl p-4 md:p-6 min-h-[500px] text-slate-900 md:shadow-sm dark:bg-slate-900/60 dark:md:border-slate-700 dark:text-slate-100">
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-6 border-b border-slate-200 pb-4 dark:border-slate-700">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Practice Mode</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{t('notePlayer.title')}</h2>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-slate-600 dark:text-slate-400">Voice:</label>
+          <label className="text-sm text-slate-600 dark:text-slate-400">{t('notePlayer.voice')}</label>
           <select 
             value={selectedVoiceIndex}
             onChange={(e) => setSelectedVoiceIndex(Number(e.target.value))}

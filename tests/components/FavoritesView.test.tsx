@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DndContext } from '@dnd-kit/core';
 import FavoritesView from '@/components/FavoritesView';
 import { GlobalToastProvider } from '@/components/ToastProvider';
+import { renderWithI18n } from '../utils/renderWithI18n';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -38,7 +39,7 @@ describe('FavoritesView', () => {
   ];
 
   const renderWithProviders = (ui: React.ReactElement) => {
-    return render(
+    return renderWithI18n(
       <GlobalToastProvider>
         <DndContext>{ui}</DndContext>
       </GlobalToastProvider>
