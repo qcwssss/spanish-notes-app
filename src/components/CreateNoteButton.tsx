@@ -8,6 +8,7 @@ import { UNTITLED_NOTE_TITLE } from '@/constants';
 import { DEFAULT_FOLDER_NAME } from '@/types/folder';
 import { SquarePen } from 'lucide-react';
 import { useI18n } from '@/components/I18nProvider';
+import { useToast } from '@/components/ToastProvider';
 
 interface CreateNoteButtonProps {
   isActive: boolean;
@@ -27,6 +28,7 @@ export default function CreateNoteButton({
   variant = 'button'
 }: CreateNoteButtonProps) {
   const { t } = useI18n();
+  const { toast } = useToast();
   const [isCreating, setIsCreating] = useState(false);
   const [showActivationDialog, setShowActivationDialog] = useState(false);
   const router = useRouter();
@@ -44,7 +46,7 @@ export default function CreateNoteButton({
       router.push(`/?noteId=${newNote.id}&mode=edit`);
     } catch (e) {
       console.error(e);
-      alert(t('notes.createFailed'));
+      toast({ title: t('notes.createFailed'), variant: 'destructive' });
     } finally {
       setIsCreating(false);
     }

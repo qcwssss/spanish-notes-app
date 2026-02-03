@@ -177,7 +177,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                                 router.push('/');
                             } catch (error) {
                                 console.error('Failed to delete empty note:', error);
-                                alert(t('editor.deleteNoteFailed'));
+                                toast({ title: t('editor.deleteNoteFailed'), variant: 'destructive' });
                             }
                         } else {
                             // 恢复原内容
