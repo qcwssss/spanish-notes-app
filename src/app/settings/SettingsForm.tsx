@@ -8,6 +8,7 @@ import { getCharacterLimit } from '@/utils/storage/limits';
 import StorageIndicator from '@/components/StorageIndicator';
 import { useI18n } from '@/components/I18nProvider';
 import { LOCALE_LABELS, type Locale } from '@/i18n/config';
+import { useToast } from '@/components/ToastProvider';
 
 interface SettingsFormProps {
   profile: UserProfile;
@@ -15,6 +16,7 @@ interface SettingsFormProps {
 
 export default function SettingsForm({ profile }: SettingsFormProps) {
   const { locale, setLocale, t } = useI18n();
+  const { toast } = useToast();
   const [selectedLanguage, setSelectedLanguage] = useState(profile.target_language || '');
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
@@ -25,19 +27,19 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
 
   const handleSave = async () => {
     if (!selectedLanguage) {
-      alert(t('settings.selectLanguageAlert'));
+      toast({ title: t('settings.selectLanguageAlert'), variant: 'destructive' });
       return;
     }
 
     setIsSaving(true);
     try {
       await updateTargetLanguage(selectedLanguage);
-      alert(t('settings.saveSuccessAlert'));
+      toast({ title: t('settings.saveSuccessAlert') });
       router.push('/');
       router.refresh();
     } catch (error) {
       console.error(error);
-      alert(t('settings.saveFailedAlert'));
+      toast({ title: t('settings.saveFailedAlert'), variant: 'destructive' });
     } finally {
       setIsSaving(false);
     }

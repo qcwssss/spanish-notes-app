@@ -25,13 +25,26 @@ const setLocaleCookie = (locale: Locale) => {
 export function I18nProvider({ initialLocale = DEFAULT_LOCALE, children }: I18nProviderProps) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
+  // Sync from localStorage on initial client load
   useEffect(() => {
     const stored = window.localStorage.getItem(LOCALE_COOKIE);
-    if (isLocale(stored) && stored !== locale) {
+    if (isLocale(stored) && stored !== initialLocale) {
       setLocaleState(stored);
       setLocaleCookie(stored);
     }
-  }, [locale]);
+  }, [initialLocale]);
+
+  // Listen for storage changes to sync across tabs
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === LOCALE_COOKIE && event.newValue && isLocale(event.newValue)) {
+        setLocaleState(event.newValue);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = locale;

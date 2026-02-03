@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { redeemActivationCode } from '@/utils/activation/redeem';
+import { redeemActivationCode, type RedeemResult } from '@/utils/activation/redeem';
 import { useRouter } from 'next/navigation';
 import { useI18n } from '@/components/I18nProvider';
+import { useToast } from '@/components/ToastProvider';
 
 interface ActivationDialogProps {
   open: boolean;
@@ -13,12 +14,13 @@ interface ActivationDialogProps {
 
 export default function ActivationDialog({ open, onOpenChange }: ActivationDialogProps) {
   const { t } = useI18n();
+  const { toast } = useToast();
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const getStatusMessage = (status: string, message?: string) => {
+  const getStatusMessage = (status: RedeemResult['status'], message?: string) => {
     switch (status) {
       case 'already_activated':
         return t('activation.alreadyActivated');
@@ -44,8 +46,7 @@ export default function ActivationDialog({ open, onOpenChange }: ActivationDialo
       if (result.success) {
         onOpenChange(false);
         router.refresh();
-        // Show success toast (we'll add toast system later)
-        alert(t('activation.success'));
+        toast({ title: t('activation.success') });
       } else {
         setError(getStatusMessage(result.status, result.message));
       }

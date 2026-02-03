@@ -134,6 +134,10 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       error: 'Error',
       favoriteUpdateFailed: 'Failed to update favorite status.',
     },
+    notFound: {
+      pageNotFound: 'Page not found',
+      goHome: 'Go home',
+    },
   },
   zh: {
     app: {
@@ -267,6 +271,10 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
     toast: {
       error: '错误',
       favoriteUpdateFailed: '更新收藏状态失败。',
+    },
+    notFound: {
+      pageNotFound: '页面未找到',
+      goHome: '返回首页',
     },
   },
 };
