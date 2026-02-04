@@ -4,6 +4,7 @@ import { GlobalToastProvider } from "@/components/ToastProvider";
 import { getThemeInitScript } from "@/utils/theme";
 import { I18nProvider } from "@/components/I18nProvider";
 import { getServerLocale } from "@/i18n/server";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,11 +35,19 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <meta name="theme-color" content="#0f172a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Spanish Notes" />
         <script dangerouslySetInnerHTML={{ __html: getThemeInitScript() }} />
       </head>
       <body className="antialiased">
         <GlobalToastProvider>
           <I18nProvider initialLocale={locale}>
+            <ServiceWorkerRegistration />
             {children}
           </I18nProvider>
         </GlobalToastProvider>

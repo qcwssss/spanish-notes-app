@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Spanish Notes">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)" />
+  <rect x="92" y="120" width="328" height="272" rx="36" fill="#0f172a" opacity="0.22" />
+  <g fill="#f8fafc">
+    <path d="M162 214c0-27.6 22.4-50 50-50h50c22.1 0 40 17.9 40 40v20h-30v-14c0-9.4-7.6-17-17-17h-40c-11 0-20 9-20 20v6c0 8 4.7 15.3 12 18.6l55 25.7c19.7 9.2 33 29.1 33 51.1v6c0 27.6-22.4 50-50 50h-53c-22.1 0-40-17.9-40-40v-20h30v14c0 9.4 7.6 17 17 17h44c11 0 20-9 20-20v-6c0-8-4.7-15.3-12-18.6l-55-25.7c-19.7-9.2-33-29.1-33-51.1v-6z" />
+    <path d="M300 214c0-27.6 22.4-50 50-50h26c22.1 0 40 17.9 40 40v104c0 27.6-22.4 50-50 50h-20c-22.1 0-40-17.9-40-40V214zm30 0v104c0 9.4 7.6 17 17 17h14c11 0 20-9 20-20V210c0-9.4-7.6-17-17-17h-14c-11 0-20 9-20 20z" />
+  </g>
+</svg>
