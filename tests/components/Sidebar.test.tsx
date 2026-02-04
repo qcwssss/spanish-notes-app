@@ -1,8 +1,9 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Sidebar from '@/components/Sidebar';
 import type { Folder } from '@/types/folder';
 import { useToast } from '@/components/ToastProvider';
+import { renderWithI18n } from '../utils/renderWithI18n';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -53,18 +54,18 @@ describe('Sidebar', () => {
   });
 
   it('renders the sidebar header', () => {
-    render(<Sidebar profile={mockProfile} notes={[]} folders={[mockDefaultFolder]} />);
+    renderWithI18n(<Sidebar profile={mockProfile} notes={[]} folders={[mockDefaultFolder]} />);
     expect(screen.getByText('My Notes')).toBeDefined();
   });
 
   it('renders a list of notes', () => {
-    render(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
+    renderWithI18n(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
     expect(screen.getByText('Note 1')).toBeDefined();
     expect(screen.getByText('Long Note Title That Should Be Truncated Maybe')).toBeDefined();
   });
 
   it('renders correct links', () => {
-    render(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
+    renderWithI18n(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
     const links = screen
       .getAllByRole('link')
       .filter(link => link.getAttribute('href')?.startsWith('/?noteId='));
@@ -75,12 +76,12 @@ describe('Sidebar', () => {
 
   it('renders "Untitled Note" for empty titles', () => {
     const notes = [{ id: '3', title: '', updated_at: '2023-01-03', folder_id: 'default-folder', is_favorite: false }];
-    render(<Sidebar profile={mockProfile} notes={notes} folders={[mockDefaultFolder]} />);
+    renderWithI18n(<Sidebar profile={mockProfile} notes={notes} folders={[mockDefaultFolder]} />);
     expect(screen.getByText('Untitled Note')).toBeDefined();
   });
 
   it('renders a favorites view link', () => {
-    render(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
+    renderWithI18n(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
     const link = screen.getByRole('link', { name: 'Favorites' });
     expect(link.getAttribute('href')).toBe('/favorites');
   });
@@ -88,7 +89,7 @@ describe('Sidebar', () => {
   it('toggles theme and persists preference', () => {
     localStorage.setItem('app-theme', 'light');
 
-    render(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
+    renderWithI18n(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
 
     const toggleButton = screen.getByRole('button', { name: 'Toggle theme' });
     expect(document.documentElement.classList.contains('dark')).toBe(false);

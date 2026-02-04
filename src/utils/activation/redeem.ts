@@ -5,7 +5,8 @@ import { revalidatePath } from 'next/cache';
 
 export interface RedeemResult {
   success: boolean;
-  message: string;
+  status: 'success' | 'already_activated' | 'invalid_code' | 'code_fully_used' | 'db_error' | 'unknown_error';
+  message?: string;
 }
 
 export async function redeemActivationCode(code: string): Promise<RedeemResult> {
@@ -19,7 +20,8 @@ export async function redeemActivationCode(code: string): Promise<RedeemResult> 
     if (error) {
       return {
         success: false,
-        message: `数据库错误: ${error.message}`
+        status: 'db_error',
+        message: error.message
       };
     }
 
@@ -29,33 +31,34 @@ export async function redeemActivationCode(code: string): Promise<RedeemResult> 
       revalidatePath('/');
       return {
         success: true,
-        message: '激活成功！'
+        status: 'success'
       };
     } else if (result === 'Already activated') {
       return {
         success: false,
-        message: '你的账户已经激活过了'
+        status: 'already_activated'
       };
     } else if (result === 'Invalid code') {
       return {
         success: false,
-        message: '激活码无效'
+        status: 'invalid_code'
       };
     } else if (result === 'Code fully used') {
       return {
         success: false,
-        message: '激活码已用完'
+        status: 'code_fully_used'
       };
     } else {
       return {
         success: false,
+        status: 'unknown_error',
         message: result
       };
     }
   } catch (err) {
     return {
       success: false,
-      message: '激活失败，请稍后重试'
+      status: 'unknown_error'
     };
   }
 }

@@ -16,6 +16,7 @@ import { FolderPlus, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useToast } from './ToastProvider';
 import { usePathname } from 'next/navigation';
 import { applyTheme, getStoredTheme, setStoredTheme, type ThemePreference } from '@/utils/theme';
+import { useI18n } from '@/components/I18nProvider';
 
 const SIDEBAR_COLLAPSE_KEY = 'app-sidebar-collapsed';
 
@@ -27,6 +28,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ notes, folders, profile, selectedNoteId }: SidebarProps) {
+  const { t } = useI18n();
   const pathname = usePathname();
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
@@ -91,8 +93,8 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     } catch (error) {
       console.error('Failed to create folder:', error);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to create folder',
+        title: t('toast.error'),
+        description: error instanceof Error ? error.message : t('folders.createFolderFailed'),
         variant: 'destructive',
       });
     }
@@ -175,8 +177,8 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
         className={`fixed top-4 left-4 z-50 p-2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-lg text-slate-500 hover:text-slate-900 border border-slate-200 transition-all duration-300 shadow-lg dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-slate-400 dark:hover:text-white dark:border-slate-700 ${
           isCollapsed ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
         }`}
-        aria-label="Expand Sidebar"
-        title="Expand Sidebar"
+        title={t('sidebar.expandSidebar')}
+        aria-label={t('sidebar.expandSidebar')}
       >
         <PanelLeftOpen className="w-5 h-5" />
       </button>
@@ -184,13 +186,13 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
       <aside className={sidebarClasses}>
         <div className="flex flex-col h-full w-64 overflow-hidden">
           <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">My Notes</h2>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">{t('sidebar.myNotes')}</h2>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => handleCollapse(true)}
                 className="text-slate-500 hover:text-slate-900 transition-all p-1 rounded-md hover:bg-slate-100 opacity-100 md:opacity-0 md:group-hover/sidebar:opacity-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
-                aria-label="Collapse Sidebar"
-                title="Collapse Sidebar"
+                aria-label={t('sidebar.collapseSidebar')}
+                title={t('sidebar.collapseSidebar')}
               >
                 <PanelLeftClose className="w-5 h-5" />
               </button>
@@ -215,7 +217,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
                     : 'bg-white text-slate-900 shadow-sm dark:bg-slate-800 dark:text-white'
                 }`}
               >
-                All Notes
+                {t('sidebar.allNotes')}
               </Link>
               <Link
                 href="/favorites"
@@ -225,7 +227,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
                     : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
               >
-                Favorites
+                {t('sidebar.favorites')}
               </Link>
             </div>
             <FavoritesSection notes={notes} />
@@ -243,8 +245,8 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
               <button
                 onClick={() => setIsCreateFolderOpen(true)}
                 className="absolute bottom-full right-3 mb-3 p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg transition-all hover:scale-105 z-20"
-                title="Create folder"
-                aria-label="Create folder"
+                title={t('sidebar.createFolder')}
+                aria-label={t('sidebar.createFolder')}
               >
                 <FolderPlus className="w-5 h-5" />
               </button>

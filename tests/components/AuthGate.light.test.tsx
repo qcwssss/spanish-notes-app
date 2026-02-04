@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import AuthGate from '@/components/AuthGate';
+import { renderWithI18n } from '../utils/renderWithI18n';
 
 vi.mock('@/utils/supabase/client', () => ({
   createBrowserClient: () => ({
@@ -13,7 +14,7 @@ vi.mock('@/utils/supabase/client', () => ({
 
 describe('AuthGate light mode', () => {
   it('uses light card defaults with dark overrides', async () => {
-    render(<AuthGate />);
+    renderWithI18n(<AuthGate />);
     const card = await screen.findByTestId('auth-card');
     expect(card.className).toContain('bg-white');
     expect(card.className).toContain('border-slate-200');

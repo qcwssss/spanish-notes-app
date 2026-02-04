@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import Home from '@/app/page';
+import { renderWithI18n } from '../utils/renderWithI18n';
 
 vi.mock('@/components/AuthGate', () => ({
   default: () => <div>AuthGate</div>,
@@ -33,10 +34,14 @@ vi.mock('@/utils/folders/queries', () => ({
   getFolders: vi.fn(() => Promise.resolve([])),
 }));
 
+vi.mock('next/headers', () => ({
+  cookies: () => Promise.resolve({ get: () => undefined }),
+}));
+
 describe('Home page auth gate', () => {
   it('renders AuthGate', async () => {
     const ui = await Home({ searchParams: Promise.resolve({}) });
-    render(ui);
+    renderWithI18n(ui);
     expect(screen.getByText('AuthGate')).toBeInTheDocument();
   });
 });

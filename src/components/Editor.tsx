@@ -1,12 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { Note } from '@/types/note';
 import { updateNote, deleteNote } from '@/utils/notes/queries';
 import NotePlayer from './NotePlayer';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
+import { useI18n } from '@/components/I18nProvider';
+import { useToast } from '@/components/ToastProvider';
 
 interface EditorProps {
   note: Note;
@@ -16,11 +19,15 @@ interface EditorProps {
 }
 
 export default function Editor({ note, isActive, targetLanguage, initialEditMode = false }: EditorProps) {
+  const { t } = useI18n();
+  const { toast } = useToast();
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content || '');
   const [isEditing, setIsEditing] = useState(initialEditMode);
   const [isSaving, setIsSaving] = useState(false);
   const [showActivationDialog, setShowActivationDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const isFirstMount = useRef(true);
 
@@ -77,6 +84,10 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
     return result || cleanedLine;
   };
 
+  const displayTitle = title && title !== UNTITLED_NOTE_TITLE
+    ? title
+    : t('notes.untitled');
+
   const handleSave = async () => {
     if (!isActive) {
       setShowActivationDialog(true);
@@ -96,21 +107,22 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
       setIsEditing(false);
     } catch (e) {
       console.error(e);
-      alert('Failed to save');
+      toast({ title: t('editor.saveFailed'), variant: 'destructive' });
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this note?')) return;
+    setIsDeleting(true);
     try {
-        await deleteNote(note.id);
-        // Optimistic UI or wait for revalidate
-        // The server action revalidates '/', but we might need to clear the query param
-        router.push('/'); 
+      await deleteNote(note.id);
+      setShowDeleteDialog(false);
+      router.push('/'); 
     } catch {
-        alert('Failed to delete');
+      toast({ title: t('editor.deleteFailed'), variant: 'destructive' });
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -128,10 +140,10 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full bg-transparent text-2xl md:text-3xl font-bold text-slate-900 border-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white placeholder-slate-400 dark:text-slate-100 dark:placeholder-slate-500 dark:focus-visible:ring-offset-slate-900"
-            placeholder="Note Title"
+            placeholder={t('editor.noteTitlePlaceholder')}
           />
         ) : (
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 flex-1 truncate dark:text-slate-100">{title}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 flex-1 truncate dark:text-slate-100">{displayTitle}</h1>
         )}
 
         <div className="flex items-center gap-2 self-end md:self-auto flex-shrink-0">
@@ -141,13 +153,13 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                     onClick={() => setIsEditing(true)}
                     className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-colors border border-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600"
                 >
-                    Edit
+                    {t('editor.edit')}
                 </button>
                 <button
-                    onClick={handleDelete}
+                    onClick={() => setShowDeleteDialog(true)}
                     className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors border border-red-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 dark:border-red-900/30"
                 >
-                    Delete
+                    {t('editor.delete')}
                 </button>
                 </>
             ) : (
@@ -165,7 +177,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                                 router.push('/');
                             } catch (error) {
                                 console.error('Failed to delete empty note:', error);
-                                alert('Failed to delete note.');
+                                toast({ title: t('editor.deleteNoteFailed'), variant: 'destructive' });
                             }
                         } else {
                             // 恢复原内容
@@ -176,14 +188,14 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                     }}
                     className="px-4 py-2 text-slate-500 hover:text-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 dark:text-slate-400 dark:hover:text-slate-100"
                 >
-                    Cancel
+                    {t('editor.cancel')}
                 </button>
                 <button 
                     onClick={handleSave}
                     disabled={isSaving}
                     className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors disabled:opacity-50 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70"
                 >
-                    {isSaving ? 'Saving...' : 'Save'}
+                    {isSaving ? t('editor.saving') : t('editor.save')}
                 </button>
                 </>
             )}
@@ -196,10 +208,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="w-full h-[calc(100vh-200px)] bg-white border border-slate-200 rounded-xl p-4 md:p-6 text-slate-900 font-mono placeholder-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white resize-none leading-relaxed dark:bg-slate-900/40 dark:border-slate-700 dark:text-slate-100 dark:placeholder-slate-500 dark:focus-visible:ring-offset-slate-900"
-              placeholder="Write your Spanish notes here... Format:
-## Heading
-Spanish text
-Chinese translation"
+              placeholder={t('editor.placeholder')}
           />
         ) : (
           <NotePlayer content={content} targetLanguage={targetLanguage} />
@@ -211,6 +220,35 @@ Chinese translation"
             onOpenChange={setShowActivationDialog}
           />
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog.Root open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 bg-slate-950/20 backdrop-blur-sm z-50 dark:bg-black/50" />
+            <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white border border-slate-200 rounded-xl p-6 w-full max-w-sm z-50 shadow-xl dark:bg-slate-800 dark:border-slate-700">
+              <Dialog.Title className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                {t('notes.deleteTitle')}
+              </Dialog.Title>
+              <Dialog.Description className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                {t('notes.deleteDescription')}
+              </Dialog.Description>
+              <div className="mt-4 flex justify-end gap-2">
+                <Dialog.Close asChild>
+                  <button className="px-4 py-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200">
+                    {t('editor.cancel')}
+                  </button>
+                </Dialog.Close>
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg disabled:opacity-50"
+                >
+                  {isDeleting ? t('notes.deleting') : t('editor.delete')}
+                </button>
+              </div>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { renderWithI18n } from '../../utils/renderWithI18n';
 import SettingsPage from '@/app/settings/page';
 
 const profile = {
@@ -24,10 +24,14 @@ vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
 }));
 
+vi.mock('next/headers', () => ({
+  cookies: () => Promise.resolve({ get: () => undefined }),
+}));
+
 describe('Settings page light mode', () => {
   it('uses light default background and text', async () => {
     const ui = await SettingsPage();
-    const { container } = render(ui);
+    const { container } = renderWithI18n(ui);
     const root = container.firstChild as HTMLElement;
 
     expect(root.className).toContain('bg-slate-50');

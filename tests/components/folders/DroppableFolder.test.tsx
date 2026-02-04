@@ -1,8 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DndContext } from '@dnd-kit/core';
 import DroppableFolder from '@/components/DroppableFolder';
 import { useToast } from '@/components/ToastProvider';
+import { renderWithI18n } from '../../utils/renderWithI18n';
+import { I18nProvider } from '@/components/I18nProvider';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -56,7 +58,7 @@ describe('DroppableFolder', () => {
   });
 
   const renderWithDnd = (ui: React.ReactElement) => {
-    return render(<DndContext>{ui}</DndContext>);
+    return renderWithI18n(<DndContext>{ui}</DndContext>);
   };
 
   const defaultProps = {
@@ -150,9 +152,11 @@ describe('DroppableFolder', () => {
     
     const newFolder = { ...mockFolder, name: 'Updated Notes' };
     rerender(
-      <DndContext>
-        <DroppableFolder {...defaultProps} folder={newFolder} />
-      </DndContext>
+      <I18nProvider>
+        <DndContext>
+          <DroppableFolder {...defaultProps} folder={newFolder} />
+        </DndContext>
+      </I18nProvider>
     );
     
     expect(screen.getByText('Updated Notes')).toBeInTheDocument();

@@ -1,9 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import Sidebar from '@/components/Sidebar';
 import type { Folder } from '@/types/folder';
 import type { Note } from '@/types/note';
 import type { UserProfile } from '@/types/profile';
+import { renderWithI18n } from '../../utils/renderWithI18n';
 
 const mockDefaultFolder: Folder = {
   id: 'default-folder',
@@ -56,7 +57,7 @@ vi.mock('@/components/ToastProvider', () => ({
 
 describe('Sidebar Progressive Display', () => {
   it('should show flat list when only default folder exists (simple mode)', () => {
-    render(
+    renderWithI18n(
       <Sidebar 
         notes={mockNotes} 
         folders={[mockDefaultFolder]} 
@@ -68,7 +69,7 @@ describe('Sidebar Progressive Display', () => {
   });
 
   it('should show hierarchy when real folders exist (advanced mode)', () => {
-    render(
+    renderWithI18n(
       <Sidebar 
         notes={mockNotes} 
         folders={[mockDefaultFolder, mockRealFolder]} 
@@ -81,7 +82,7 @@ describe('Sidebar Progressive Display', () => {
   });
 
   it('should show Create Folder button', () => {
-    render(
+    renderWithI18n(
       <Sidebar 
         notes={mockNotes} 
         folders={[mockDefaultFolder]} 

@@ -6,12 +6,17 @@ import { UserProfile, LANGUAGES } from '@/types/profile';
 import { updateTargetLanguage } from '@/utils/profile/queries';
 import { getCharacterLimit } from '@/utils/storage/limits';
 import StorageIndicator from '@/components/StorageIndicator';
+import { useI18n } from '@/components/I18nProvider';
+import { LOCALE_LABELS, type Locale } from '@/i18n/config';
+import { useToast } from '@/components/ToastProvider';
 
 interface SettingsFormProps {
   profile: UserProfile;
 }
 
 export default function SettingsForm({ profile }: SettingsFormProps) {
+  const { locale, setLocale, t } = useI18n();
+  const { toast } = useToast();
   const [selectedLanguage, setSelectedLanguage] = useState(profile.target_language || '');
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
@@ -22,19 +27,19 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
 
   const handleSave = async () => {
     if (!selectedLanguage) {
-      alert('请选择一种语言');
+      toast({ title: t('settings.selectLanguageAlert'), variant: 'destructive' });
       return;
     }
 
     setIsSaving(true);
     try {
       await updateTargetLanguage(selectedLanguage);
-      alert('设置已保存');
+      toast({ title: t('settings.saveSuccessAlert') });
       router.push('/');
       router.refresh();
     } catch (error) {
       console.error(error);
-      alert('保存失败，请稍后重试');
+      toast({ title: t('settings.saveFailedAlert'), variant: 'destructive' });
     } finally {
       setIsSaving(false);
     }
@@ -47,17 +52,44 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
         className="bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4"
       >
         <h2 className="text-xl font-semibold flex items-center gap-2">
-          👤 Account
+          👤 {t('settings.accountTitle')}
         </h2>
         <div className="text-slate-700 dark:text-slate-300">
-          <span className="text-slate-600 dark:text-slate-400 text-sm block mb-1">Email</span>
+          <span className="text-slate-600 dark:text-slate-400 text-sm block mb-1">{t('settings.emailLabel')}</span>
           <span className="font-medium">{profile.email}</span>
         </div>
       </div>
 
       <div className="bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4">
         <h2 className="text-xl font-semibold flex items-center gap-2">
-          🌍 学习语言
+          🌐 {t('settings.interfaceLanguageTitle')}
+        </h2>
+
+        <div>
+          <label
+            htmlFor="interface-language"
+            className="block text-sm text-slate-600 dark:text-slate-400 mb-2"
+          >
+            {t('settings.interfaceLanguageLabel')}
+          </label>
+          <select
+            id="interface-language"
+            value={locale}
+            onChange={(event) => setLocale(event.target.value as Locale)}
+            className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
+          >
+            {Object.entries(LOCALE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4">
+        <h2 className="text-xl font-semibold flex items-center gap-2">
+          🌍 {t('settings.learningLanguageTitle')}
         </h2>
 
         <div>
@@ -65,7 +97,7 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
             htmlFor="target-language"
             className="block text-sm text-slate-600 dark:text-slate-400 mb-2"
           >
-            目标语言
+            {t('settings.targetLanguageLabel')}
           </label>
           <select
             id="target-language"
@@ -74,7 +106,7 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
             disabled={isLanguageLocked}
             className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
           >
-            <option value="">请选择语言</option>
+            <option value="">{t('settings.targetLanguagePlaceholder')}</option>
             {LANGUAGES.map((language) => (
               <option key={language.code} value={language.code}>
                 {language.flag} {language.name}
@@ -88,18 +120,21 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
           disabled={isSaving || isLanguageLocked || !selectedLanguage}
           className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
         >
-          {isSaving ? '保存中...' : isLanguageLocked ? '已锁定' : '保存设置'}
+          {isSaving ? t('settings.savingSettings') : isLanguageLocked ? t('settings.locked') : t('settings.saveSettings')}
         </button>
       </div>
 
       <div className="bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4">
         <h2 className="text-xl font-semibold flex items-center gap-2">
-          📊 存储使用情况
+          📊 {t('settings.storageTitle')}
         </h2>
 
         <div className="space-y-2">
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            已用: {usedCharacters.toLocaleString()} / {characterLimit.toLocaleString()} 字符
+            {t('settings.storageUsed', {
+              used: usedCharacters.toLocaleString(),
+              limit: characterLimit.toLocaleString(),
+            })}
           </p>
           <StorageIndicator used={usedCharacters} limit={characterLimit} />
         </div>

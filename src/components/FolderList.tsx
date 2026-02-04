@@ -10,6 +10,7 @@ import { moveNote } from '@/utils/notes/actions';
 import { renameFolder } from '@/utils/folders/actions';
 import DroppableFolder from './DroppableFolder';
 import DraggableNote from './DraggableNote';
+import { useI18n } from '@/components/I18nProvider';
 
 interface FolderListProps {
   folders: Folder[];
@@ -26,6 +27,7 @@ export default function FolderList({
   showHierarchy = true,
   onSelectFolder
 }: FolderListProps) {
+  const { t } = useI18n();
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     new Set(folders.map(f => f.id))
   );
@@ -89,6 +91,13 @@ export default function FolderList({
     }
   };
 
+  const getDisplayTitle = (title: string | null) => {
+    if (!title || title === UNTITLED_NOTE_TITLE) {
+      return t('notes.untitled');
+    }
+    return title;
+  };
+
   if (!showHierarchy) {
     return (
       <div className="space-y-1">
@@ -98,7 +107,7 @@ export default function FolderList({
             href={`/?noteId=${note.id}`}
             className="block p-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors truncate"
           >
-            {note.title || UNTITLED_NOTE_TITLE}
+            {getDisplayTitle(note.title)}
           </Link>
         ))}
       </div>
