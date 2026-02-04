@@ -112,7 +112,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
           className={`absolute right-8 top-1/2 -translate-y-1/2 p-1.5 rounded transition-all z-10 ${
             note.is_favorite 
               ? 'text-yellow-400 hover:text-yellow-300' 
-              : 'text-slate-500 opacity-0 group-hover:opacity-100 hover:text-yellow-500 dark:text-slate-400 dark:hover:text-yellow-400'
+              : 'text-slate-500 can-hover:opacity-0 can-hover:group-hover:opacity-100 can-hover:group-focus-within:opacity-100 hover:text-yellow-500 dark:text-slate-400 dark:hover:text-yellow-400'
           }`}
           title={note.is_favorite ? t('notes.favoriteRemove') : t('notes.favoriteAdd')}
           aria-label={note.is_favorite ? t('notes.favoriteRemove') : t('notes.favoriteAdd')}
@@ -123,7 +123,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
           type="button"
           onClick={handleDeleteClick}
           onPointerDown={(event) => event.stopPropagation()}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded text-slate-500 opacity-0 transition-all group-hover:opacity-100 hover:bg-slate-100 hover:text-red-500 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-red-400 z-10"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded text-slate-500 can-hover:opacity-0 transition-all can-hover:group-hover:opacity-100 can-hover:group-focus-within:opacity-100 hover:bg-slate-100 hover:text-red-500 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-red-400 z-10"
           title={t('notes.deleteNote')}
           aria-label={t('notes.deleteNote')}
         >
