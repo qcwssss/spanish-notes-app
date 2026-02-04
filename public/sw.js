@@ -55,9 +55,9 @@ self.addEventListener('fetch', (event) => {
   if (isAsset) {
     event.respondWith(
       caches.match(request).then((cached) =>
-        cached || fetch(request).then((response) => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+        cached || fetch(request).then(async (response) => {
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(request, response.clone());
           return response;
         })
       )
