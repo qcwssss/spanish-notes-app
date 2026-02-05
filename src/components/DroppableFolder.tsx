@@ -293,7 +293,7 @@ export default function DroppableFolder({
                     e.stopPropagation();
                     setShowMenu(!showMenu);
                   }}
-                className="rounded p-1 opacity-0 transition-opacity hover:bg-slate-200 focus:opacity-100 group-hover:opacity-100 dark:hover:bg-slate-700"
+                className="rounded p-1 can-hover:opacity-0 transition-opacity hover:bg-slate-200 focus:opacity-100 can-hover:group-hover:opacity-100 can-hover:group-focus-within:opacity-100 dark:hover:bg-slate-700"
                    aria-label={t('folders.folderOptions')}
                 >
                   <MoreVertical className="w-4 h-4" />
@@ -331,7 +331,7 @@ export default function DroppableFolder({
                 type="button"
                 onClick={handleCreateNote}
                 disabled={isCreatingNote}
-                className="rounded p-1 opacity-0 transition-opacity hover:bg-slate-200 focus:opacity-100 group-hover:opacity-100 dark:hover:bg-slate-700"
+                className="rounded p-1 can-hover:opacity-0 transition-opacity hover:bg-slate-200 focus:opacity-100 can-hover:group-hover:opacity-100 can-hover:group-focus-within:opacity-100 dark:hover:bg-slate-700"
                 aria-label={t('folders.createNoteIn', { folder: displayName })}
                 title={t('folders.createNoteIn', { folder: displayName })}
               >
