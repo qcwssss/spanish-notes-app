@@ -22,7 +22,9 @@ vi.mock('@/components/ActivationDialog', () => ({
 }));
 
 vi.mock('@/components/ShareActions', () => ({
-  default: () => null,
+  default: ({ onRequestEdit }: { onRequestEdit: () => void }) => (
+    <button onClick={onRequestEdit}>Edit</button>
+  ),
 }));
 
 vi.mock('@/components/ToastProvider', () => ({

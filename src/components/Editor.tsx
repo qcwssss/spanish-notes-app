@@ -148,17 +148,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
         )}
 
         <div className="flex items-center gap-2 self-end md:self-auto flex-shrink-0">
-            {!isEditing ? (
-                <>
-                <button 
-                    onClick={() => setIsEditing(true)}
-                    className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-colors border border-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600"
-                >
-                    {t('editor.edit')}
-                </button>
-                <ShareActions noteId={note.id} onRequestDelete={() => setShowDeleteDialog(true)} />
-                </>
-            ) : (
+            {isEditing && (
                 <>
                 <button 
                     onClick={async () => {
@@ -214,6 +204,14 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
           <ActivationDialog 
             open={showActivationDialog} 
             onOpenChange={setShowActivationDialog}
+          />
+        )}
+
+        {!isEditing && (
+          <ShareActions
+            noteId={note.id}
+            onRequestEdit={() => setIsEditing(true)}
+            onRequestDelete={() => setShowDeleteDialog(true)}
           />
         )}
 
