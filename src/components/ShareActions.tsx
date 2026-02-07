@@ -1,20 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Ellipsis, Link2, Share2, Trash2, X } from 'lucide-react';
 import { useI18n } from '@/components/I18nProvider';
 import { useToast } from '@/components/ToastProvider';
 import { createOrGetNoteShare, getActiveShareToken, revokeNoteShare } from '@/utils/shares/queries';
 
 interface ShareActionsProps {
   noteId: string;
+  onRequestDelete: () => void;
 }
 
-export default function ShareActions({ noteId }: ShareActionsProps) {
+export default function ShareActions({ noteId, onRequestDelete }: ShareActionsProps) {
   const { t } = useI18n();
   const { toast } = useToast();
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isWorking, setIsWorking] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -42,6 +46,24 @@ export default function ShareActions({ noteId }: ShareActionsProps) {
       cancelled = true;
     };
   }, [noteId]);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!menuRef.current) {
+        return;
+      }
+      if (!menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [menuOpen]);
 
   const copyLink = async (shareToken: string) => {
     const link = `${window.location.origin}/share/${shareToken}`;
@@ -71,6 +93,14 @@ export default function ShareActions({ noteId }: ShareActionsProps) {
     await copyLink(token);
   };
 
+  const handlePrimaryAction = async () => {
+    if (token) {
+      await handleCopy();
+      return;
+    }
+    await handleShare();
+  };
+
   const handleRevoke = async () => {
     setIsWorking(true);
     try {
@@ -84,45 +114,58 @@ export default function ShareActions({ noteId }: ShareActionsProps) {
     }
   };
 
-  if (isLoading) {
-    return (
-      <button
-        disabled
-        className="px-4 py-2 text-slate-500 bg-slate-100 rounded-lg border border-slate-200 disabled:opacity-60 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300"
-      >
-        {t('share.loading')}
-      </button>
-    );
-  }
-
-  if (!token) {
-    return (
-      <button
-        onClick={handleShare}
-        disabled={isWorking}
-        className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors border border-blue-200 disabled:opacity-50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-300 dark:border-blue-900/30"
-      >
-        {t('share.button')}
-      </button>
-    );
-  }
-
   return (
-    <>
+    <div ref={menuRef} className="relative flex items-center gap-2">
       <button
-        onClick={handleCopy}
-        disabled={isWorking}
-        className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors border border-blue-200 disabled:opacity-50 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 dark:text-blue-300 dark:border-blue-900/30"
+        type="button"
+        onClick={handlePrimaryAction}
+        disabled={isLoading || isWorking}
+        aria-label={token ? t('share.copyLink') : t('share.button')}
+        title={token ? t('share.copyLink') : t('share.button')}
+        className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900/40 dark:text-slate-200 dark:hover:bg-slate-800"
       >
-        {t('share.copyLink')}
+        {token ? <Link2 className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
       </button>
+
       <button
-        onClick={handleRevoke}
-        disabled={isWorking}
-        className="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-lg transition-colors border border-amber-200 disabled:opacity-50 dark:bg-amber-900/20 dark:hover:bg-amber-900/40 dark:text-amber-300 dark:border-amber-900/30"
+        type="button"
+        onClick={() => setMenuOpen((open) => !open)}
+        disabled={isLoading || isWorking}
+        aria-label={t('share.moreActions')}
+        title={t('share.moreActions')}
+        className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900/40 dark:text-slate-200 dark:hover:bg-slate-800"
       >
-        {t('share.revoke')}
+        <Ellipsis className="h-4 w-4" />
       </button>
-    </>
+
+      {menuOpen && (
+        <div className="absolute right-0 top-12 z-20 min-w-44 rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+          {token && (
+            <button
+              type="button"
+              onClick={async () => {
+                await handleRevoke();
+                setMenuOpen(false);
+              }}
+              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-amber-700 transition-colors hover:bg-amber-50 dark:text-amber-300 dark:hover:bg-amber-900/30"
+            >
+              <X className="h-4 w-4" />
+              {t('share.revoke')}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              onRequestDelete();
+              setMenuOpen(false);
+            }}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-red-700 transition-colors hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-900/30"
+          >
+            <Trash2 className="h-4 w-4" />
+            {t('editor.delete')}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }

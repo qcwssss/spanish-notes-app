@@ -146,7 +146,7 @@ export async function getSharedNoteByToken(token: string): Promise<SharedNoteVie
     id: row.note_id as string,
     title: row.title as string,
     content: row.content as string,
-    targetLanguage: (row.target_language as string | null) ?? 'es',
+    targetLanguage: row.target_language as string | null,
     updatedAt: row.updated_at as string,
   };
 }

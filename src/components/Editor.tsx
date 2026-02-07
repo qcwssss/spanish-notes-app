@@ -156,13 +156,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                 >
                     {t('editor.edit')}
                 </button>
-                <button
-                    onClick={() => setShowDeleteDialog(true)}
-                    className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors border border-red-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 dark:border-red-900/30"
-                >
-                    {t('editor.delete')}
-                </button>
-                <ShareActions noteId={note.id} />
+                <ShareActions noteId={note.id} onRequestDelete={() => setShowDeleteDialog(true)} />
                 </>
             ) : (
                 <>

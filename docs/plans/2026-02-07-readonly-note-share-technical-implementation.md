@@ -33,7 +33,7 @@
 2. 不破坏现有首页编辑流程。
 3. 不影响现有 Cloudflare Pages 构建与部署。
 
-### 2.5 链接生成规则
+### 2.4 链接生成规则
 1. 分享链接格式：`{publicAppUrl}/share/{token}`。
 2. token 必须位于 path，不使用 query 参数传 token。
 3. `publicAppUrl` 优先级：
@@ -41,7 +41,7 @@
    - 运行时 `headers` 推导的 origin（预览环境）
    - `http://localhost:3000`（本地兜底）
 
-### 2.4 范围边界（V1）
+### 2.5 范围边界（V1）
 1. 不实现 WebSocket/Supabase Realtime 的强实时自动更新。
 2. 不实现独立“分享管理页”。
 3. 不实现一条笔记多分享链接管理。
@@ -81,7 +81,7 @@
 
 建议新建：`src/utils/shares/queries.ts`
 
-1. `createOrGetNoteShare(noteId: string): Promise<{ token: string; url: string }>`
+1. `createOrGetNoteShare(noteId: string): Promise<{ token: string }>`
    - 前置：用户已登录
    - 校验：`notes.user_id === auth.uid()`
    - 行为：
@@ -230,7 +230,6 @@ export interface SharedNoteView {
 2. 分享页不存在编辑/删除/收藏按钮。
 3. 可触发发音流程（mock `speechSynthesis`）。
 4. 无效 token 显示不可用文案。
-5. （可选）作者修改后，轮询触发“有更新”提示。
 5. （可选）作者修改后，回到页面触发“有更新”提示。
 
 ### 5.3 手工验收
