@@ -18,6 +18,9 @@
 6. 访问者可在分享页点击文本触发浏览器发音（TTS）。
 7. 作者修改笔记后，访问者刷新页面可看到最新内容（弱实时）。
 8. 作者在笔记编辑页内管理分享，不新增独立分享管理页面。
+9. 作者撤销后再次分享同一笔记时，恢复同一个 token（不生成新 token）。
+10. 分享页发音语言固定跟随作者 `profile.target_language`；访问者不能切换语言种类，仅可切换该语言下语音包。
+11. 无效分享链接展示业务宣传页（统一不可用文案 + CTA，不区分具体失效原因）。
 
 ### 2.2 安全要求
 1. 分享 token 必须高熵随机、不可枚举。
@@ -29,6 +32,14 @@
 1. 兼容当前 i18n 架构（中英文）。
 2. 不破坏现有首页编辑流程。
 3. 不影响现有 Cloudflare Pages 构建与部署。
+
+### 2.5 链接生成规则
+1. 分享链接格式：`{publicAppUrl}/share/{token}`。
+2. token 必须位于 path，不使用 query 参数传 token。
+3. `publicAppUrl` 优先级：
+   - `NEXT_PUBLIC_APP_URL`
+   - 运行时 `headers` 推导的 origin（预览环境）
+   - `http://localhost:3000`（本地兜底）
 
 ### 2.4 范围边界（V1）
 1. 不实现 WebSocket/Supabase Realtime 的强实时自动更新。
@@ -74,8 +85,9 @@
    - 前置：用户已登录
    - 校验：`notes.user_id === auth.uid()`
    - 行为：
-     - 若 note_shares 已存在且 active，返回已有 token
-     - 若不存在则创建并返回新 token
+      - 若 note_shares 已存在且 active，返回已有 token
+      - 若 note_shares 已存在但 inactive，恢复为 active 并返回原 token
+      - 若不存在则创建并返回新 token
    - 错误：`unauthenticated | forbidden | note_not_found | unknown`
 
 2. `revokeNoteShare(noteId: string): Promise<{ success: true }>`
@@ -93,7 +105,7 @@
      - `note.id`
      - `note.title`
      - `note.content`
-     - `targetLanguage`（来源 owner profile）
+      - `targetLanguage`（来源 owner `profile.target_language`）
      - `updated_at`
 
 类型建议：
@@ -115,7 +127,7 @@ export interface SharedNoteView {
 页面行为：
 1. 服务端读取 token 并调用 `getSharedNoteByToken`。
 2. 有效：渲染只读页面（标题 + NotePlayer）。
-3. 无效：渲染“分享不可用”文案（不返回原文）。
+3. 无效：渲染业务宣传页（不返回原文，统一不可用文案 + CTA）。
 
 页面限制：
 - 不渲染 `Editor` 的编辑/删除控件。
@@ -219,6 +231,7 @@ export interface SharedNoteView {
 3. 可触发发音流程（mock `speechSynthesis`）。
 4. 无效 token 显示不可用文案。
 5. （可选）作者修改后，轮询触发“有更新”提示。
+5. （可选）作者修改后，回到页面触发“有更新”提示。
 
 ### 5.3 手工验收
 1. 登录 A 创建分享，匿名窗口打开可读可点读。
