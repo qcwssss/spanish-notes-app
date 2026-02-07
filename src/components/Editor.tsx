@@ -7,6 +7,7 @@ import { updateNote, deleteNote } from '@/utils/notes/queries';
 import NotePlayer from './NotePlayer';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
+import ShareActions from './ShareActions';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
 import { useI18n } from '@/components/I18nProvider';
 import { useToast } from '@/components/ToastProvider';
@@ -161,6 +162,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                 >
                     {t('editor.delete')}
                 </button>
+                <ShareActions noteId={note.id} />
                 </>
             ) : (
                 <>

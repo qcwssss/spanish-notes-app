@@ -11,6 +11,14 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
+vi.mock('@/components/ShareActions', () => ({
+  default: () => null,
+}));
+
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: () => ({ toast: vi.fn() }),
+}));
+
 describe('Editor light mode', () => {
   it('uses light defaults for editor surface', () => {
     const { container } = renderWithI18n(

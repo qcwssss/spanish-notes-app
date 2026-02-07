@@ -21,6 +21,14 @@ vi.mock('@/components/ActivationDialog', () => ({
   default: ({ open }: { open: boolean }) => (open ? <div>ActivationDialogOpen</div> : null),
 }));
 
+vi.mock('@/components/ShareActions', () => ({
+  default: () => null,
+}));
+
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: () => ({ toast: vi.fn() }),
+}));
+
 const note = {
   id: '1',
   title: 'Test Note',
