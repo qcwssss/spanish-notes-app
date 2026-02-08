@@ -9,6 +9,24 @@ import RevokeShareButton from '@/components/RevokeShareButton';
 
 export const runtime = 'edge';
 
+interface ShareRow {
+  id: string;
+  note_id: string;
+  token: string;
+  is_active: boolean;
+  created_at: string;
+  note:
+    | {
+        id: string | null;
+        title: string | null;
+      }
+    | {
+        id: string | null;
+        title: string | null;
+      }[]
+    | null;
+}
+
 export default async function SettingsPage() {
   const profile = await getUserProfile();
   const locale = await getServerLocale();
@@ -38,7 +56,7 @@ export default async function SettingsPage() {
   const supabase = await createServerClient();
   const { data: shareRows, error: shareError } = await supabase
     .from('note_shares')
-    .select('note_id, token, is_active, created_at, note:notes!note_shares_note_id_fkey(id, title)')
+    .select('id, note_id, token, is_active, created_at, note:notes!note_shares_note_id_fkey(id, title)')
     .eq('owner_id', profile.id)
     .order('created_at', { ascending: false });
 
@@ -77,10 +95,10 @@ export default async function SettingsPage() {
             <p className="text-sm text-slate-600 dark:text-slate-300">{t('share.noShares')}</p>
           ) : (
             <div className="space-y-3">
-              {shareRows.map((row) => {
+              {(shareRows as ShareRow[]).map((row) => {
                 const note = Array.isArray(row.note) ? row.note[0] : row.note;
                 return (
-                  <div key={`${row.token}-${row.created_at}`} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+                  <div key={row.id} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
                     <p className="truncate font-medium">{note?.title || t('notes.untitled')}</p>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                       {row.is_active ? t('share.statusActive') : t('share.statusRevoked')}

@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Link2, Moon, Sun } from 'lucide-react';
 import { ThemePreference } from '@/utils/theme';
 import { useI18n } from '@/components/I18nProvider';
+import { ROUTES } from '@/constants';
 
 interface UserInfoCardProps {
   profile: UserProfile;
@@ -87,7 +88,7 @@ export default function UserInfoCard({ profile, theme, onToggleTheme }: UserInfo
           <span>{language.name}</span>
           <span className="text-slate-500 dark:text-slate-500">({profile.plan_type === 'free' ? t('profile.planFree') : t('profile.planPro')})</span>
           <Link
-            href="/settings#shared-links"
+            href={ROUTES.settingsSharedLinks}
             className="ml-auto inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100"
             aria-label={t('share.manageEntry')}
             title={t('share.manageEntry')}
@@ -101,7 +102,7 @@ export default function UserInfoCard({ profile, theme, onToggleTheme }: UserInfo
 
       <div className="flex items-center gap-2">
         <Link
-          href="/settings"
+          href={ROUTES.settings}
           className="block flex-1 rounded-lg bg-white px-4 py-2 text-center text-sm text-slate-700 shadow-sm transition-colors hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
         >
           ⚙️ {t('profile.settings')}
