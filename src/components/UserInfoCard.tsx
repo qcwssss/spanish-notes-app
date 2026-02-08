@@ -87,7 +87,7 @@ export default function UserInfoCard({ profile, theme, onToggleTheme }: UserInfo
           <span>{language.name}</span>
           <span className="text-slate-500 dark:text-slate-500">({profile.plan_type === 'free' ? t('profile.planFree') : t('profile.planPro')})</span>
           <Link
-            href="/shares"
+            href="/settings#shared-links"
             className="ml-auto inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100"
             aria-label={t('share.manageEntry')}
             title={t('share.manageEntry')}

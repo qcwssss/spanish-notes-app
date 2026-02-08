@@ -1,8 +1,11 @@
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { getUserProfile } from '@/utils/profile/queries';
 import SettingsForm from './SettingsForm';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
+import { createServerClient } from '@/utils/supabase/server';
+import RevokeShareButton from '@/components/RevokeShareButton';
 
 export const runtime = 'edge';
 
@@ -32,6 +35,25 @@ export default async function SettingsPage() {
     );
   }
 
+  const supabase = await createServerClient();
+  const { data: shareRows, error: shareError } = await supabase
+    .from('note_shares')
+    .select('note_id, token, is_active, created_at, note:notes!note_shares_note_id_fkey(id, title)')
+    .eq('owner_id', profile.id)
+    .order('created_at', { ascending: false });
+
+  if (shareError) {
+    throw new Error(shareError.message);
+  }
+
+  const dateFormatter = new Intl.DateTimeFormat(locale === 'zh' ? 'zh-CN' : 'en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <div className="max-w-2xl mx-auto p-8 space-y-8">
@@ -46,6 +68,55 @@ export default async function SettingsPage() {
         </div>
 
         <SettingsForm profile={profile} />
+
+        <section id="shared-links" className="bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4">
+          <h2 className="text-xl font-semibold flex items-center gap-2">🔗 {t('share.manageTitle')}</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-300">{t('share.manageSubtitle')}</p>
+
+          {!shareRows || shareRows.length === 0 ? (
+            <p className="text-sm text-slate-600 dark:text-slate-300">{t('share.noShares')}</p>
+          ) : (
+            <div className="space-y-3">
+              {shareRows.map((row) => {
+                const note = Array.isArray(row.note) ? row.note[0] : row.note;
+                return (
+                  <div key={`${row.token}-${row.created_at}`} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+                    <p className="truncate font-medium">{note?.title || t('notes.untitled')}</p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      {row.is_active ? t('share.statusActive') : t('share.statusRevoked')}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      {t('share.latestSharedAt', { date: dateFormatter.format(new Date(row.created_at)) })}
+                    </p>
+
+                    <div className="mt-2 flex items-center gap-2">
+                      {row.is_active && (
+                        <Link
+                          href={`/share/${row.token}`}
+                          target="_blank"
+                          className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                        >
+                          {t('share.openShare')}
+                        </Link>
+                      )}
+
+                      {note?.id && (
+                        <Link
+                          href={`/?noteId=${note.id}`}
+                          className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                        >
+                          {t('share.openNote')}
+                        </Link>
+                      )}
+
+                      {note?.id && row.is_active && <RevokeShareButton noteId={row.note_id} />}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );

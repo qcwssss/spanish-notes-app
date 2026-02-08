@@ -28,6 +28,6 @@ describe('UserInfoCard', () => {
 
     const manageLink = screen.getByRole('link', { name: 'Manage shared links' });
     expect(manageLink).toBeInTheDocument();
-    expect(manageLink.getAttribute('href')).toBe('/shares');
+    expect(manageLink.getAttribute('href')).toBe('/settings#shared-links');
   });
 });
