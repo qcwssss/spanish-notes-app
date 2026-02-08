@@ -5,6 +5,20 @@
 
 关联产品方案：`docs/plans/2026-02-07-readonly-note-share-plan.md`
 
+## 1.1 实施状态（2026-02-08）
+
+### 已完成（V1）
+- [x] 数据层：`note_shares` migration 与公开读取函数（RPC）
+- [x] 服务端：`createOrGetNoteShare` / `getActiveShareToken` / `revokeNoteShare` / `getSharedNoteByToken`
+- [x] 分享页：`/share/[token]` 只读展示 + 无效链接业务页
+- [x] 作者端交互：分享/复制/撤销/删除（FAB icon-only）
+- [x] i18n：分享相关中英文文案
+- [x] 验证：本地测试通过，Cloudflare Pages 构建通过
+
+### 待做（可选）
+- [x] V1.1 被动更新提醒（回到页面触发版本检查）
+- [x] 分享页主题切换入口
+
 ---
 
 ## 2. 实施要求（Must Have）

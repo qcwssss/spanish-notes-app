@@ -10,6 +10,10 @@ export interface SharedNoteView {
   updatedAt: string;
 }
 
+export interface ShareVersionView {
+  updatedAt: string;
+}
+
 const generateShareToken = () => {
   return `${crypto.randomUUID().replace(/-/g, '')}${crypto.randomUUID().replace(/-/g, '')}`;
 };
@@ -146,6 +150,12 @@ export async function getSharedNoteByToken(token: string): Promise<SharedNoteVie
   });
 
   if (error) {
+    if (error.message.includes('Could not find the function public.get_shared_note_by_token')) {
+      console.error(
+        'Missing DB function get_shared_note_by_token. Apply Supabase migrations 004/005 to enable share RPCs.'
+      );
+      return null;
+    }
     throw new Error(error.message);
   }
 
@@ -159,6 +169,33 @@ export async function getSharedNoteByToken(token: string): Promise<SharedNoteVie
     title: row.title as string,
     content: row.content as string,
     targetLanguage: row.target_language as string | null,
+    updatedAt: row.updated_at as string,
+  };
+}
+
+export async function getShareVersionByToken(token: string): Promise<ShareVersionView | null> {
+  const supabase = await createServerClient();
+
+  const { data, error } = await supabase.rpc('get_shared_note_version_by_token', {
+    input_token: token,
+  });
+
+  if (error) {
+    if (error.message.includes('Could not find the function public.get_shared_note_version_by_token')) {
+      console.error(
+        'Missing DB function get_shared_note_version_by_token. Apply Supabase migrations 004/005 to enable share version checks.'
+      );
+      return null;
+    }
+    throw new Error(error.message);
+  }
+
+  const row = Array.isArray(data) ? data[0] : null;
+  if (!row) {
+    return null;
+  }
+
+  return {
     updatedAt: row.updated_at as string,
   };
 }

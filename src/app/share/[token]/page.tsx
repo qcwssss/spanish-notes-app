@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import NotePlayer from '@/components/NotePlayer';
+import ShareThemeToggle from '@/components/ShareThemeToggle';
+import ShareUpdateWatcher from '@/components/ShareUpdateWatcher';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 import { getSharedNoteByToken } from '@/utils/shares/queries';
@@ -9,9 +11,9 @@ export const runtime = 'edge';
 export default async function SharedNotePage({
   params,
 }: {
-  params: { token: string };
+  params: Promise<{ token: string }>;
 }) {
-  const { token } = params;
+  const { token } = await params;
   const locale = await getServerLocale();
   const t = createTranslator(locale);
   const note = await getSharedNoteByToken(token);
@@ -46,11 +48,16 @@ export default async function SharedNotePage({
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <main className="mx-auto max-w-4xl px-4 py-8 md:py-12">
+        <ShareUpdateWatcher token={token} initialUpdatedAt={note.updatedAt} />
+
         <div className="mb-4 flex items-center justify-between gap-3">
           <h1 className="truncate text-2xl font-bold text-slate-900 dark:text-slate-100">{note.title}</h1>
-          <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
-            {t('share.readonlyBadge')}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+              {t('share.readonlyBadge')}
+            </span>
+            <ShareThemeToggle />
+          </div>
         </div>
 
         <NotePlayer content={note.content} targetLanguage={note.targetLanguage} />

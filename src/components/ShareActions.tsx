@@ -67,6 +67,21 @@ export default function ShareActions({ noteId, onRequestEdit, onRequestDelete }:
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [menuOpen]);
+
   const copyLink = async (shareToken: string) => {
     const link = `${window.location.origin}/share/${shareToken}`;
     try {
@@ -111,29 +126,44 @@ export default function ShareActions({ noteId, onRequestEdit, onRequestDelete }:
   return (
     <div
       ref={menuRef}
-      className="fixed right-4 z-40 flex items-center gap-2 md:right-6"
+      className="fixed right-4 z-40 md:right-6"
       style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
     >
-      <button
-        type="button"
-        onClick={onRequestEdit}
-        aria-label={t('editor.edit')}
-        title={t('editor.edit')}
-        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-md transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-      >
-        <Pencil className="h-4 w-4" />
-      </button>
+      <div className="relative h-12 w-[6.5rem] rounded-full border border-slate-200 bg-white/95 shadow-lg backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
+        <button
+          type="button"
+          onClick={onRequestEdit}
+          aria-label={t('editor.edit')}
+          title={t('editor.edit')}
+          className="absolute left-0 top-0 h-full w-1/2 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+        />
 
-      <button
-        type="button"
-        onClick={() => setMenuOpen((open) => !open)}
-        disabled={isLoading || isWorking}
-        aria-label={t('share.moreActions')}
-        title={t('share.moreActions')}
-        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-md transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-      >
-        <Ellipsis className="h-4 w-4" />
-      </button>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          disabled={isLoading || isWorking}
+          aria-label={t('share.moreActions')}
+          title={t('share.moreActions')}
+          className="absolute right-0 top-0 h-full w-1/2 rounded-full disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+        />
+
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex w-1/2 items-center justify-center text-slate-500 dark:text-slate-300">
+          <Pencil className="h-4 w-4" />
+        </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex w-1/2 items-center justify-center text-slate-500 dark:text-slate-300">
+          <Ellipsis className="h-4 w-4" />
+        </div>
+
+        <button
+          type="button"
+          onClick={menuOpen ? () => setMenuOpen(false) : onRequestEdit}
+          aria-label={menuOpen ? t('share.moreActions') : t('editor.edit')}
+          title={menuOpen ? t('share.moreActions') : t('editor.edit')}
+          className={`absolute left-0.5 top-0.5 inline-flex h-11 w-11 items-center justify-center rounded-full border border-blue-200 bg-blue-600 text-white shadow-sm transition-[transform,background-color] duration-200 ease-out hover:bg-blue-500 dark:border-blue-700/60 dark:bg-blue-600 dark:hover:bg-blue-500 ${menuOpen ? 'translate-x-14' : 'translate-x-0'}`}
+        >
+          {menuOpen ? <Ellipsis className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+        </button>
+      </div>
 
       {menuOpen && (
         <div className="absolute bottom-14 right-0 z-20 flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
