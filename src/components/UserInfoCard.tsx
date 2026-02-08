@@ -6,7 +6,7 @@ import { getCharacterLimit } from '@/utils/storage/limits';
 import StorageIndicator from './StorageIndicator';
 import ActivationDialog from './ActivationDialog';
 import Link from 'next/link';
-import { Moon, Sun } from 'lucide-react';
+import { Link2, Moon, Sun } from 'lucide-react';
 import { ThemePreference } from '@/utils/theme';
 import { useI18n } from '@/components/I18nProvider';
 
@@ -86,6 +86,14 @@ export default function UserInfoCard({ profile, theme, onToggleTheme }: UserInfo
           <span>{language.flag}</span>
           <span>{language.name}</span>
           <span className="text-slate-500 dark:text-slate-500">({profile.plan_type === 'free' ? t('profile.planFree') : t('profile.planPro')})</span>
+          <Link
+            href="/shares"
+            className="ml-auto inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100"
+            aria-label={t('share.manageEntry')}
+            title={t('share.manageEntry')}
+          >
+            <Link2 className="h-4 w-4" />
+          </Link>
         </div>
       )}
 
