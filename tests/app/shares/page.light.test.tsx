@@ -11,6 +11,10 @@ vi.mock('@/utils/shares/queries', () => ({
   revokeNoteShare: vi.fn(() => Promise.resolve()),
 }));
 
+vi.mock('@/components/RevokeShareButton', () => ({
+  default: () => <button>Revoke share</button>,
+}));
+
 vi.mock('@/utils/supabase/server', () => ({
   createServerClient: vi.fn(() =>
     Promise.resolve({
@@ -27,6 +31,7 @@ vi.mock('@/utils/supabase/server', () => ({
                     data: [
                       {
                         note_id: 'note-1',
+                        note: { id: 'note-1', title: 'Shared test note' },
                         token: 'token-1',
                         is_active: true,
                         created_at: '2026-02-08T10:00:00.000Z',
@@ -36,19 +41,6 @@ vi.mock('@/utils/supabase/server', () => ({
                   })
                 ),
               })),
-            })),
-          };
-        }
-
-        if (table === 'notes') {
-          return {
-            select: vi.fn(() => ({
-              in: vi.fn(() =>
-                Promise.resolve({
-                  data: [{ id: 'note-1', title: 'Shared test note' }],
-                  error: null,
-                })
-              ),
             })),
           };
         }

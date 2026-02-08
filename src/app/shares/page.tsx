@@ -1,9 +1,8 @@
 import Link from 'next/link';
-import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/utils/supabase/server';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
-import { revokeNoteShare } from '@/utils/shares/queries';
+import RevokeShareButton from '@/components/RevokeShareButton';
 
 export const runtime = 'edge';
 
@@ -12,7 +11,25 @@ interface ShareRow {
   token: string;
   is_active: boolean;
   created_at: string;
+  note:
+    | {
+        id: string | null;
+        title: string | null;
+      }
+    | {
+        id: string | null;
+        title: string | null;
+      }[]
+    | null;
 }
+
+const getRelatedNote = (row: ShareRow): { id: string | null; title: string | null } | null => {
+  if (!row.note) return null;
+  if (Array.isArray(row.note)) {
+    return row.note[0] ?? null;
+  }
+  return row.note;
+};
 
 export default async function SharesPage() {
   const locale = await getServerLocale();
@@ -39,7 +56,7 @@ export default async function SharesPage() {
 
   const { data, error } = await supabase
     .from('note_shares')
-    .select('note_id, token, is_active, created_at')
+    .select('note_id, token, is_active, created_at, note:notes!note_shares_note_id_fkey(id, title)')
     .eq('owner_id', user.id)
     .order('created_at', { ascending: false });
 
@@ -55,27 +72,6 @@ export default async function SharesPage() {
     hour: '2-digit',
     minute: '2-digit',
   });
-  const noteIds = rows.map((row) => row.note_id);
-
-  const noteMap = new Map<string, { id: string; title: string }>();
-  if (noteIds.length > 0) {
-    const { data: notes, error: notesError } = await supabase
-      .from('notes')
-      .select('id, title')
-      .in('id', noteIds);
-
-    if (notesError) {
-      throw new Error(notesError.message);
-    }
-
-    (notes ?? []).forEach((note) => {
-      noteMap.set(note.id as string, {
-        id: note.id as string,
-        title: (note.title as string) || '',
-      });
-    });
-  }
-
   return (
     <main className="mx-auto max-w-4xl px-4 py-8 md:py-10">
       <div className="mb-6">
@@ -89,11 +85,16 @@ export default async function SharesPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {rows.map((row) => (
+          {rows.map((row) => {
+            const note = getRelatedNote(row);
+            const noteId = note?.id ?? null;
+            const hasNote = Boolean(noteId);
+
+            return (
             <div key={`${row.token}-${row.created_at}`} className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900/70">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="truncate font-medium">{noteMap.get(row.note_id)?.title || t('notes.untitled')}</p>
+                  <p className="truncate font-medium">{note?.title || t('notes.untitled')}</p>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     {row.is_active ? t('share.statusActive') : t('share.statusRevoked')}
                   </p>
@@ -113,35 +114,23 @@ export default async function SharesPage() {
                     </Link>
                   )}
 
-                  {noteMap.get(row.note_id)?.id && (
+                  {hasNote && (
                     <Link
-                      href={`/?noteId=${row.note_id}`}
+                      href={`/?noteId=${noteId}`}
                       className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                     >
                       {t('share.openNote')}
                     </Link>
                   )}
 
-                  {noteMap.get(row.note_id)?.id && row.is_active && (
-                    <form
-                      action={async () => {
-                        'use server';
-                        await revokeNoteShare(row.note_id);
-                        revalidatePath('/shares');
-                      }}
-                    >
-                      <button
-                        type="submit"
-                        className="rounded-lg bg-amber-50 px-3 py-1.5 text-sm text-amber-700 hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300 dark:hover:bg-amber-900/50"
-                      >
-                        {t('share.revoke')}
-                      </button>
-                    </form>
+                  {hasNote && row.is_active && (
+                    <RevokeShareButton noteId={row.note_id} />
                   )}
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </main>
