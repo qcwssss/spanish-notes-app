@@ -15,6 +15,10 @@ vi.mock('@/components/StorageIndicator', () => ({
   default: () => <div>StorageIndicator</div>,
 }));
 
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: () => ({ toast: vi.fn() }),
+}));
+
 const profile = {
   id: 'test-id',
   email: 'test@example.com',

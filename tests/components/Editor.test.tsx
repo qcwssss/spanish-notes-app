@@ -21,6 +21,16 @@ vi.mock('@/components/ActivationDialog', () => ({
   default: ({ open }: { open: boolean }) => (open ? <div>ActivationDialogOpen</div> : null),
 }));
 
+vi.mock('@/components/ShareActions', () => ({
+  default: ({ onRequestEdit }: { onRequestEdit: () => void }) => (
+    <button onClick={onRequestEdit}>Edit</button>
+  ),
+}));
+
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: () => ({ toast: vi.fn() }),
+}));
+
 const note = {
   id: '1',
   title: 'Test Note',

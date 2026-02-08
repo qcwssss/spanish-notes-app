@@ -7,6 +7,7 @@ import { updateNote, deleteNote } from '@/utils/notes/queries';
 import NotePlayer from './NotePlayer';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
+import ShareActions from './ShareActions';
 import { UNTITLED_NOTE_TITLE } from '@/constants';
 import { useI18n } from '@/components/I18nProvider';
 import { useToast } from '@/components/ToastProvider';
@@ -147,22 +148,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
         )}
 
         <div className="flex items-center gap-2 self-end md:self-auto flex-shrink-0">
-            {!isEditing ? (
-                <>
-                <button 
-                    onClick={() => setIsEditing(true)}
-                    className="px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-colors border border-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/60 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600"
-                >
-                    {t('editor.edit')}
-                </button>
-                <button
-                    onClick={() => setShowDeleteDialog(true)}
-                    className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors border border-red-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 dark:border-red-900/30"
-                >
-                    {t('editor.delete')}
-                </button>
-                </>
-            ) : (
+            {isEditing && (
                 <>
                 <button 
                     onClick={async () => {
@@ -218,6 +204,14 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
           <ActivationDialog 
             open={showActivationDialog} 
             onOpenChange={setShowActivationDialog}
+          />
+        )}
+
+        {!isEditing && (
+          <ShareActions
+            noteId={note.id}
+            onRequestEdit={() => setIsEditing(true)}
+            onRequestDelete={() => setShowDeleteDialog(true)}
           />
         )}
 
