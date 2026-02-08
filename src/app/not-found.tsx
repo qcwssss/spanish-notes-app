@@ -1,8 +1,6 @@
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 
-export const runtime = 'edge';
-
 export default async function NotFound() {
   const locale = await getServerLocale();
   const t = createTranslator(locale);

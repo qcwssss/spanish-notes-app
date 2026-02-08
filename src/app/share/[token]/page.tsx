@@ -6,8 +6,6 @@ import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 import { getSharedNoteByToken } from '@/utils/shares/queries';
 
-export const runtime = 'edge';
-
 export default async function SharedNotePage({
   params,
 }: {

@@ -7,8 +7,6 @@ import AuthGate from '@/components/AuthGate';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 
-export const runtime = 'edge';
-
 export default async function Home({
   searchParams,
 }: {

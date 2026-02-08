@@ -8,8 +8,6 @@ import { createServerClient } from '@/utils/supabase/server';
 import RevokeShareButton from '@/components/RevokeShareButton';
 import ScrollToSectionOnLoad from '@/components/ScrollToSectionOnLoad';
 
-export const runtime = 'edge';
-
 interface SettingsSearchParams {
   section?: string;
 }

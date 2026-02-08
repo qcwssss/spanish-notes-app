@@ -2,8 +2,6 @@ import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseConfig } from '@/utils/supabase/config';
 
-export const runtime = 'edge';
-
 export async function GET(request: NextRequest) {
   const { supabaseUrl, supabaseAnonKey } = getSupabaseConfig();
   const { searchParams, origin } = new URL(request.url);

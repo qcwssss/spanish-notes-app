@@ -5,8 +5,6 @@ import Sidebar from '@/components/Sidebar';
 import FavoritesView from '@/components/FavoritesView';
 import AuthGate from '@/components/AuthGate';
 
-export const runtime = 'edge';
-
 export default async function FavoritesPage() {
   const supabase = await createServerClient();
   const profile = await getUserProfile();

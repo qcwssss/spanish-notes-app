@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getShareVersionByToken, getSharedNoteByToken } from '@/utils/shares/queries';
 
-export const runtime = 'edge';
-
 export async function GET(
   _request: Request,
   context: { params: Promise<{ token: string }> }
