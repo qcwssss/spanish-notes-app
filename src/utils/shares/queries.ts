@@ -84,9 +84,11 @@ export async function createOrGetNoteShare(noteId: string): Promise<{ token: str
   }
 
   if (existing && !existing.is_active) {
+    // Product decision: this timestamp represents latest sharing time,
+    // so re-activating a share refreshes created_at for list display.
     const { data: updated, error: updateError } = await supabase
       .from('note_shares')
-      .update({ is_active: true })
+      .update({ is_active: true, created_at: new Date().toISOString() })
       .eq('id', existing.id)
       .select('token')
       .single();

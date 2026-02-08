@@ -28,6 +28,22 @@ vi.mock('next/headers', () => ({
   cookies: () => Promise.resolve({ get: () => undefined }),
 }));
 
+vi.mock('@/utils/supabase/server', () => ({
+  createServerClient: vi.fn(() =>
+    Promise.resolve({
+      from: vi.fn(() => ({
+        select: vi.fn(() => ({
+          eq: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn(() => Promise.resolve({ data: [], error: null })),
+            })),
+          })),
+        })),
+      })),
+    })
+  ),
+}));
+
 describe('Settings page light mode', () => {
   it('uses light default background and text', async () => {
     const ui = await SettingsPage();
