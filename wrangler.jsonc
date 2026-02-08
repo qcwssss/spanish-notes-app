@@ -13,5 +13,16 @@
       "binding": "WORKER_SELF_REFERENCE",
       "service": "note-lingo-app"
     }
-  ]
+  ],
+  "env": {
+    "preview": {
+      "name": "note-lingo-app-preview",
+      "services": [
+        {
+          "binding": "WORKER_SELF_REFERENCE",
+          "service": "note-lingo-app-preview"
+        }
+      ]
+    }
+  }
 }
