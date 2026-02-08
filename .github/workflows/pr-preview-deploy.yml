@@ -14,39 +14,42 @@ concurrency:
 
 jobs:
   deploy-preview:
-    if: github.event.pull_request.head.repo.full_name == github.repository && secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != ''
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PREVIEW_WORKER_NAME: note-lingo-app-preview
     steps:
       - name: Checkout
+        if: github.event.pull_request.head.repo.full_name == github.repository && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         uses: actions/checkout@v4
 
       - name: Setup Node
+        if: github.event.pull_request.head.repo.full_name == github.repository && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
       - name: Install dependencies
+        if: github.event.pull_request.head.repo.full_name == github.repository && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         run: npm ci
 
       - name: Build OpenNext bundle
+        if: github.event.pull_request.head.repo.full_name == github.repository && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         run: npm run pages:build
 
       - name: Verify Wrangler CLI
+        if: github.event.pull_request.head.repo.full_name == github.repository && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         run: npx wrangler --version
 
       - name: Deploy preview worker
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        if: github.event.pull_request.head.repo.full_name == github.repository && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         run: npx wrangler deploy --env preview --config wrangler.jsonc
 
       - name: Resolve preview URL
         id: preview_url
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          PREVIEW_WORKER_NAME: note-lingo-app-preview
+        if: github.event.pull_request.head.repo.full_name == github.repository && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         run: |
           node <<'EOF'
           const fs = require('node:fs');
@@ -92,6 +95,7 @@ jobs:
           EOF
 
       - name: Comment preview info on PR
+        if: github.event.pull_request.head.repo.full_name == github.repository && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -99,11 +103,8 @@ jobs:
             --repo "${{ github.repository }}" \
             --body "Preview deploy completed for \\`${{ github.sha }}\\` using Cloudflare Workers environment \\`preview\\`.\n\nPreview URL: ${{ steps.preview_url.outputs.url }}"
 
-  preview-skipped:
-    if: github.event.pull_request.head.repo.full_name != github.repository || secrets.CLOUDFLARE_API_TOKEN == '' || secrets.CLOUDFLARE_ACCOUNT_ID == ''
-    runs-on: ubuntu-latest
-    steps:
       - name: Explain why preview deploy was skipped
+        if: github.event.pull_request.head.repo.full_name != github.repository || env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
         run: |
           echo "Skipping preview deploy."
           echo "Reasons:"
