@@ -107,6 +107,18 @@ export async function createOrGetNoteShare(noteId: string): Promise<{ token: str
     .single();
 
   if (createError) {
+    const duplicateKey = (createError as { code?: string }).code === '23505';
+    if (duplicateKey) {
+      const { data: concurrent, error: concurrentError } = await supabase
+        .from('note_shares')
+        .select('token')
+        .eq('note_id', noteId)
+        .maybeSingle();
+
+      if (!concurrentError && concurrent?.token) {
+        return { token: concurrent.token as string };
+      }
+    }
     throw new Error(createError.message);
   }
 

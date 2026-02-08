@@ -9,9 +9,9 @@ export const runtime = 'edge';
 export default async function SharedNotePage({
   params,
 }: {
-  params: Promise<{ token: string }>;
+  params: { token: string };
 }) {
-  const { token } = await params;
+  const { token } = params;
   const locale = await getServerLocale();
   const t = createTranslator(locale);
   const note = await getSharedNoteByToken(token);

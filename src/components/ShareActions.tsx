@@ -31,7 +31,8 @@ export default function ShareActions({ noteId, onRequestEdit, onRequestDelete }:
         if (!cancelled) {
           setToken(activeToken);
         }
-      } catch {
+      } catch (error) {
+        console.error('Failed to load share state:', error);
         if (!cancelled) {
           setToken(null);
         }
