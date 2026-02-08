@@ -19,14 +19,31 @@ export default function ShareUpdateWatcher({ token, initialUpdatedAt }: ShareUpd
         cache: 'no-store',
       });
 
-      if (!response.ok) {
+      if (response.status === 404) {
         setIsUnavailable(true);
+        setHasUpdate(false);
+        return;
+      }
+
+      if (!response.ok) {
+        // Transient API/network errors should not be treated as "share revoked".
         return;
       }
 
       const data = (await response.json()) as { updatedAt?: string };
       if (!data.updatedAt) {
-        setIsUnavailable(true);
+        return;
+      }
+
+      setIsUnavailable(false);
+
+      const initialTime = Date.parse(initialUpdatedAt);
+      const latestTime = Date.parse(data.updatedAt);
+
+      if (!Number.isNaN(initialTime) && !Number.isNaN(latestTime)) {
+        if (latestTime > initialTime) {
+          setHasUpdate(true);
+        }
         return;
       }
 

@@ -20,17 +20,13 @@ interface ShareRow {
   token: string;
   is_active: boolean;
   created_at: string;
-  note:
-    | {
-        id: string | null;
-        title: string | null;
-      }
-    | {
-        id: string | null;
-        title: string | null;
-      }[]
-    | null;
+  note: NoteInfo | NoteInfo[] | null;
 }
+
+type NoteInfo = {
+  id: string | null;
+  title: string | null;
+};
 
 export default async function SettingsPage({
   searchParams,
@@ -69,6 +65,7 @@ export default async function SettingsPage({
     .from('note_shares')
     .select('id, note_id, token, is_active, created_at, note:notes!note_shares_note_id_fkey(id, title)')
     .eq('owner_id', profile.id)
+    .eq('is_active', true)
     .order('created_at', { ascending: false });
 
   if (shareError) {
@@ -120,22 +117,17 @@ export default async function SettingsPage({
                   <div key={row.id} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
                     <p className="truncate font-medium">{note?.title || t('notes.untitled')}</p>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                      {row.is_active ? t('share.statusActive') : t('share.statusRevoked')}
-                    </p>
-                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                       {t('share.latestSharedAt', { date: dateFormatter.format(new Date(row.created_at)) })}
                     </p>
 
                     <div className="mt-2 flex items-center gap-2">
-                      {row.is_active && (
-                        <Link
-                          href={`/share/${row.token}`}
-                          target="_blank"
-                          className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-                        >
-                          {t('share.openShare')}
-                        </Link>
-                      )}
+                      <Link
+                        href={`/share/${row.token}`}
+                        target="_blank"
+                        className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                      >
+                        {t('share.openShare')}
+                      </Link>
 
                       {note?.id && (
                         <Link
@@ -146,7 +138,7 @@ export default async function SettingsPage({
                         </Link>
                       )}
 
-                      {note?.id && row.is_active && <RevokeShareButton noteId={row.note_id} />}
+                      <RevokeShareButton noteId={row.note_id} />
                     </div>
                   </div>
                 );
