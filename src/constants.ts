@@ -3,5 +3,5 @@ export const UNTITLED_NOTE_TITLE = 'Untitled Note';
 export const ROUTES = {
   home: '/',
   settings: '/settings',
-  settingsSharedLinks: '/settings#shared-links',
+  settingsSharedLinks: '/settings?section=shared-links',
 } as const;

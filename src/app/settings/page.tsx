@@ -6,8 +6,13 @@ import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 import { createServerClient } from '@/utils/supabase/server';
 import RevokeShareButton from '@/components/RevokeShareButton';
+import ScrollToSectionOnLoad from '@/components/ScrollToSectionOnLoad';
 
 export const runtime = 'edge';
+
+interface SettingsSearchParams {
+  section?: string;
+}
 
 interface ShareRow {
   id: string;
@@ -27,10 +32,16 @@ interface ShareRow {
     | null;
 }
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<SettingsSearchParams>;
+} = {}) {
   const profile = await getUserProfile();
   const locale = await getServerLocale();
   const t = createTranslator(locale);
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const shouldFocusSharedLinks = resolvedSearchParams.section === 'shared-links';
 
   if (!profile) {
     redirect('/');
@@ -74,6 +85,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      {shouldFocusSharedLinks && <ScrollToSectionOnLoad sectionId="shared-links" />}
       <div className="max-w-2xl mx-auto p-8 space-y-8">
         <div>
           <a
@@ -87,7 +99,14 @@ export default async function SettingsPage() {
 
         <SettingsForm profile={profile} />
 
-        <section id="shared-links" className="bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4">
+        <section
+          id="shared-links"
+          className={`bg-white border border-slate-200 text-slate-900 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 rounded-xl p-6 space-y-4 ${
+            shouldFocusSharedLinks
+              ? 'ring-2 ring-blue-500/50 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-950'
+              : ''
+          }`}
+        >
           <h2 className="text-xl font-semibold flex items-center gap-2">🔗 {t('share.manageTitle')}</h2>
           <p className="text-sm text-slate-600 dark:text-slate-300">{t('share.manageSubtitle')}</p>
 
