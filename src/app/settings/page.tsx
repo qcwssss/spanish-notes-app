@@ -49,12 +49,12 @@ export default async function SettingsPage({
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-bold">⚠️ {t('settings.inactiveTitle')}</h1>
           <p className="text-slate-400">{t('settings.inactiveDescription')}</p>
-          <a
+          <Link
             href="/"
             className="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors"
           >
             {t('settings.backHome')}
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -85,12 +85,12 @@ export default async function SettingsPage({
       {shouldFocusSharedLinks && <ScrollToSectionOnLoad sectionId="shared-links" />}
       <div className="max-w-2xl mx-auto p-8 space-y-8">
         <div>
-          <a
+          <Link
             href="/"
             className="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-2"
           >
             ← {t('settings.backNotes')}
-          </a>
+          </Link>
           <h1 className="text-3xl font-bold mt-4">⚙️ {t('settings.title')}</h1>
         </div>
 
