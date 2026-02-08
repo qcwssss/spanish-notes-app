@@ -35,7 +35,7 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
     try {
       await updateTargetLanguage(selectedLanguage);
       toast({ title: t('settings.saveSuccessAlert') });
-      router.push('/');
+      router.push('/app');
       router.refresh();
     } catch (error) {
       console.error(error);

@@ -76,7 +76,7 @@ export default function FavoritesView({ notes }: FavoritesViewProps) {
         {sortedNotes.map(note => (
           <Link
             key={note.id}
-            href={`/?noteId=${note.id}`}
+            href={`/app?noteId=${note.id}`}
             data-testid="favorite-note"
             className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-900"
           >

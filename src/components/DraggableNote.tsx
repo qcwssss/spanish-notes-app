@@ -74,7 +74,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
     setIsDeleting(true);
     try {
       await deleteNote(note.id);
-      router.push('/');
+      router.push('/app');
     } catch (error) {
       console.error('Failed to delete note:', error);
       toast({
@@ -97,7 +97,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
         className="relative group"
       >
         <Link
-          href={`/?noteId=${note.id}`}
+          href={`/app?noteId=${note.id}`}
           className="block p-2 pr-16 rounded-lg text-sm text-slate-600 transition-colors truncate cursor-grab active:cursor-grabbing hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           {...listeners}
           {...attributes}

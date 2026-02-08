@@ -43,7 +43,7 @@ export default function CreateNoteButton({
     try {
       const folderId = targetFolderId ?? defaultFolderId ?? undefined;
       const newNote = await createNote(UNTITLED_NOTE_TITLE, '', folderId);
-      router.push(`/?noteId=${newNote.id}&mode=edit`);
+      router.push(`/app?noteId=${newNote.id}&mode=edit`);
     } catch (e) {
       console.error(e);
       toast({ title: t('notes.createFailed'), variant: 'destructive' });

@@ -68,10 +68,10 @@ describe('Sidebar', () => {
     renderWithI18n(<Sidebar profile={mockProfile} notes={mockNotes} folders={[mockDefaultFolder]} />);
     const links = screen
       .getAllByRole('link')
-      .filter(link => link.getAttribute('href')?.startsWith('/?noteId='));
+      .filter(link => link.getAttribute('href')?.startsWith('/app?noteId='));
     expect(links).toHaveLength(2);
-    expect(links[0].getAttribute('href')).toBe('/?noteId=1');
-    expect(links[1].getAttribute('href')).toBe('/?noteId=2');
+    expect(links[0].getAttribute('href')).toBe('/app?noteId=1');
+    expect(links[1].getAttribute('href')).toBe('/app?noteId=2');
   });
 
   it('renders "Untitled Note" for empty titles', () => {

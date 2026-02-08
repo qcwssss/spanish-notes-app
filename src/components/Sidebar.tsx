@@ -210,7 +210,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
           <nav className="p-2 space-y-3 flex-1 overflow-y-auto pb-16">
             <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-1 text-sm dark:border-slate-800 dark:bg-slate-900/60">
               <Link
-                href="/"
+                href="/app"
                 className={`flex-1 rounded-lg px-3 py-2 text-center transition ${
                   isFavoritesView
                     ? 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'

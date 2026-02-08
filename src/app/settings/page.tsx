@@ -86,7 +86,7 @@ export default async function SettingsPage({
       <div className="max-w-2xl mx-auto p-8 space-y-8">
         <div>
           <Link
-            href="/"
+            href="/app"
             className="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-2"
           >
             ← {t('settings.backNotes')}
@@ -131,7 +131,7 @@ export default async function SettingsPage({
 
                       {note?.id && (
                         <Link
-                          href={`/?noteId=${note.id}`}
+                          href={`/app?noteId=${note.id}`}
                           className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                         >
                           {t('share.openNote')}

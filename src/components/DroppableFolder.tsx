@@ -190,7 +190,7 @@ export default function DroppableFolder({
     setIsCreatingNote(true);
     try {
       const newNote = await createNote(UNTITLED_NOTE_TITLE, '', folder.id);
-      router.push(`/?noteId=${newNote.id}&mode=edit`);
+      router.push(`/app?noteId=${newNote.id}&mode=edit`);
     } catch (error) {
       if (!isMountedRef.current) return;
       console.error('Failed to create note:', error);

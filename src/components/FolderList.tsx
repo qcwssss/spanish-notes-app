@@ -104,7 +104,7 @@ export default function FolderList({
         {notes.map(note => (
           <Link
             key={note.id}
-            href={`/?noteId=${note.id}`}
+            href={`/app?noteId=${note.id}`}
             className="block p-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors truncate"
           >
             {getDisplayTitle(note.title)}
