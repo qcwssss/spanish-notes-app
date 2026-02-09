@@ -77,3 +77,15 @@
   - `README.md`
   - `README_zh.md`
   - `docs/plans/2026-01-21-folder-system-tdd-plan.md`
+
+## Session: 2026-02-09
+
+### Phase: Docs Status Sync
+- **Status:** complete
+- Actions taken:
+  - Audited the implementation status of middleware migration, sign-out, and first-run onboarding.
+  - Documented the current status across all project tracking documents.
+- Files created/modified:
+  - `docs/todos/2026-02-09-middleware-proxy-signout-onboarding.md`
+  - `docs/progress.md`
+  - `memory-bank/progress.md`
