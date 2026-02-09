@@ -20,6 +20,8 @@ vi.mock('@/components/ToastProvider', () => ({
   useToast: vi.fn(),
 }));
 
+const mockedUseToast = vi.mocked(useToast);
+
 const mockProfile = {
   id: 'test-id',
   email: 'test@example.com',
@@ -46,7 +48,7 @@ describe('Sidebar', () => {
   ];
 
   beforeEach(() => {
-    (useToast as any).mockReturnValue({
+    mockedUseToast.mockReturnValue({
       toast: vi.fn(),
     });
     localStorage.clear();
