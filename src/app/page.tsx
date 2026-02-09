@@ -7,8 +7,6 @@ import AuthGate from '@/components/AuthGate';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 
-export const runtime = 'edge';
-
 export default async function Home({
   searchParams,
 }: {
@@ -20,13 +18,11 @@ export default async function Home({
   const locale = await getServerLocale();
   const t = createTranslator(locale);
 
-  // 1. Fetch Notes List
   const { data: notes } = await supabase
     .from('notes')
     .select('id, title, updated_at, folder_id, is_favorite')
     .order('updated_at', { ascending: false });
 
-  // 2. Determine Selected Note
   const resolvedSearchParams = await searchParams;
   const selectedNoteId = resolvedSearchParams?.noteId as string;
   const isEditMode = resolvedSearchParams?.mode === 'edit';

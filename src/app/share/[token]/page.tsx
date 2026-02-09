@@ -5,8 +5,7 @@ import ShareUpdateWatcher from '@/components/ShareUpdateWatcher';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 import { getSharedNoteByToken } from '@/utils/shares/queries';
-
-export const runtime = 'edge';
+import { ROUTES } from '@/constants';
 
 export default async function SharedNotePage({
   params,
@@ -25,7 +24,7 @@ export default async function SharedNotePage({
         <main className="mx-auto max-w-5xl px-4 py-16">
           <div className="mb-8 text-center">
             <Link
-              href="/"
+              href={ROUTES.home}
               className="inline-block text-3xl font-bold tracking-tight text-slate-900 transition-colors hover:text-slate-700 dark:text-slate-100 dark:hover:text-slate-200 md:text-4xl"
             >
               {appName}
@@ -57,7 +56,7 @@ export default async function SharedNotePage({
                 </ul>
 
                 <Link
-                  href="/"
+                  href={ROUTES.app}
                   className="mt-6 inline-flex rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-500"
                 >
                   {t('share.ctaStart')}

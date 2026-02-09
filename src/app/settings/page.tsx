@@ -7,8 +7,7 @@ import { createTranslator } from '@/i18n/translator';
 import { createServerClient } from '@/utils/supabase/server';
 import RevokeShareButton from '@/components/RevokeShareButton';
 import ScrollToSectionOnLoad from '@/components/ScrollToSectionOnLoad';
-
-export const runtime = 'edge';
+import { ROUTES } from '@/constants';
 
 interface SettingsSearchParams {
   section?: string;
@@ -40,7 +39,7 @@ export default async function SettingsPage({
   const shouldFocusSharedLinks = resolvedSearchParams.section === 'shared-links';
 
   if (!profile) {
-    redirect('/');
+    redirect(ROUTES.home);
   }
 
   if (!profile.is_active) {
@@ -50,7 +49,7 @@ export default async function SettingsPage({
           <h1 className="text-2xl font-bold">⚠️ {t('settings.inactiveTitle')}</h1>
           <p className="text-slate-400">{t('settings.inactiveDescription')}</p>
           <Link
-            href="/"
+            href={ROUTES.home}
             className="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors"
           >
             {t('settings.backHome')}
@@ -86,7 +85,7 @@ export default async function SettingsPage({
       <div className="max-w-2xl mx-auto p-8 space-y-8">
         <div>
           <Link
-            href="/"
+            href={ROUTES.app}
             className="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-2"
           >
             ← {t('settings.backNotes')}
@@ -131,7 +130,7 @@ export default async function SettingsPage({
 
                       {note?.id && (
                         <Link
-                          href={`/?noteId=${note.id}`}
+                          href={`${ROUTES.app}?noteId=${note.id}`}
                           className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                         >
                           {t('share.openNote')}
