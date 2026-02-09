@@ -19,6 +19,8 @@ vi.mock('@/components/ToastProvider', () => ({
   useToast: vi.fn(),
 }));
 
+const mockedUseToast = vi.mocked(useToast);
+
 vi.mock('@/utils/folders/actions', () => ({
   deleteFolderAndMoveNotes: (...args: unknown[]) => mockDeleteFolderAndMoveNotes(...args),
   deleteFolderAndNotes: (...args: unknown[]) => mockDeleteFolderAndNotes(...args),
@@ -52,7 +54,7 @@ describe('DroppableFolder', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockGetDefaultFolder.mockResolvedValue(defaultFolder);
-    (useToast as any).mockReturnValue({
+    mockedUseToast.mockReturnValue({
       toast: mockToast,
     });
   });
