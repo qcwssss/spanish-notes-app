@@ -24,7 +24,7 @@ export default async function SharedNotePage({
         <main className="mx-auto max-w-5xl px-4 py-16">
           <div className="mb-8 text-center">
             <Link
-              href="/"
+              href={ROUTES.home}
               className="inline-block text-3xl font-bold tracking-tight text-slate-900 transition-colors hover:text-slate-700 dark:text-slate-100 dark:hover:text-slate-200 md:text-4xl"
             >
               {appName}
