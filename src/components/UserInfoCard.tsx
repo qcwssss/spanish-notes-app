@@ -6,7 +6,9 @@ import { getCharacterLimit } from '@/utils/storage/limits';
 import StorageIndicator from './StorageIndicator';
 import ActivationDialog from './ActivationDialog';
 import Link from 'next/link';
-import { Link2, Moon, Sun } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Link2, Moon, Sun, LogOut } from 'lucide-react';
+import { createBrowserClient } from '@/utils/supabase/client';
 import { ThemePreference } from '@/utils/theme';
 import { useI18n } from '@/components/I18nProvider';
 import { ROUTES } from '@/constants';
@@ -44,7 +46,14 @@ function ThemeToggle({ theme, onToggle, className }: ThemeToggleProps) {
 
 export default function UserInfoCard({ profile, theme, onToggleTheme }: UserInfoCardProps) {
   const { t } = useI18n();
+  const router = useRouter();
   const [showActivationDialog, setShowActivationDialog] = useState(false);
+
+  const handleSignOut = async () => {
+    const supabase = createBrowserClient();
+    await supabase.auth.signOut();
+    router.push(ROUTES.home); // Redirect to Landing Page
+  };
 
   if (!profile.is_active) {
     return (
@@ -112,6 +121,14 @@ export default function UserInfoCard({ profile, theme, onToggleTheme }: UserInfo
           onToggle={onToggleTheme} 
           className="flex h-[38px] w-[38px] bg-white shadow-sm hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700" 
         />
+        <button
+          onClick={handleSignOut}
+          className="flex h-[38px] w-[38px] items-center justify-center rounded-lg bg-white text-slate-500 shadow-sm transition-colors hover:bg-slate-100 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
+          title={t('auth.signOut')}
+          aria-label={t('auth.signOut')}
+        >
+          <LogOut className="h-4 w-4" />
+        </button>
       </div>
     </div>
   );

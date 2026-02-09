@@ -37,6 +37,7 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       title: 'Sign in with Google',
       subtitle: 'Sign in to access your notes',
       button: 'Sign in with Google',
+      signOut: 'Sign out',
     },
     editor: {
       noteTitlePlaceholder: 'Note Title',
@@ -233,6 +234,7 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       title: '请使用 Google 登录',
       subtitle: '登录后即可使用笔记功能',
       button: '使用 Google 登录',
+      signOut: '退出登录',
     },
     editor: {
       noteTitlePlaceholder: '笔记标题',
