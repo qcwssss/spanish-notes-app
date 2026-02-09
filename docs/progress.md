@@ -5,6 +5,12 @@
 **当前版本**: Phase 8 - 文件夹删除流程完成
 **主要分支**: `master`
 
+## 2026-02-09
+- 同步了「middleware -> proxy / Sign Out / first-run onboarding」现状检查结果。
+- `middleware -> proxy` 迁移：未开始（`src/proxy.ts` 不存在，`src/middleware.ts` 仍在使用）。
+- Sign Out：部分完成（已有登录与 callback，会话流存在；但 `src` 中未实现 `supabase.auth.signOut()` UI 入口与跳转）。
+- 首次使用引导到 `/home`：未开始（`/home` 页面已存在，但无 first-run 检测、引导展示与一次性持久化逻辑）。
+
 ## 2026-01-30
 - 完成收藏视图（独立页面）与侧边栏视图切换（All Notes / Favorites）
 - 收藏列表支持更新时间排序切换（Newest/Oldest），并将选择持久化到 localStorage

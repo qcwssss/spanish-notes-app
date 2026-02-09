@@ -1,5 +1,25 @@
 # Todo: middleware->proxy, Sign Out, First-Run Onboarding
 
+## Current Status Snapshot (2026-02-09)
+
+1. Middleware -> Proxy migration: **Not Done**
+   - `src/proxy.ts` not found.
+   - `src/middleware.ts` is still active and imports `@/utils/supabase/middleware`.
+   - No middleware-warning/proxy-migration handling found in `next.config.ts`.
+
+2. Sign Out (UI + Supabase flow): **Partial**
+   - Sign-in/auth callback flow exists in current app:
+     - `src/components/AuthGate.tsx`
+     - `src/app/auth/callback/route.ts`
+   - No `supabase.auth.signOut()` found in current `src` UI flow.
+   - Legacy sign-out exists only in `v1_legacy/script.js`.
+
+3. First-run onboarding prompt to `/home`: **Not Done**
+   - `/home` route and landing page exist:
+     - `src/constants.ts` (`ROUTES.home`)
+     - `src/app/home/page.tsx`
+   - No first-run detection/onboarding prompt/dismiss persistence found in `src`.
+
 ## Scope
 Create a tracked todo document for the next product iteration covering:
 
