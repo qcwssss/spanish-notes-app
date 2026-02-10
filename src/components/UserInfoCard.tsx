@@ -11,6 +11,7 @@ import { Link2, Moon, Sun, LogOut } from 'lucide-react';
 import { createBrowserClient } from '@/utils/supabase/client';
 import { ThemePreference } from '@/utils/theme';
 import { useI18n } from '@/components/I18nProvider';
+import { useToast } from '@/components/ToastProvider';
 import { ROUTES } from '@/constants';
 
 interface UserInfoCardProps {
@@ -46,13 +47,31 @@ function ThemeToggle({ theme, onToggle, className }: ThemeToggleProps) {
 
 export default function UserInfoCard({ profile, theme, onToggleTheme }: UserInfoCardProps) {
   const { t } = useI18n();
+  const { toast } = useToast();
   const router = useRouter();
   const [showActivationDialog, setShowActivationDialog] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleSignOut = async () => {
-    const supabase = createBrowserClient();
-    await supabase.auth.signOut();
-    router.push(ROUTES.home); // Redirect to Landing Page
+    if (isSigningOut) {
+      return;
+    }
+
+    setIsSigningOut(true);
+    try {
+      const supabase = createBrowserClient();
+      await supabase.auth.signOut();
+      router.push(ROUTES.home);
+      router.refresh();
+    } catch {
+      toast({
+        title: t('toast.error'),
+        description: t('auth.signOutFailed'),
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSigningOut(false);
+    }
   };
 
   if (!profile.is_active) {
@@ -123,9 +142,11 @@ export default function UserInfoCard({ profile, theme, onToggleTheme }: UserInfo
         />
         <button
           onClick={handleSignOut}
-          className="flex h-[38px] w-[38px] items-center justify-center rounded-lg bg-white text-slate-500 shadow-sm transition-colors hover:bg-slate-100 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
+          disabled={isSigningOut}
+          className="flex h-[38px] w-[38px] items-center justify-center rounded-lg bg-white text-slate-500 shadow-sm transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
           title={t('auth.signOut')}
           aria-label={t('auth.signOut')}
+          aria-busy={isSigningOut}
         >
           <LogOut className="h-4 w-4" />
         </button>

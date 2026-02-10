@@ -2,7 +2,7 @@
   "name": "Spanish Notes",
   "short_name": "Notes",
   "description": "Learn Spanish with AI-powered interactive notes",
-  "start_url": "/app",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

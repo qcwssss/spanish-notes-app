@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const { supabaseUrl, supabaseAnonKey } = getSupabaseConfig();
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
-  const response = NextResponse.redirect(new URL('/app', origin));
+  const response = NextResponse.redirect(new URL('/', origin));
 
   if (!code) {
     return response;
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    return NextResponse.redirect(new URL('/app?auth=error', origin));
+    return NextResponse.redirect(new URL('/home?auth=error', origin));
   }
 
   return response;
