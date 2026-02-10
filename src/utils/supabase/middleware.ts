@@ -42,8 +42,6 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const pathname = request.nextUrl.pathname
-  const isProtectedPath =
-    pathname === '/' || pathname.startsWith('/favorites') || pathname.startsWith('/settings')
   const isPublicPath =
     pathname.startsWith('/home') ||
     pathname.startsWith('/auth') ||
@@ -53,7 +51,7 @@ export async function updateSession(request: NextRequest) {
     .getAll()
     .some(({ name }) => name.startsWith('sb-') && name.includes('auth-token'))
 
-  if (!user && isProtectedPath && !isPublicPath) {
+  if (!user && !isPublicPath) {
     if (pathname === '/' && hasSupabaseAuthCookie) {
       return supabaseResponse
     }

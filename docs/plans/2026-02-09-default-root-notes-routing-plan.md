@@ -38,7 +38,7 @@ Desired behavior:
 - All CTA buttons should link to `ROUTES.app` (which will be `/`).
 
 4) `src/app/app/page.tsx`
-- Remove this route file after moving workspace content to root.
+- Keep a backward-compatible redirect from `/app` to `/` for old bookmarks/links.
 
 5) `src/app/auth/callback/route.ts`
 - On success redirect to `/`.
