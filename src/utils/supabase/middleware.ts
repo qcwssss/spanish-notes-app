@@ -52,7 +52,7 @@ export async function updateSession(request: NextRequest) {
     .some(({ name }) => name.startsWith('sb-') && name.includes('auth-token'))
 
   if (!user && !isPublicPath) {
-    if (pathname === '/' && hasSupabaseAuthCookie) {
+    if (hasSupabaseAuthCookie) {
       return supabaseResponse
     }
 
