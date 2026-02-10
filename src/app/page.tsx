@@ -6,6 +6,12 @@ import Editor from '@/components/Editor';
 import AuthGate from '@/components/AuthGate';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'My Notes | Spanish Notes',
+  description: 'Manage and study your Spanish notes',
+};
 
 export default async function Home({
   searchParams,

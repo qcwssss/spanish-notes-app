@@ -41,15 +41,25 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
-    // const url = request.nextUrl.clone()
-    // url.pathname = '/login'
-    // return NextResponse.redirect(url)
+  const pathname = request.nextUrl.pathname
+  const isPublicPath =
+    pathname.startsWith('/home') ||
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/share') ||
+    pathname.startsWith('/api/share')
+  const hasSupabaseAuthCookie = request.cookies
+    .getAll()
+    .some(({ name }) => name.startsWith('sb-') && name.includes('auth-token'))
+
+  if (!user && !isPublicPath) {
+    if (hasSupabaseAuthCookie) {
+      return supabaseResponse
+    }
+
+    const url = request.nextUrl.clone()
+    url.pathname = '/home'
+    url.search = ''
+    return NextResponse.redirect(url)
   }
 
   return supabaseResponse

@@ -1,9 +1,21 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
+import GoogleSignInButton from '@/components/GoogleSignInButton';
+import { createServerClient } from '@/utils/supabase/server';
 import { ROUTES } from '@/constants';
 
 export default async function LandingPage() {
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect(ROUTES.app);
+  }
+
   const locale = await getServerLocale();
   const t = createTranslator(locale);
 
@@ -15,18 +27,10 @@ export default async function LandingPage() {
             <h1 className="text-3xl font-bold tracking-tight md:text-5xl">{t('landing.heroTitle')}</h1>
             <p className="mt-4 text-base text-slate-600 dark:text-slate-300 md:text-lg">{t('landing.heroSubtitle')}</p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                href={ROUTES.app}
-                className="rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-blue-500"
-              >
-                {t('landing.startWriting')}
-              </Link>
-              <Link
-                href={ROUTES.app}
-                className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-              >
-                {t('landing.watchDemo')}
-              </Link>
+              <GoogleSignInButton
+                label={t('landing.startWriting')}
+                className="rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-70"
+              />
             </div>
           </div>
         </section>
@@ -66,12 +70,6 @@ export default async function LandingPage() {
             </ul>
           </div>
         </section>
-
-        <div className="mt-8 text-center">
-          <Link href={ROUTES.app} className="inline-flex rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-blue-500">
-            {t('landing.startWriting')}
-          </Link>
-        </div>
       </main>
     </div>
   );
