@@ -1,9 +1,21 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 import GoogleSignInButton from '@/components/GoogleSignInButton';
+import { createServerClient } from '@/utils/supabase/server';
+import { ROUTES } from '@/constants';
 
 export default async function LandingPage() {
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect(ROUTES.app);
+  }
+
   const locale = await getServerLocale();
   const t = createTranslator(locale);
 
@@ -18,10 +30,6 @@ export default async function LandingPage() {
               <GoogleSignInButton
                 label={t('landing.startWriting')}
                 className="rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-70"
-              />
-              <GoogleSignInButton
-                label={t('auth.button')}
-                className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
               />
             </div>
           </div>
@@ -62,13 +70,6 @@ export default async function LandingPage() {
             </ul>
           </div>
         </section>
-
-        <div className="mt-8 text-center">
-          <GoogleSignInButton
-            label={t('landing.startWriting')}
-            className="inline-flex rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-70"
-          />
-        </div>
       </main>
     </div>
   );
