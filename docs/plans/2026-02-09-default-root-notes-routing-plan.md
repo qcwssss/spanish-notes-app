@@ -57,10 +57,7 @@ Desired behavior:
 8) `public/manifest.webmanifest`
 - Set `start_url` to `/` because root is the workspace again.
 
-9) `docs/plans/2026-02-09-metadata-and-routes-audit.md`
-- Update to reflect final decided architecture (root workspace + `/home` landing).
-
-10) `docs/progress.md` and `memory-bank/progress.md`
+9) `docs/progress.md` and `memory-bank/progress.md`
 - Add a short entry describing the finalized routing decision.
 
 ## Acceptance Criteria

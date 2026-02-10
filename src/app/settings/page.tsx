@@ -7,6 +7,7 @@ import { createTranslator } from '@/i18n/translator';
 import { createServerClient } from '@/utils/supabase/server';
 import RevokeShareButton from '@/components/RevokeShareButton';
 import ScrollToSectionOnLoad from '@/components/ScrollToSectionOnLoad';
+import SettingsSignOutButton from '@/components/SettingsSignOutButton';
 import { ROUTES } from '@/constants';
 
 interface SettingsSearchParams {
@@ -91,6 +92,9 @@ export default async function SettingsPage({
             ← {t('settings.backNotes')}
           </Link>
           <h1 className="text-3xl font-bold mt-4">⚙️ {t('settings.title')}</h1>
+          <div className="mt-4">
+            <SettingsSignOutButton />
+          </div>
         </div>
 
         <SettingsForm profile={profile} />
