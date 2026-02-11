@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ROUTES } from '@/constants';
+import { CircleHelp } from 'lucide-react';
 
 interface FaqEntryLinkProps {
   label: string;
@@ -7,11 +8,12 @@ interface FaqEntryLinkProps {
 }
 
 const DEFAULT_CLASSNAME =
-  'text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100';
+  'inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-blue-600 hover:underline dark:text-slate-400 dark:hover:text-blue-400';
 
 export default function FaqEntryLink({ label, className }: FaqEntryLinkProps) {
   return (
     <Link href={ROUTES.faq} className={className ?? DEFAULT_CLASSNAME}>
+      <CircleHelp className="h-4 w-4" />
       {label}
     </Link>
   );
