@@ -22,6 +22,10 @@ vi.mock('@/utils/profile/queries', () => ({
 
 vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+    refresh: vi.fn(),
+  })),
 }));
 
 vi.mock('next/headers', () => ({
@@ -42,6 +46,12 @@ vi.mock('@/utils/supabase/server', () => ({
       })),
     })
   ),
+}));
+
+vi.mock('@/components/ToastProvider', () => ({
+  useToast: vi.fn(() => ({
+    toast: vi.fn(),
+  })),
 }));
 
 describe('Settings page light mode', () => {

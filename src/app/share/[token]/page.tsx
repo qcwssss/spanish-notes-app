@@ -18,6 +18,12 @@ export default async function SharedNotePage({
   const locale = await getServerLocale();
   const t = createTranslator(locale);
   const note = await getSharedNoteByToken(token);
+  const shareFeatures = [
+    { icon: '📝', ariaLabel: 'Memo', label: t('share.featureNotes') },
+    { icon: '🎯', ariaLabel: 'Target', label: t('share.featureLanguage') },
+    { icon: '🔊', ariaLabel: 'Speaker', label: t('share.featureSpeak') },
+    { icon: '🔗', ariaLabel: 'Link', label: t('share.featureShare') },
+  ];
 
   if (!note) {
     return (
@@ -50,10 +56,12 @@ export default async function SharedNotePage({
                 <p className="mt-2 text-slate-600 dark:text-slate-300">{t('share.promoDescription')}</p>
 
                 <ul className="mt-5 space-y-3 text-sm">
-                  <li className="flex items-center gap-2"><span>📝</span>{t('share.featureNotes')}</li>
-                  <li className="flex items-center gap-2"><span>🎯</span>{t('share.featureLanguage')}</li>
-                  <li className="flex items-center gap-2"><span>🔊</span>{t('share.featureSpeak')}</li>
-                  <li className="flex items-center gap-2"><span>🔗</span>{t('share.featureShare')}</li>
+                  {shareFeatures.map((feature) => (
+                    <li key={feature.label} className="flex items-center gap-2">
+                      <span role="img" aria-label={feature.ariaLabel}>{feature.icon}</span>
+                      {feature.label}
+                    </li>
+                  ))}
                 </ul>
 
                 <Link
@@ -66,12 +74,14 @@ export default async function SharedNotePage({
             </div>
 
             <div className="border-t border-slate-200 bg-white/80 px-6 py-3 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-400">
-              <div className="flex flex-wrap items-center gap-4">
-                <span className="inline-flex items-center gap-1">📝 {t('share.featureNotes')}</span>
-                <span className="inline-flex items-center gap-1">🎯 {t('share.featureLanguage')}</span>
-                <span className="inline-flex items-center gap-1">🔊 {t('share.featureSpeak')}</span>
-                <span className="inline-flex items-center gap-1">🔗 {t('share.featureShare')}</span>
-              </div>
+              <ul className="flex flex-wrap items-center gap-4">
+                {shareFeatures.map((feature) => (
+                  <li key={feature.label} className="inline-flex items-center gap-1">
+                    <span role="img" aria-label={feature.ariaLabel}>{feature.icon}</span>
+                    {feature.label}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </main>
@@ -96,11 +106,11 @@ export default async function SharedNotePage({
             <ShareThemeToggle />
             <Link
               href={ROUTES.app}
-              className="group relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-blue-600 text-white shadow-sm transition-all duration-300 hover:w-40 hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:ring-blue-400/40 dark:focus-visible:ring-offset-slate-950"
+              className="group relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-blue-600 text-white shadow-sm transition-all duration-300 hover:w-40 focus:w-40 hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:ring-blue-400/40 dark:focus-visible:ring-offset-slate-950"
               aria-label={t('share.ctaCreate')}
             >
-              <NotebookPen className="absolute left-2.5 h-4 w-4 flex-shrink-0 transition-opacity duration-300 group-hover:opacity-0" />
-              <span className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 whitespace-nowrap text-sm font-medium">
+              <NotebookPen className="absolute left-2.5 h-4 w-4 flex-shrink-0 transition-opacity duration-300 group-hover:opacity-0 group-focus:opacity-0" />
+              <span className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus:opacity-100 whitespace-nowrap text-sm font-medium">
                 {t('share.ctaCreate')}
               </span>
             </Link>
@@ -115,12 +125,14 @@ export default async function SharedNotePage({
           </p>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{t('share.brandTagline')}</p>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-            <span className="inline-flex items-center gap-1">📝 {t('share.featureNotes')}</span>
-            <span className="inline-flex items-center gap-1">🎯 {t('share.featureLanguage')}</span>
-            <span className="inline-flex items-center gap-1">🔊 {t('share.featureSpeak')}</span>
-            <span className="inline-flex items-center gap-1">🔗 {t('share.featureShare')}</span>
-          </div>
+          <ul className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            {shareFeatures.map((feature) => (
+              <li key={feature.label} className="inline-flex items-center gap-1">
+                <span role="img" aria-label={feature.ariaLabel}>{feature.icon}</span>
+                {feature.label}
+              </li>
+            ))}
+          </ul>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <Link
