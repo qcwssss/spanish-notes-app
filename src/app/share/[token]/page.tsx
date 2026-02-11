@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { CircleHelp, NotebookPen } from 'lucide-react';
+import { NotebookPen } from 'lucide-react';
 import NotePlayer from '@/components/NotePlayer';
+import ShareHelpHint from '@/components/ShareHelpHint';
 import ShareThemeToggle from '@/components/ShareThemeToggle';
 import ShareUpdateWatcher from '@/components/ShareUpdateWatcher';
 import { getServerLocale } from '@/i18n/server';
@@ -103,23 +104,12 @@ export default async function SharedNotePage({
           </div>
 
           <div className="flex flex-shrink-0 items-center gap-2">
-            <details className="group relative">
-              <summary
-                className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus-visible:ring-offset-slate-950"
-                aria-label={t('share.howToUseCta')}
-              >
-                <CircleHelp className="h-4 w-4" />
-              </summary>
-              <div className="absolute right-0 top-11 z-10 w-72 rounded-xl border border-slate-200 bg-white p-4 text-left shadow-lg dark:border-slate-700 dark:bg-slate-900">
-                <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t('share.howToUseTitle')}</h2>
-                <ul className="mt-2 space-y-2 text-xs text-slate-600 dark:text-slate-300">
-                  <li>1. {t('share.howToUseStep1')}</li>
-                  <li>2. {t('share.howToUseStep2')}</li>
-                  <li>3. {t('share.howToUseStep3')}</li>
-                </ul>
-                <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">{t('share.howToUseTip')}</p>
-              </div>
-            </details>
+            <ShareHelpHint
+              ctaLabel={t('share.howToUseCta')}
+              title={t('share.howToUseTitle')}
+              steps={[t('share.howToUseStep1'), t('share.howToUseStep2'), t('share.howToUseStep3')]}
+              tip={t('share.howToUseTip')}
+            />
             <ShareThemeToggle />
             <Link
               href={ROUTES.app}
