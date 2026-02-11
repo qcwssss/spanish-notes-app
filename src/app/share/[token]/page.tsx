@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { NotebookPen } from 'lucide-react';
+import FaqEntryLink from '@/components/FaqEntryLink';
 import NotePlayer from '@/components/NotePlayer';
 import ShareHelpHint from '@/components/ShareHelpHint';
 import ShareThemeToggle from '@/components/ShareThemeToggle';
@@ -72,12 +73,7 @@ export default async function SharedNotePage({
                   {t('share.ctaStart')}
                 </Link>
                 <div className="mt-3">
-                  <Link
-                    href={ROUTES.faq}
-                    className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
-                  >
-                    {t('faq.entryCta')}
-                  </Link>
+                  <FaqEntryLink label={t('faq.entryCta')} />
                 </div>
               </section>
             </div>

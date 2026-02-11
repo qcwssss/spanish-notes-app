@@ -1,16 +1,21 @@
 import Link from 'next/link';
 import { ROUTES } from '@/constants';
 import { getServerLocale } from '@/i18n/server';
+import { messages } from '@/i18n/messages';
 import { createTranslator } from '@/i18n/translator';
 
 export default async function FaqPage() {
   const locale = await getServerLocale();
   const t = createTranslator(locale);
-  const FAQ_ITEMS_COUNT = 7;
+  const faqMessageGroup = messages[locale]?.faq ?? messages.en.faq;
+  const faqIndices = Object.keys(faqMessageGroup)
+    .filter((key) => /^q\d+$/.test(key))
+    .map((key) => Number(key.slice(1)))
+    .sort((a, b) => a - b);
 
-  const faqItems = Array.from({ length: FAQ_ITEMS_COUNT }, (_, i) => ({
-    q: t(`faq.q${i + 1}`),
-    a: t(`faq.a${i + 1}`),
+  const faqItems = faqIndices.map((index) => ({
+    q: t(`faq.q${index}`),
+    a: t(`faq.a${index}`),
   }));
 
   return (

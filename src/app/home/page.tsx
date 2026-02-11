@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 import GoogleSignInButton from '@/components/GoogleSignInButton';
+import FaqEntryLink from '@/components/FaqEntryLink';
 import { createServerClient } from '@/utils/supabase/server';
 import { ROUTES } from '@/constants';
 
@@ -33,12 +34,7 @@ export default async function LandingPage() {
               />
             </div>
             <div className="mt-3">
-              <Link
-                href={ROUTES.faq}
-                className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
-              >
-                {t('faq.entryCta')}
-              </Link>
+              <FaqEntryLink label={t('faq.entryCta')} />
             </div>
           </div>
         </section>
