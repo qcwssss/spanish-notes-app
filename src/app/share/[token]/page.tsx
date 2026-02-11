@@ -71,6 +71,14 @@ export default async function SharedNotePage({
                 >
                   {t('share.ctaStart')}
                 </Link>
+                <div className="mt-3">
+                  <Link
+                    href={ROUTES.faq}
+                    className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+                  >
+                    {t('faq.entryCta')}
+                  </Link>
+                </div>
               </section>
             </div>
 
@@ -147,6 +155,12 @@ export default async function SharedNotePage({
               className="inline-flex rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               {t('share.ctaHome')}
+            </Link>
+            <Link
+              href={ROUTES.faq}
+              className="inline-flex rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              {t('faq.entryCta')}
             </Link>
             <Link
               href={ROUTES.app}

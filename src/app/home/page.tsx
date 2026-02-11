@@ -32,6 +32,14 @@ export default async function LandingPage() {
                 className="rounded-xl bg-blue-600 px-5 py-2.5 font-medium text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-70"
               />
             </div>
+            <div className="mt-3">
+              <Link
+                href={ROUTES.faq}
+                className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+              >
+                {t('faq.entryCta')}
+              </Link>
+            </div>
           </div>
         </section>
 
