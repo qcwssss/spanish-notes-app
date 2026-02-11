@@ -20,7 +20,7 @@ export default function ShareHelpHint({ ctaLabel, title, steps, tip }: ShareHelp
       return;
     }
 
-    const handlePointerDown = (event: MouseEvent) => {
+    const handlePointerDown = (event: PointerEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) {
         setOpen(false);
       }
@@ -32,11 +32,11 @@ export default function ShareHelpHint({ ctaLabel, title, steps, tip }: ShareHelp
       }
     };
 
-    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('pointerdown', handlePointerDown);
     document.addEventListener('keydown', handleEscape);
 
     return () => {
-      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('pointerdown', handlePointerDown);
       document.removeEventListener('keydown', handleEscape);
     };
   }, [open]);
