@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { NotebookPen } from 'lucide-react';
 import NotePlayer from '@/components/NotePlayer';
+import ShareHelpHint from '@/components/ShareHelpHint';
 import ShareThemeToggle from '@/components/ShareThemeToggle';
 import ShareUpdateWatcher from '@/components/ShareUpdateWatcher';
 import { getServerLocale } from '@/i18n/server';
@@ -103,6 +104,12 @@ export default async function SharedNotePage({
           </div>
 
           <div className="flex flex-shrink-0 items-center gap-2">
+            <ShareHelpHint
+              ctaLabel={t('share.howToUseCta')}
+              title={t('share.howToUseTitle')}
+              steps={[t('share.howToUseStep1'), t('share.howToUseStep2'), t('share.howToUseStep3')]}
+              tip={t('share.howToUseTip')}
+            />
             <ShareThemeToggle />
             <Link
               href={ROUTES.app}
