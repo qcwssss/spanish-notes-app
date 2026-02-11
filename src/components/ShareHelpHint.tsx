@@ -13,7 +13,16 @@ interface ShareHelpHintProps {
 export default function ShareHelpHint({ ctaLabel, title, steps, tip }: ShareHelpHintProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const wasOpenRef = useRef(false);
   const popupId = useId();
+
+  useEffect(() => {
+    if (wasOpenRef.current && !open) {
+      buttonRef.current?.focus();
+    }
+    wasOpenRef.current = open;
+  }, [open]);
 
   useEffect(() => {
     if (!open) {
@@ -44,6 +53,7 @@ export default function ShareHelpHint({ ctaLabel, title, steps, tip }: ShareHelp
   return (
     <div ref={rootRef} className="relative">
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus-visible:ring-offset-slate-950"
