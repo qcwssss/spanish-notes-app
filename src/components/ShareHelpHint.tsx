@@ -72,7 +72,7 @@ export default function ShareHelpHint({ ctaLabel, title, steps, tip }: ShareHelp
           <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
           <ol className="mt-2 list-decimal list-outside space-y-2 pl-5 text-xs text-slate-600 dark:text-slate-300">
             {steps.map((step, index) => (
-              <li key={index}>{step}</li>
+              <li key={step}>{step}</li>
             ))}
           </ol>
           <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">{tip}</p>
