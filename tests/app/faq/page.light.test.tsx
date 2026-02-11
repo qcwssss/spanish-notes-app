@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import FaqPage from '@/app/faq/page';
+import { messages } from '@/i18n/messages';
 
 vi.mock('next/headers', () => ({
   cookies: () => Promise.resolve({ get: () => undefined }),
@@ -13,8 +14,8 @@ describe('FAQ page', () => {
     const root = container.firstChild as HTMLElement;
 
     expect(root.className).toContain('bg-slate-50');
-    expect(screen.getByText('How to use NoteLingo')).toBeInTheDocument();
-    expect(screen.getByText('How it works')).toBeInTheDocument();
-    expect(screen.getByText('Frequently asked questions')).toBeInTheDocument();
+    expect(screen.getByText(messages.en.faq.title)).toBeInTheDocument();
+    expect(screen.getByText(messages.en.faq.howTitle)).toBeInTheDocument();
+    expect(screen.getByText(messages.en.faq.sectionTitle)).toBeInTheDocument();
   });
 });

@@ -6,16 +6,12 @@ import { createTranslator } from '@/i18n/translator';
 export default async function FaqPage() {
   const locale = await getServerLocale();
   const t = createTranslator(locale);
+  const FAQ_ITEMS_COUNT = 7;
 
-  const faqItems = [
-    { q: t('faq.q1'), a: t('faq.a1') },
-    { q: t('faq.q2'), a: t('faq.a2') },
-    { q: t('faq.q3'), a: t('faq.a3') },
-    { q: t('faq.q4'), a: t('faq.a4') },
-    { q: t('faq.q5'), a: t('faq.a5') },
-    { q: t('faq.q6'), a: t('faq.a6') },
-    { q: t('faq.q7'), a: t('faq.a7') },
-  ];
+  const faqItems = Array.from({ length: FAQ_ITEMS_COUNT }, (_, i) => ({
+    q: t(`faq.q${i + 1}`),
+    a: t(`faq.a${i + 1}`),
+  }));
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
