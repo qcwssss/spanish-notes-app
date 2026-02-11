@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { NotebookPen } from 'lucide-react';
 import NotePlayer from '@/components/NotePlayer';
 import ShareThemeToggle from '@/components/ShareThemeToggle';
 import ShareUpdateWatcher from '@/components/ShareUpdateWatcher';
@@ -84,16 +85,58 @@ export default async function SharedNotePage({
         <ShareUpdateWatcher token={token} initialUpdatedAt={note.updatedAt} />
 
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h1 className="truncate text-2xl font-bold text-slate-900 dark:text-slate-100">{note.title}</h1>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <span className="flex-shrink-0 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
               {t('share.readonlyBadge')}
             </span>
+            <h1 className="truncate text-xl font-bold text-slate-900 dark:text-slate-100 sm:text-2xl">{note.title}</h1>
+          </div>
+
+          <div className="flex flex-shrink-0 items-center gap-2">
             <ShareThemeToggle />
+            <Link
+              href={ROUTES.app}
+              className="group relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-blue-600 text-white shadow-sm transition-all duration-300 hover:w-40 hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:ring-blue-400/40 dark:focus-visible:ring-offset-slate-950"
+              aria-label={t('share.ctaCreate')}
+            >
+              <NotebookPen className="absolute left-2.5 h-4 w-4 flex-shrink-0 transition-opacity duration-300 group-hover:opacity-0" />
+              <span className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 whitespace-nowrap text-sm font-medium">
+                {t('share.ctaCreate')}
+              </span>
+            </Link>
           </div>
         </div>
 
         <NotePlayer content={note.content} targetLanguage={note.targetLanguage} />
+
+        <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+            {t('share.brandCtaPrefix')} {appName}
+          </p>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{t('share.brandTagline')}</p>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <span className="inline-flex items-center gap-1">📝 {t('share.featureNotes')}</span>
+            <span className="inline-flex items-center gap-1">🎯 {t('share.featureLanguage')}</span>
+            <span className="inline-flex items-center gap-1">🔊 {t('share.featureSpeak')}</span>
+            <span className="inline-flex items-center gap-1">🔗 {t('share.featureShare')}</span>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link
+              href={ROUTES.home}
+              className="inline-flex rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              {t('share.ctaHome')}
+            </Link>
+            <Link
+              href={ROUTES.app}
+              className="inline-flex rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-500"
+            >
+              {t('share.ctaStart')}
+            </Link>
+          </div>
+        </section>
       </main>
     </div>
   );

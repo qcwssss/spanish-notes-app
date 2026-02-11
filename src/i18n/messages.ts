@@ -198,6 +198,7 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       featureShare: 'Share in seconds',
       ctaHome: 'Go home',
       ctaStart: 'Start learning',
+      ctaCreate: 'Create your notes',
     },
   },
   zh: {
@@ -397,6 +398,7 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       featureShare: '一键分享',
       ctaHome: '返回首页',
       ctaStart: '开始学习',
+      ctaCreate: '创建你的笔记',
     },
   },
 };
