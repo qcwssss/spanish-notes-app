@@ -13,11 +13,6 @@ export default async function FaqPage() {
     .map((key) => Number(key.slice(1)))
     .sort((a, b) => a - b);
 
-  const faqItems = faqIndices.map((index) => ({
-    q: t(`faq.q${index}`),
-    a: t(`faq.a${index}`),
-  }));
-
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <main className="mx-auto max-w-4xl px-4 py-10 md:py-14">
@@ -38,10 +33,10 @@ export default async function FaqPage() {
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900/60">
           <h2 className="text-lg font-semibold">{t('faq.sectionTitle')}</h2>
           <div className="mt-4 space-y-3">
-            {faqItems.map((item) => (
-              <details key={item.q} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
-                <summary className="cursor-pointer text-sm font-medium text-slate-900 dark:text-slate-100">{item.q}</summary>
-                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.a}</p>
+            {faqIndices.map((index) => (
+              <details key={index} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+                <summary className="cursor-pointer text-sm font-medium text-slate-900 dark:text-slate-100">{t(`faq.q${index}`)}</summary>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{t(`faq.a${index}`)}</p>
               </details>
             ))}
           </div>
