@@ -44,13 +44,5 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/?auth=error', origin));
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.redirect(new URL('/?auth=error', origin));
-  }
-
   return response;
 }
