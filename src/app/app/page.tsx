@@ -40,7 +40,7 @@ export default async function AppPage({
     .order('updated_at', { ascending: false });
 
   const resolvedSearchParams = await searchParams;
-  const selectedNoteId = resolvedSearchParams?.noteId as string;
+  const selectedNoteId = [resolvedSearchParams?.noteId].flat()[0];
   const isEditMode = resolvedSearchParams?.mode === 'edit';
   let activeNote = null;
 
