@@ -30,12 +30,12 @@ vi.mock('next/server', async () => {
 });
 
 describe('auth callback route', () => {
-  it('exchanges code and redirects to root', async () => {
+  it('exchanges code and redirects to app', async () => {
     const request = new NextRequest('http://localhost/auth/callback?code=abc');
     const response = await GET(request);
 
     expect(exchangeCodeForSession).toHaveBeenCalledWith('abc');
-    expect(response).toEqual({ redirected: true, url: 'http://localhost/' });
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/app' });
   });
 
   it('respects safe next parameter', async () => {
@@ -51,6 +51,6 @@ describe('auth callback route', () => {
     const request = new NextRequest('http://localhost/auth/callback?code=bad');
     const response = await GET(request);
 
-    expect(response).toEqual({ redirected: true, url: 'http://localhost/home?auth=error' });
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/?auth=error' });
   });
 });

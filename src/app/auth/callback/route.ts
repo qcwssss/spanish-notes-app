@@ -4,11 +4,11 @@ import { getSupabaseConfig } from '@/utils/supabase/config';
 
 function resolveSafeNext(next: string | null) {
   if (!next || !next.startsWith('/')) {
-    return '/';
+    return '/app';
   }
 
   if (next.startsWith('//')) {
-    return '/';
+    return '/app';
   }
 
   return next;
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   const response = NextResponse.redirect(new URL(next, origin));
 
   if (!code) {
-    return NextResponse.redirect(new URL('/home?auth=error', origin));
+    return NextResponse.redirect(new URL('/?auth=error', origin));
   }
 
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    return NextResponse.redirect(new URL('/home?auth=error', origin));
+    return NextResponse.redirect(new URL('/?auth=error', origin));
   }
 
   const {
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.redirect(new URL('/home?auth=error', origin));
+    return NextResponse.redirect(new URL('/?auth=error', origin));
   }
 
   return response;

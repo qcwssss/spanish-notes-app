@@ -2,7 +2,10 @@
 
 Date: 2026-02-10
 Owner: @qcwssss
-Status: planned
+Status: superseded
+
+> Superseded on 2026-02-12 by `docs/plans/2026-02-12-public-root-app-workspace-routing-plan.md`.
+> Reason: this matrix assumes `/` is the protected workspace entry, which conflicts with the restored two-route model (`/` public landing, `/app` protected workspace).
 
 ## Goal
 
