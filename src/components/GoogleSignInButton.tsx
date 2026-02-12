@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { createBrowserClient } from '@/utils/supabase/client';
 import { useI18n } from '@/components/I18nProvider';
 import { useToast } from '@/components/ToastProvider';
+import { ROUTES } from '@/constants';
 
 interface GoogleSignInButtonProps {
   label: string;
@@ -25,7 +26,7 @@ export default function GoogleSignInButton({ label, className }: GoogleSignInBut
       const supabase = createBrowserClient();
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
+        options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(ROUTES.app)}` },
       });
 
       if (error) {

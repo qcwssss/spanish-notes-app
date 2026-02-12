@@ -13,6 +13,7 @@ vi.mock('@supabase/ssr', () => ({
   createServerClient: () => ({
     auth: {
       exchangeCodeForSession,
+      getUser: () => Promise.resolve({ data: { user: { id: 'u1' } } }),
     },
   }),
 }));
@@ -29,12 +30,19 @@ vi.mock('next/server', async () => {
 });
 
 describe('auth callback route', () => {
-  it('exchanges code and redirects to home', async () => {
+  it('exchanges code and redirects to root', async () => {
     const request = new NextRequest('http://localhost/auth/callback?code=abc');
     const response = await GET(request);
 
     expect(exchangeCodeForSession).toHaveBeenCalledWith('abc');
     expect(response).toEqual({ redirected: true, url: 'http://localhost/' });
+  });
+
+  it('respects safe next parameter', async () => {
+    const request = new NextRequest('http://localhost/auth/callback?code=abc&next=%2Fsettings');
+    const response = await GET(request);
+
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/settings' });
   });
 
   it('redirects with error when exchange fails', async () => {
