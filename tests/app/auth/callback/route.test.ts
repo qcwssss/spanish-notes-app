@@ -45,6 +45,20 @@ describe('auth callback route', () => {
     expect(response).toEqual({ redirected: true, url: 'http://localhost/settings' });
   });
 
+  it('falls back to app for disallowed next path', async () => {
+    const request = new NextRequest('http://localhost/auth/callback?code=abc&next=%2Ffaq');
+    const response = await GET(request);
+
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/app' });
+  });
+
+  it('falls back to app for protocol-relative next path', async () => {
+    const request = new NextRequest('http://localhost/auth/callback?code=abc&next=%2F%2Fevil.com');
+    const response = await GET(request);
+
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/app' });
+  });
+
   it('redirects with error when exchange fails', async () => {
     exchangeCodeForSession.mockResolvedValueOnce({ data: { session: null }, error: new Error('bad') });
 

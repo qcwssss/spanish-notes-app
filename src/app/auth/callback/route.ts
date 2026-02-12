@@ -1,17 +1,23 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseConfig } from '@/utils/supabase/config';
+import { ROUTES } from '@/constants';
 
 function resolveSafeNext(next: string | null) {
-  if (!next || !next.startsWith('/')) {
-    return '/app';
+  if (!next || !next.startsWith('/') || next.startsWith('//')) {
+    return ROUTES.app;
   }
 
-  if (next.startsWith('//')) {
-    return '/app';
+  const parsed = new URL(next, 'http://localhost');
+  const safePath = `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  const allowedPaths = [ROUTES.app, ROUTES.settings, '/favorites'];
+  const isAllowed = allowedPaths.some((path) => parsed.pathname === path || parsed.pathname.startsWith(`${path}/`));
+
+  if (!isAllowed) {
+    return ROUTES.app;
   }
 
-  return next;
+  return safePath;
 }
 
 export async function GET(request: NextRequest) {

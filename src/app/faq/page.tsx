@@ -68,9 +68,9 @@ export default async function FaqPage() {
                   <span>{t(`faq.q${index}`)}</span>
                   <ChevronRight className="h-5 w-5 text-slate-400 transition-transform duration-200 group-open:rotate-90 group-open:text-blue-500" />
                 </summary>
-                <div className="border-t border-slate-100 px-5 pb-5 pt-3 text-slate-600 dark:border-slate-800 dark:text-slate-400 leading-relaxed">
+                <p className="border-t border-slate-100 px-5 pb-5 pt-3 text-slate-600 dark:border-slate-800 dark:text-slate-400 leading-relaxed">
                   {t(`faq.a${index}`)}
-                </div>
+                </p>
               </details>
             ))}
           </div>
