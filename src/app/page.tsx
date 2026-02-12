@@ -7,6 +7,8 @@ import AuthGate from '@/components/AuthGate';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import { ROUTES } from '@/constants';
 
 export const metadata: Metadata = {
   title: 'My Notes | Spanish Notes',
@@ -19,6 +21,14 @@ export default async function Home({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect(ROUTES.home);
+  }
+
   const profile = await getUserProfile();
   const folders = await getFolders();
   const locale = await getServerLocale();
