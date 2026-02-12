@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { Folder } from '@/types/folder';
 import { Note } from '@/types/note';
-import { UNTITLED_NOTE_TITLE } from '@/constants';
+import { ROUTES, UNTITLED_NOTE_TITLE } from '@/constants';
 import { moveNote } from '@/utils/notes/actions';
 import { renameFolder } from '@/utils/folders/actions';
 import DroppableFolder from './DroppableFolder';
@@ -104,7 +104,7 @@ export default function FolderList({
         {notes.map(note => (
           <Link
             key={note.id}
-            href={`/?noteId=${note.id}`}
+            href={`${ROUTES.app}?noteId=${note.id}`}
             className="block p-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors truncate"
           >
             {getDisplayTitle(note.title)}

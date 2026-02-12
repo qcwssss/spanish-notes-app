@@ -9,6 +9,7 @@ import StorageIndicator from '@/components/StorageIndicator';
 import { useI18n } from '@/components/I18nProvider';
 import { LOCALE_LABELS, type Locale } from '@/i18n/config';
 import { useToast } from '@/components/ToastProvider';
+import { ROUTES } from '@/constants';
 
 interface SettingsFormProps {
   profile: UserProfile;
@@ -35,7 +36,7 @@ export default function SettingsForm({ profile }: SettingsFormProps) {
     try {
       await updateTargetLanguage(selectedLanguage);
       toast({ title: t('settings.saveSuccessAlert') });
-      router.push('/');
+      router.push(ROUTES.app);
       router.refresh();
     } catch (error) {
       console.error(error);

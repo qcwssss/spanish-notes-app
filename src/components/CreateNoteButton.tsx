@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createNote } from '@/utils/notes/queries';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
-import { UNTITLED_NOTE_TITLE } from '@/constants';
+import { ROUTES, UNTITLED_NOTE_TITLE } from '@/constants';
 import { DEFAULT_FOLDER_NAME } from '@/types/folder';
 import { SquarePen } from 'lucide-react';
 import { useI18n } from '@/components/I18nProvider';
@@ -43,7 +43,7 @@ export default function CreateNoteButton({
     try {
       const folderId = targetFolderId ?? defaultFolderId ?? undefined;
       const newNote = await createNote(UNTITLED_NOTE_TITLE, '', folderId);
-      router.push(`/?noteId=${newNote.id}&mode=edit`);
+      router.push(`${ROUTES.app}?noteId=${newNote.id}&mode=edit`);
     } catch (e) {
       console.error(e);
       toast({ title: t('notes.createFailed'), variant: 'destructive' });
