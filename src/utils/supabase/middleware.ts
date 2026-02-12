@@ -3,6 +3,15 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { getSupabaseConfig } from './config'
 
 export async function updateSession(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  const code = request.nextUrl.searchParams.get('code')
+
+  if (pathname === '/' && code) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/auth/callback'
+    return NextResponse.redirect(url)
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -41,9 +50,11 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const pathname = request.nextUrl.pathname
+  const isRoot = pathname === '/'
   const isPublicPath =
+    isRoot ||
     pathname.startsWith('/home') ||
+    pathname.startsWith('/faq') ||
     pathname.startsWith('/auth') ||
     pathname.startsWith('/share') ||
     pathname.startsWith('/api/share')
@@ -57,7 +68,7 @@ export async function updateSession(request: NextRequest) {
     }
 
     const url = request.nextUrl.clone()
-    url.pathname = '/home'
+    url.pathname = '/'
     url.search = ''
     return NextResponse.redirect(url)
   }

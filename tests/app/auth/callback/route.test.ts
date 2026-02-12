@@ -13,6 +13,7 @@ vi.mock('@supabase/ssr', () => ({
   createServerClient: () => ({
     auth: {
       exchangeCodeForSession,
+      getUser: () => Promise.resolve({ data: { user: { id: 'u1' } } }),
     },
   }),
 }));
@@ -29,12 +30,33 @@ vi.mock('next/server', async () => {
 });
 
 describe('auth callback route', () => {
-  it('exchanges code and redirects to home', async () => {
+  it('exchanges code and redirects to app', async () => {
     const request = new NextRequest('http://localhost/auth/callback?code=abc');
     const response = await GET(request);
 
     expect(exchangeCodeForSession).toHaveBeenCalledWith('abc');
-    expect(response).toEqual({ redirected: true, url: 'http://localhost/' });
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/app' });
+  });
+
+  it('respects safe next parameter', async () => {
+    const request = new NextRequest('http://localhost/auth/callback?code=abc&next=%2Fsettings');
+    const response = await GET(request);
+
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/settings' });
+  });
+
+  it('falls back to app for disallowed next path', async () => {
+    const request = new NextRequest('http://localhost/auth/callback?code=abc&next=%2Ffaq');
+    const response = await GET(request);
+
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/app' });
+  });
+
+  it('falls back to app for protocol-relative next path', async () => {
+    const request = new NextRequest('http://localhost/auth/callback?code=abc&next=%2F%2Fevil.com');
+    const response = await GET(request);
+
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/app' });
   });
 
   it('redirects with error when exchange fails', async () => {
@@ -43,6 +65,6 @@ describe('auth callback route', () => {
     const request = new NextRequest('http://localhost/auth/callback?code=bad');
     const response = await GET(request);
 
-    expect(response).toEqual({ redirected: true, url: 'http://localhost/home?auth=error' });
+    expect(response).toEqual({ redirected: true, url: 'http://localhost/?auth=error' });
   });
 });

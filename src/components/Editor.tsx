@@ -8,7 +8,7 @@ import NotePlayer from './NotePlayer';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
 import ShareActions from './ShareActions';
-import { UNTITLED_NOTE_TITLE } from '@/constants';
+import { ROUTES, UNTITLED_NOTE_TITLE } from '@/constants';
 import { useI18n } from '@/components/I18nProvider';
 import { useToast } from '@/components/ToastProvider';
 
@@ -119,7 +119,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
     try {
       await deleteNote(note.id);
       setShowDeleteDialog(false);
-      router.push('/'); 
+      router.push(ROUTES.app);
     } catch {
       toast({ title: t('editor.deleteFailed'), variant: 'destructive' });
     } finally {
@@ -160,7 +160,7 @@ export default function Editor({ note, isActive, targetLanguage, initialEditMode
                             // 新笔记且用户没有输入任何内容，删除它
                             try {
                                 await deleteNote(note.id);
-                                router.push('/');
+                                router.push(ROUTES.app);
                             } catch (error) {
                                 console.error('Failed to delete empty note:', error);
                                 toast({ title: t('editor.deleteNoteFailed'), variant: 'destructive' });

@@ -2,7 +2,10 @@
 
 Date: 2026-02-09
 Owner: @qcwssss
-Status: planned
+Status: superseded
+
+> Superseded on 2026-02-12 by `docs/plans/2026-02-12-public-root-app-workspace-routing-plan.md`.
+> Reason: repeated login return-path instability and ambiguous responsibility when `/` acts as workspace while `/home` acts as landing.
 
 ## Goal
 

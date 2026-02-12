@@ -11,6 +11,11 @@
 - Sign Out：部分完成（已有登录与 callback，会话流存在；但 `src` 中未实现 `supabase.auth.signOut()` UI 入口与跳转）。
 - 首次使用引导到 `/home`：未开始（`/home` 页面已存在，但无 first-run 检测、引导展示与一次性持久化逻辑）。
 
+## 2026-02-12
+- 路由策略文档先行更新：确认将回到「公开首页与工作区分路由」方案，避免 `"/"` 同时承担 landing 与 workspace 角色导致的登录回跳不稳定。
+- 新决策目标：`/` 作为公开 landing，`/app` 作为登录后 workspace，`/auth/callback` 默认回 `/app`（允许受控白名单 `next`）。
+- 将 2026-02-09 与 2026-02-10 的两份「`/` = workspace」方案标记为 superseded（仅保留历史记录）。
+
 ## 2026-01-30
 - 完成收藏视图（独立页面）与侧边栏视图切换（All Notes / Favorites）
 - 收藏列表支持更新时间排序切换（Newest/Oldest），并将选择持久化到 localStorage

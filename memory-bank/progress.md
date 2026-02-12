@@ -89,3 +89,18 @@
   - `docs/todos/2026-02-09-middleware-proxy-signout-onboarding.md`
   - `docs/progress.md`
   - `memory-bank/progress.md`
+
+## Session: 2026-02-12
+
+### Phase: Routing Decision Rollback (Docs First)
+- **Status:** complete
+- Actions taken:
+  - Confirmed repeated auth redirect instability is caused by mixed responsibility on `/` (landing + workspace semantics drift).
+  - Re-established target architecture in docs: public landing on `/`, authenticated workspace on `/app`.
+  - Marked older root-workspace routing plans as superseded and created a new migration plan for route split.
+- Files created/modified:
+  - `docs/plans/2026-02-12-public-root-app-workspace-routing-plan.md`
+  - `docs/plans/2026-02-09-default-root-notes-routing-plan.md`
+  - `docs/plans/2026-02-10-auth-routing-decision-matrix.md`
+  - `docs/progress.md`
+  - `memory-bank/progress.md`

@@ -13,7 +13,7 @@ import { getDefaultFolder } from '@/utils/folders/queries';
 import { createNote } from '@/utils/notes/queries';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from '@/components/ActivationDialog';
-import { UNTITLED_NOTE_TITLE } from '@/constants';
+import { ROUTES, UNTITLED_NOTE_TITLE } from '@/constants';
 import { useI18n } from '@/components/I18nProvider';
 
 interface DroppableFolderProps {
@@ -190,7 +190,7 @@ export default function DroppableFolder({
     setIsCreatingNote(true);
     try {
       const newNote = await createNote(UNTITLED_NOTE_TITLE, '', folder.id);
-      router.push(`/?noteId=${newNote.id}&mode=edit`);
+      router.push(`${ROUTES.app}?noteId=${newNote.id}&mode=edit`);
     } catch (error) {
       if (!isMountedRef.current) return;
       console.error('Failed to create note:', error);

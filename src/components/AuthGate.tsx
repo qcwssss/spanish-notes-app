@@ -27,9 +27,10 @@ export default function AuthGate() {
 
   const handleLogin = async () => {
     const supabase = createBrowserClient();
+    const next = `${window.location.pathname}${window.location.search}`;
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
     });
   };
 
