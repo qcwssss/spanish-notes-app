@@ -59,7 +59,7 @@ describe('DraggableNote', () => {
   it('should include note id in the link href', () => {
     renderWithDnd(<DraggableNote note={mockNote} />);
     const link = screen.getByRole('button', { name: 'Test Note' });
-    expect(link).toHaveAttribute('href', '/?noteId=note-1');
+    expect(link).toHaveAttribute('href', '/app?noteId=note-1');
   });
 
   describe('Favorite toggle', () => {

@@ -49,6 +49,7 @@ export default async function AppPage({
       .from('notes')
       .select('*')
       .eq('id', selectedNoteId)
+      .eq('user_id', user.id)
       .single();
     activeNote = note;
   }
