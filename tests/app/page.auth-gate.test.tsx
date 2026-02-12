@@ -14,10 +14,14 @@ vi.mock('@/components/ToastProvider', () => ({
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
   usePathname: () => '/',
+  redirect: vi.fn(),
 }));
 
 vi.mock('@/utils/supabase/server', () => ({
   createServerClient: vi.fn(() => ({
+    auth: {
+      getUser: () => Promise.resolve({ data: { user: { id: 'user-1' } } }),
+    },
     from: () => ({
       select: () => ({
         order: () => Promise.resolve({ data: [] }),
