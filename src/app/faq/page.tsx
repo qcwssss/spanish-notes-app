@@ -3,7 +3,7 @@ import { ROUTES } from '@/constants';
 import { getServerLocale } from '@/i18n/server';
 import { messages } from '@/i18n/messages';
 import { createTranslator } from '@/i18n/translator';
-import { HelpCircle, BookOpen, CheckCircle2, ChevronRight, Home, ArrowLeft } from 'lucide-react';
+import { HelpCircle, BookOpen, CheckCircle2, ChevronRight, Home } from 'lucide-react';
 
 export default async function FaqPage() {
   const locale = await getServerLocale();
