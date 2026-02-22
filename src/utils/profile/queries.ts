@@ -19,9 +19,29 @@ export async function getUserProfile(): Promise<UserProfile | null> {
     .eq('id', user.id)
     .single();
 
-  if (error) {
-    console.error('Error fetching user profile:', error);
-    return null;
+  if (error || !data) {
+    // Profile 不存在（可能 handle_new_user trigger 未包含 profile 创建逻辑）
+    // 调用兜底 RPC 创建 profile
+    console.warn('用户 profile 未找到，尝试兜底创建:', user.id);
+    const { error: rpcError } = await supabase.rpc('ensure_user_profile');
+    if (rpcError) {
+      console.error('兜底创建 profile 失败:', rpcError);
+      return null;
+    }
+
+    // 重新查询
+    const { data: retryData, error: retryError } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (retryError || !retryData) {
+      console.error('兜底创建后仍无法获取 profile:', retryError);
+      return null;
+    }
+
+    return retryData as UserProfile;
   }
 
   return data as UserProfile;

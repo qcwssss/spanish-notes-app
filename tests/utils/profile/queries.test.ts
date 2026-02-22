@@ -83,6 +83,50 @@ describe('getUserProfile', () => {
     const profile = await getUserProfile();
     expect(profile).toBeNull();
   });
+
+  it('should fallback to RPC when profile not found', async () => {
+    const mockProfile = {
+      id: 'test-user-id',
+      email: 'test@example.com',
+      is_active: false,
+      storage_used: 0,
+      plan_type: 'free',
+      target_language: null,
+      created_at: '2026-02-22T00:00:00Z'
+    };
+
+    let callCount = 0;
+    const { createServerClient } = await import('@/utils/supabase/server');
+    vi.mocked(createServerClient).mockReturnValueOnce({
+      auth: {
+        getUser: vi.fn(() => Promise.resolve({
+          data: { user: { id: 'test-user-id', email: 'test@example.com' } },
+          error: null
+        }))
+      },
+      from: vi.fn(() => ({
+        select: vi.fn(() => ({
+          eq: vi.fn(() => ({
+            single: vi.fn(() => {
+              callCount++;
+              if (callCount === 1) {
+                // 第一次查询：profile 不存在
+                return Promise.resolve({ data: null, error: { message: 'not found' } });
+              }
+              // 第二次查询（兜底后）：profile 已创建
+              return Promise.resolve({ data: mockProfile, error: null });
+            })
+          }))
+        }))
+      })),
+      rpc: vi.fn(() => Promise.resolve({ error: null }))
+    } as any);
+
+    const profile = await getUserProfile();
+    expect(profile).toBeDefined();
+    expect(profile?.is_active).toBe(false);
+    expect(profile?.email).toBe('test@example.com');
+  });
 });
 
 describe('updateTargetLanguage', () => {
