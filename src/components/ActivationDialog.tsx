@@ -45,8 +45,10 @@ export default function ActivationDialog({ open, onOpenChange }: ActivationDialo
       
       if (result.success) {
         onOpenChange(false);
-        router.refresh();
         toast({ title: t('activation.success') });
+        setTimeout(() => {
+          window.location.href = '/app';
+        }, 500);
       } else {
         setError(getStatusMessage(result.status, result.message));
       }

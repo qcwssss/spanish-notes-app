@@ -28,7 +28,9 @@ export async function redeemActivationCode(code: string): Promise<RedeemResult> 
     const result = data as string;
 
     if (result === 'Success') {
-      revalidatePath('/');
+      revalidatePath('/', 'layout');
+      revalidatePath('/app');
+      revalidatePath('/settings');
       return {
         success: true,
         status: 'success'
