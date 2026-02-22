@@ -27,6 +27,8 @@
   - 文件夹重命名（双击或三点菜单）。
   - 收藏视图（可按更新时间排序）。
   - 响应式侧边栏和编辑界面。
+  - **笔记分享**: 通过公开链接分享笔记供他人只读访问。
+    - 试试看: [https://spanish-notes-app.vercel.app/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b](https://spanish-notes-app.vercel.app/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b)
 
 - **核心交互功能**:
   - **交互式 Markdown 渲染**: 重写了 Markdown 组件，支持对段落、列表、标题等块级元素进行递归解析，实现词级/句级的交互。
