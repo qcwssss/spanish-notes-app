@@ -27,6 +27,8 @@ Depending on your browser (Chrome, Safari, Edge, etc.), it can support dozens of
   - Folder renaming (Double-click or via menu).
   - Favorites view with sortable list (Newest/Oldest).
   - Responsive sidebar and editing interface.
+  - **Note Sharing**: Share notes via public links for read-only access.
+    - Try it: [https://spanish-notes-app.vercel.app/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b](https://spanish-notes-app.vercel.app/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b)
 
 - **Core Interactive Features**:
   - **Interactive Markdown Rendering**: Rewrote Markdown components to recursively parse block-level elements like paragraphs, lists, and headers, implementing word/sentence-level interactivity.
