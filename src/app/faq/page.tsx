@@ -106,7 +106,7 @@ export default async function FaqPage() {
             className="flex w-full items-center justify-center rounded-xl border border-slate-800 bg-slate-900/50 px-8 py-3.5 font-medium text-slate-300 transition-colors hover:border-slate-700 hover:bg-slate-800 hover:text-white sm:w-auto"
           >
             <Home className="mr-2 h-5 w-5" strokeWidth={1.5} />
-            Homepage
+            {t('faq.ctaHome')}
           </Link>
         </footer>
       </main>

@@ -36,7 +36,7 @@ export default async function LandingPage() {
           <span>Viva<span className="text-blue-500">Note</span></span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-          <span className="hover:text-white transition-colors cursor-pointer">Features</span>
+          <Link href="#features" className="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60 rounded-sm">Features</Link>
           <Link href={ROUTES.faq} className="hover:text-white transition-colors cursor-pointer">FAQ</Link>
         </div>
         <div className="flex items-center gap-4 text-sm">
@@ -154,7 +154,7 @@ export default async function LandingPage() {
         </section>
 
         {/* Feature Grid */}
-        <section className="mx-auto max-w-5xl grid gap-8 sm:grid-cols-3">
+        <section id="features" className="mx-auto max-w-5xl grid gap-8 sm:grid-cols-3">
           {[
             { icon: PenTool, title: 'Rich Text & Syntax', desc: t('landing.featureWrite') },
             { icon: Globe2, title: 'Organized Structure', desc: t('landing.featureLanguage') },
