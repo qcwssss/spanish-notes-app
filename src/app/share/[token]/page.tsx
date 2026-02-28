@@ -16,7 +16,7 @@ export default async function SharedNotePage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  const appName = process.env.NEXT_PUBLIC_APP_NAME ?? 'NoteLingo';
+  const appName = process.env.NEXT_PUBLIC_APP_NAME ?? 'VivaNote';
   const locale = await getServerLocale();
   const t = createTranslator(locale);
   const note = await getSharedNoteByToken(token);

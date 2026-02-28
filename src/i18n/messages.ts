@@ -163,7 +163,7 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
     },
     faq: {
       entryCta: 'How to use / FAQ',
-      title: 'How to use NoteLingo',
+      title: 'How to use VivaNote',
       subtitle: 'A quick guide for first-time users and common questions.',
       howTitle: 'How it works',
       step1: 'Sign in and create your first study note.',
@@ -395,7 +395,7 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
     },
     faq: {
       entryCta: '使用说明 / 常见问题',
-      title: '如何使用 NoteLingo',
+      title: '如何使用 VivaNote',
       subtitle: '给首次使用者的快速指南与常见问题解答。',
       howTitle: '上手步骤',
       step1: '登录后创建你的第一条学习笔记。',
