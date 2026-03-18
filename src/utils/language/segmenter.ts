@@ -91,16 +91,27 @@ export function segmentText(text: string, language: string | null = 'es'): TextS
   });
 
   const collapsed: TextSegment[] = [];
-  for (let index = 0; index < mergedPlain.length; index += 1) {
+  let index = 0;
+
+  while (index < mergedPlain.length) {
     const current = mergedPlain[index];
-
-    if (current.type !== 'target') {
-      collapsed.push(current);
-      continue;
-    }
-
-    let combinedText = current.text;
+    let combinedText = '';
     let cursor = index;
+
+    if (current.type === 'plain') {
+      const next = mergedPlain[index + 1];
+
+      if (!next || next.type !== 'target' || !isWrapperBridge(current.text)) {
+        collapsed.push(current);
+        index += 1;
+        continue;
+      }
+
+      combinedText = current.text + next.text;
+      cursor += 1;
+    } else {
+      combinedText = current.text;
+    }
 
     while (
       cursor + 2 < mergedPlain.length &&
@@ -122,7 +133,7 @@ export function segmentText(text: string, language: string | null = 'es'): TextS
     }
 
     collapsed.push({ text: combinedText, type: 'target' });
-    index = cursor;
+    index = cursor + 1;
   }
 
   return collapsed;

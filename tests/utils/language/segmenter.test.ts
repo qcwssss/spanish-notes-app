@@ -18,6 +18,14 @@ describe('segmentText', () => {
     ]);
   });
 
+  it('keeps parenthesized text at the start in the same segment', () => {
+    const input = '(Hola)';
+    const result = segmentText(input, 'es');
+    expect(result).toEqual([
+      { text: '(Hola)', type: 'target' }
+    ]);
+  });
+
   it('keeps quoted text in the same segment', () => {
     const input = 'Ella dijo: "Hola amigo."';
     const result = segmentText(input, 'es');
