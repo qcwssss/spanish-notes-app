@@ -9,7 +9,7 @@ export const LANGUAGE_ALPHABETS: Record<string, string> = {
 };
 
 // Common punctuation allowed in TTS target text
-const PUNCTUATION = ",.;:?!()";
+const PUNCTUATION = ',.;:?!';
 
 const LANGUAGE_CHARSETS: Record<string, RegExp> = Object.entries(LANGUAGE_ALPHABETS).reduce((acc, [lang, chars]) => {
   acc[lang] = new RegExp(`[${chars}${PUNCTUATION}]`);
@@ -22,9 +22,9 @@ export function extractTargetText(text: string, language: string | null | undefi
   const key = language && LANGUAGE_CHARSETS[language] ? language : DEFAULT_LANGUAGE;
   const allowed = LANGUAGE_CHARSETS[key];
 
-  const withoutParentheses = text.replace(/[（(][^）)]*[）)]/g, '');
+  const normalized = text.replace(/[()\[\]{}<>"`“”„‟«»‹›（）]/g, ' ');
 
-  const cleaned = Array.from(withoutParentheses)
+  const cleaned = Array.from(normalized)
     .map((char) => (allowed.test(char) || /\s/.test(char) || /[\u0027\u2018\u2019]/.test(char) ? char : ' '))
     .join('')
     .replace(/\s+/g, ' ')
