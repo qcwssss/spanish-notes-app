@@ -22,7 +22,10 @@ export function segmentText(text: string, language: string | null = 'es'): TextS
   // - Apostrophes within words
   // - Space/Comma/Semicolon/Period separators between words
   // - Optional ending punctuation (?!.)
-  const targetPattern = new RegExp(`([¿¡]?[${range}]+(?:['’][${range}]+)*(?:[ ,;.]+[${range}]+(?:['’][${range}]+)*)*[?!.]?)`, 'g');
+  const targetPattern = new RegExp(
+    `([¿¡]?[${range}]+(?:['’][${range}]+)*(?:[ ,;.:"“”‘’()]+[${range}]+(?:['’][${range}]+)*)*[?!.]?[\")”’]*[?!.]?)`,
+    'g'
+  );
 
   const lines = text.split('\n');
   

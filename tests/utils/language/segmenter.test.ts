@@ -10,14 +10,19 @@ describe('segmentText', () => {
     ]);
   });
 
-  it('splits Spanish with parenthesis explanation', () => {
+  it('keeps parenthesized text in the same spoken segment', () => {
     const input = 'Hola (Hello)';
     const result = segmentText(input, 'es');
     expect(result).toEqual([
-      { text: 'Hola', type: 'target' },
-      { text: ' (', type: 'plain' },
-      { text: 'Hello', type: 'target' },
-      { text: ')', type: 'plain' }
+      { text: 'Hola (Hello)', type: 'target' }
+    ]);
+  });
+
+  it('keeps quoted text in the same spoken segment', () => {
+    const input = 'Ella dijo "hola mundo".';
+    const result = segmentText(input, 'es');
+    expect(result).toEqual([
+      { text: 'Ella dijo "hola mundo".', type: 'target' }
     ]);
   });
   
@@ -47,20 +52,9 @@ describe('segmentText', () => {
      
      // Original: "Hola amigos, hoy es lunes. (Hello friends, today is Monday.)"
      
-     // "Hola amigos, hoy es lunes." -> Target
-     expect(result[0].text).toBe('Hola amigos, hoy es lunes.');
-     expect(result[0].type).toBe('target');
-     
-     // " (" -> Plain
-     expect(result[1].text).toBe(' (');
-     expect(result[1].type).toBe('plain');
-     
-     // "Hello friends, today is Monday." -> Target (Greedy match of Latin chars)
-     expect(result[2].text).toBe('Hello friends, today is Monday.');
-     expect(result[2].type).toBe('target');
-     
-     // ")" -> Plain
-     expect(result[3].text).toBe(')');
-     expect(result[3].type).toBe('plain');
+      // Entire sentence should remain one target segment.
+      expect(result[0].text).toBe('Hola amigos, hoy es lunes. (Hello friends, today is Monday.)');
+      expect(result[0].type).toBe('target');
+      expect(result).toHaveLength(1);
   });
 });

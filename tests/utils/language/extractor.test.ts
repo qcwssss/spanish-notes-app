@@ -17,6 +17,16 @@ describe('extractTargetText', () => {
     expect(result).toBe("C’est la vie");
   });
 
+  it('keeps parenthesized target text for natural speech', () => {
+    const result = extractTargetText('Hola (amigo)', 'es');
+    expect(result).toBe('Hola (amigo)');
+  });
+
+  it('keeps quoted target text for natural speech', () => {
+    const result = extractTargetText('Ella dijo "hola"', 'es');
+    expect(result).toBe('Ella dijo "hola"');
+  });
+
   it('returns empty string when no target language content', () => {
     const result = extractTargetText('我是一个好奇的人', 'es');
     expect(result).toBe('');
