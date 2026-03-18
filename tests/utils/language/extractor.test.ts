@@ -7,6 +7,16 @@ describe('extractTargetText', () => {
     expect(result).toBe('Soy una persona curiosa');
   });
 
+  it('keeps target-language text inside parentheses', () => {
+    const result = extractTargetText('Hola (buenos dias)', 'es');
+    expect(result).toBe('Hola buenos dias');
+  });
+
+  it('keeps target-language text inside quotes', () => {
+    const result = extractTargetText('Ella dijo: "Hola amigo."', 'es');
+    expect(result).toBe('Ella dijo: Hola amigo.');
+  });
+
   it('keeps French accents and strips non-target characters', () => {
     const result = extractTargetText("Je m'appelle Léa（我叫乐雅）", 'fr');
     expect(result).toBe("Je m'appelle Léa");

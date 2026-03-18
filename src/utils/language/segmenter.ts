@@ -5,6 +5,17 @@ export type TextSegment = {
   type: 'target' | 'plain';
 };
 
+const WRAPPER_BRIDGE = /^[\s:"“”'‘’()\[\]{}-]+$/;
+const CLOSING_WRAPPER = /^[\s"”'’)\]}]+$/;
+
+function isWrapperBridge(text: string): boolean {
+  return WRAPPER_BRIDGE.test(text);
+}
+
+function isClosingWrapper(text: string): boolean {
+  return CLOSING_WRAPPER.test(text);
+}
+
 export function segmentText(text: string, language: string | null = 'es'): TextSegment[] {
   if (!text) return [];
 
@@ -14,72 +25,105 @@ export function segmentText(text: string, language: string | null = 'es'): TextS
   // 1. Get alphabet for target language (default to Spanish if not found)
   const langKey = language && LANGUAGE_ALPHABETS[language] ? language : 'es';
   const range = LANGUAGE_ALPHABETS[langKey];
-  
+
   // 2. Construct Regex dynamically
   // Structure:
   // - Optional leading inverted punctuation (¿¡) - hardcoded common ones as they are safe
   // - Words (Alphabet chars)
   // - Apostrophes within words
   // - Space/Comma/Semicolon/Period separators between words
-  // - Optional ending punctuation (?!.)
+  // - Optional ending punctuation such as ?, !, or .
   const targetPattern = new RegExp(`([¿¡]?[${range}]+(?:['’][${range}]+)*(?:[ ,;.]+[${range}]+(?:['’][${range}]+)*)*[?!.]?)`, 'g');
 
   const lines = text.split('\n');
-  
+
   lines.forEach((line, i) => {
     let lastIndex = 0;
     let match;
-    
+
     while ((match = targetPattern.exec(line)) !== null) {
-      // Content before the match (Plain)
       if (match.index > lastIndex) {
         segments.push({
           text: line.slice(lastIndex, match.index),
           type: 'plain'
         });
       }
-      
-      // The match itself (Target?)
-      // We double check if it's actually valid target text (not just random letters)
+
       const potentialTarget = match[0];
       if (extractTargetText(potentialTarget, language).length > 0) {
-          segments.push({
-            text: potentialTarget,
-            type: 'target'
-          });
+        segments.push({
+          text: potentialTarget,
+          type: 'target'
+        });
       } else {
-          segments.push({
-            text: potentialTarget, // Treat as plain if it filters to empty
-            type: 'plain'
-          });
+        segments.push({
+          text: potentialTarget,
+          type: 'plain'
+        });
       }
-      
+
       lastIndex = targetPattern.lastIndex;
     }
-    
-    // Remaining content
+
     if (lastIndex < line.length) {
       segments.push({
         text: line.slice(lastIndex),
         type: 'plain'
       });
     }
-    
-    // Add newline segment if not last line
+
     if (i < lines.length - 1) {
-       segments.push({ text: '\n', type: 'plain' });
+      segments.push({ text: '\n', type: 'plain' });
     }
   });
 
-  // Post-processing: Merge adjacent 'plain' segments to reduce DOM nodes
-  const merged: TextSegment[] = [];
-  segments.forEach(seg => {
-      if (merged.length > 0 && merged[merged.length - 1].type === 'plain' && seg.type === 'plain') {
-          merged[merged.length - 1].text += seg.text;
-      } else {
-          merged.push(seg);
-      }
+  const mergedPlain: TextSegment[] = [];
+  segments.forEach((segment) => {
+    if (
+      mergedPlain.length > 0 &&
+      mergedPlain[mergedPlain.length - 1].type === 'plain' &&
+      segment.type === 'plain'
+    ) {
+      mergedPlain[mergedPlain.length - 1].text += segment.text;
+    } else {
+      mergedPlain.push(segment);
+    }
   });
 
-  return merged;
+  const collapsed: TextSegment[] = [];
+  for (let index = 0; index < mergedPlain.length; index += 1) {
+    const current = mergedPlain[index];
+
+    if (current.type !== 'target') {
+      collapsed.push(current);
+      continue;
+    }
+
+    let combinedText = current.text;
+    let cursor = index;
+
+    while (
+      cursor + 2 < mergedPlain.length &&
+      mergedPlain[cursor + 1].type === 'plain' &&
+      mergedPlain[cursor + 2].type === 'target' &&
+      isWrapperBridge(mergedPlain[cursor + 1].text)
+    ) {
+      combinedText += mergedPlain[cursor + 1].text + mergedPlain[cursor + 2].text;
+      cursor += 2;
+    }
+
+    while (
+      cursor + 1 < mergedPlain.length &&
+      mergedPlain[cursor + 1].type === 'plain' &&
+      isClosingWrapper(mergedPlain[cursor + 1].text)
+    ) {
+      combinedText += mergedPlain[cursor + 1].text;
+      cursor += 1;
+    }
+
+    collapsed.push({ text: combinedText, type: 'target' });
+    index = cursor;
+  }
+
+  return collapsed;
 }

@@ -14,10 +14,23 @@ describe('segmentText', () => {
     const input = 'Hola (Hello)';
     const result = segmentText(input, 'es');
     expect(result).toEqual([
-      { text: 'Hola', type: 'target' },
-      { text: ' (', type: 'plain' },
-      { text: 'Hello', type: 'target' },
-      { text: ')', type: 'plain' }
+      { text: 'Hola (Hello)', type: 'target' }
+    ]);
+  });
+
+  it('keeps quoted text in the same segment', () => {
+    const input = 'Ella dijo: "Hola amigo."';
+    const result = segmentText(input, 'es');
+    expect(result).toEqual([
+      { text: 'Ella dijo: "Hola amigo."', type: 'target' }
+    ]);
+  });
+
+  it('keeps curly quoted text in the same segment', () => {
+    const input = 'Ella dijo: “Hola amigo.”';
+    const result = segmentText(input, 'es');
+    expect(result).toEqual([
+      { text: 'Ella dijo: “Hola amigo.”', type: 'target' }
     ]);
   });
   
@@ -38,29 +51,11 @@ describe('segmentText', () => {
   });
 
   it('handles mixed content in one line', () => {
-     const input = 'Hola amigos, hoy es lunes. (Hello friends, today is Monday.)';
-     const result = segmentText(input, 'es');
-     
-     // Since English words share the same charset (Latin) as Spanish, 
-     // the simple regex extractor will identify them as "targets".
-     // This is acceptable as long as they are distinct segments and not merging with Chinese.
-     
-     // Original: "Hola amigos, hoy es lunes. (Hello friends, today is Monday.)"
-     
-     // "Hola amigos, hoy es lunes." -> Target
-     expect(result[0].text).toBe('Hola amigos, hoy es lunes.');
-     expect(result[0].type).toBe('target');
-     
-     // " (" -> Plain
-     expect(result[1].text).toBe(' (');
-     expect(result[1].type).toBe('plain');
-     
-     // "Hello friends, today is Monday." -> Target (Greedy match of Latin chars)
-     expect(result[2].text).toBe('Hello friends, today is Monday.');
-     expect(result[2].type).toBe('target');
-     
-     // ")" -> Plain
-     expect(result[3].text).toBe(')');
-     expect(result[3].type).toBe('plain');
+    const input = 'Hola amigos, hoy es lunes. (Hello friends, today is Monday.)';
+    const result = segmentText(input, 'es');
+
+    expect(result[0].text).toBe('Hola amigos, hoy es lunes. (Hello friends, today is Monday.)');
+    expect(result[0].type).toBe('target');
+    expect(result).toHaveLength(1);
   });
 });
