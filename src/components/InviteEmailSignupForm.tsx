@@ -21,9 +21,7 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const submitLabel = useMemo(() => {
-    return isSubmitting ? t('inviteSignup.submitting') : t('inviteSignup.submit');
-  }, [isSubmitting, t]);
+
 
   const mapErrorMessage = (rawMessage: string) => {
     const normalized = rawMessage.toLowerCase();
@@ -115,13 +113,13 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
         />
 
         {errorMessage && (
-          <p className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
+          <p role="alert" aria-live="assertive" className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
             {errorMessage}
           </p>
         )}
 
         {isSuccess && (
-          <p className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
+          <p role="status" aria-live="polite" className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
             {t('inviteSignup.success')}
           </p>
         )}
@@ -132,7 +130,7 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
           aria-busy={isSubmitting}
           className="w-full rounded-lg bg-blue-600 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {submitLabel}
+          {isSubmitting ? t('inviteSignup.submitting') : t('inviteSignup.submit')}
         </button>
       </form>
     </section>
