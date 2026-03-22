@@ -1,26 +1,11 @@
 import { redirect } from 'next/navigation';
 import EmailPasswordSignInForm from '@/components/EmailPasswordSignInForm';
 import { ROUTES } from '@/constants';
+import { resolveSafeNext } from '@/utils/auth/resolveSafeNext';
 import { createServerClient } from '@/utils/supabase/server';
 
 interface EmailSignInPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-function resolveSafeNext(raw: string | string[] | undefined) {
-  if (typeof raw !== 'string' || !raw.startsWith('/') || raw.startsWith('//')) {
-    return ROUTES.app;
-  }
-
-  const parsed = new URL(raw, 'http://localhost');
-  const allowedPaths = [ROUTES.app, ROUTES.settings, '/favorites'];
-  const isAllowed = allowedPaths.some((path) => parsed.pathname === path || parsed.pathname.startsWith(`${path}/`));
-
-  if (!isAllowed) {
-    return ROUTES.app;
-  }
-
-  return `${parsed.pathname}${parsed.search}${parsed.hash}`;
 }
 
 function resolvePrefillEmail(raw: string | string[] | undefined) {

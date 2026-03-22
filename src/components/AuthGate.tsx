@@ -2,13 +2,20 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { createBrowserClient } from '@/utils/supabase/client';
 import { useI18n } from '@/components/I18nProvider';
 import { ROUTES } from '@/constants';
 
 export default function AuthGate() {
   const { t } = useI18n();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  const nextQuery = searchParams?.toString();
+  const nextPath = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+  const emailSignInHref = `${ROUTES.authSignIn}?next=${encodeURIComponent(nextPath)}`;
 
   useEffect(() => {
     const supabase = createBrowserClient();
@@ -51,7 +58,7 @@ export default function AuthGate() {
           {t('auth.button')}
         </button>
         <Link
-          href={ROUTES.authSignIn}
+          href={emailSignInHref}
           className="mt-4 inline-flex text-sm font-medium text-blue-600 transition-colors hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200"
         >
           {t('auth.emailLink')}
