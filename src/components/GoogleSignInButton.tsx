@@ -9,9 +9,14 @@ import { ROUTES } from '@/constants';
 interface GoogleSignInButtonProps {
   label: string;
   className?: string;
+  nextPath?: string;
 }
 
-export default function GoogleSignInButton({ label, className }: GoogleSignInButtonProps) {
+export default function GoogleSignInButton({
+  label,
+  className,
+  nextPath = ROUTES.app,
+}: GoogleSignInButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useI18n();
   const { toast } = useToast();
@@ -26,7 +31,7 @@ export default function GoogleSignInButton({ label, className }: GoogleSignInBut
       const supabase = createBrowserClient();
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(ROUTES.app)}` },
+        options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}` },
       });
 
       if (error) {
