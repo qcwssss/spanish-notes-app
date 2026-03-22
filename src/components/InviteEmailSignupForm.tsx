@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { createBrowserClient } from '@/utils/supabase/client';
 import { useI18n } from '@/components/I18nProvider';
 import { ROUTES } from '@/constants';
@@ -8,6 +8,8 @@ import { ROUTES } from '@/constants';
 interface InviteEmailSignupFormProps {
   initialEmail?: string;
 }
+
+const MIN_PASSWORD_LENGTH = 8;
 
 function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
@@ -17,11 +19,10 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
   const { t } = useI18n();
   const [email, setEmail] = useState(normalizeEmail(initialEmail));
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
-
-
 
   const mapErrorMessage = (rawMessage: string) => {
     const normalized = rawMessage.toLowerCase();
@@ -37,16 +38,40 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
     return t('inviteSignup.genericError');
   };
 
+  const validateForm = (normalizedEmail: string) => {
+    if (!normalizedEmail || !password || !confirmPassword) {
+      return t('inviteSignup.invalidInput');
+    }
+
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      return t('inviteSignup.passwordTooShort');
+    }
+
+    if (password !== confirmPassword) {
+      return t('inviteSignup.passwordMismatch');
+    }
+
+    return null;
+  };
+
+  const normalizedEmail = normalizeEmail(email);
+  const canSubmit =
+    Boolean(normalizedEmail) &&
+    password.length >= MIN_PASSWORD_LENGTH &&
+    confirmPassword.length >= MIN_PASSWORD_LENGTH &&
+    password === confirmPassword;
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isSubmitting) {
       return;
     }
 
-    const normalizedEmail = normalizeEmail(email);
+    const validationError = validateForm(normalizedEmail);
 
-    if (!normalizedEmail || !password) {
-      setErrorMessage(t('inviteSignup.invalidInput'));
+    if (validationError) {
+      setErrorMessage(validationError);
+      setIsSuccess(false);
       return;
     }
 
@@ -71,6 +96,7 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
 
       setIsSuccess(true);
       setPassword('');
+      setConfirmPassword('');
     } catch {
       setErrorMessage(t('inviteSignup.genericError'));
       setIsSuccess(false);
@@ -106,9 +132,35 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
           type="password"
           autoComplete="new-password"
           required
-          minLength={8}
+          minLength={MIN_PASSWORD_LENGTH}
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => {
+            setPassword(event.target.value);
+            setErrorMessage(null);
+            setIsSuccess(false);
+          }}
+          aria-describedby="invite-signup-password-help"
+          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-500/40 placeholder:text-slate-400 focus:ring-2 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+        />
+        <p id="invite-signup-password-help" className="text-sm text-slate-500 dark:text-slate-400">
+          {t('inviteSignup.passwordRequirements')}
+        </p>
+
+        <label className="block text-sm font-medium" htmlFor="invite-signup-confirm-password">
+          {t('inviteSignup.confirmPasswordLabel')}
+        </label>
+        <input
+          id="invite-signup-confirm-password"
+          type="password"
+          autoComplete="new-password"
+          required
+          minLength={MIN_PASSWORD_LENGTH}
+          value={confirmPassword}
+          onChange={(event) => {
+            setConfirmPassword(event.target.value);
+            setErrorMessage(null);
+            setIsSuccess(false);
+          }}
           className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-500/40 placeholder:text-slate-400 focus:ring-2 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
         />
 
@@ -126,7 +178,7 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !canSubmit}
           aria-busy={isSubmitting}
           className="w-full rounded-lg bg-blue-600 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-70"
         >
