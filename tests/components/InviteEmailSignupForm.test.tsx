@@ -32,6 +32,9 @@ describe('InviteEmailSignupForm', () => {
     fireEvent.change(screen.getByLabelText('Password'), {
       target: { value: 'secret123' },
     });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
+      target: { value: 'secret123' },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
     await waitFor(() => {
@@ -55,6 +58,9 @@ describe('InviteEmailSignupForm', () => {
     fireEvent.change(screen.getByLabelText('Password'), {
       target: { value: 'secret123' },
     });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
+      target: { value: 'secret123' },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
     expect(await screen.findByText('This email is not invited.')).toBeInTheDocument();
@@ -65,6 +71,9 @@ describe('InviteEmailSignupForm', () => {
     renderWithI18n(<InviteEmailSignupForm initialEmail="invited@example.com" />);
 
     fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'secret123' },
+    });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
       target: { value: 'secret123' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
@@ -81,6 +90,9 @@ describe('InviteEmailSignupForm', () => {
     fireEvent.change(screen.getByLabelText('Password'), {
       target: { value: 'secret123' },
     });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
+      target: { value: 'secret123' },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
     expect(await screen.findByText('This invite has already been used.')).toBeInTheDocument();
@@ -92,7 +104,41 @@ describe('InviteEmailSignupForm', () => {
     const form = screen.getByRole('button', { name: 'Create account' }).closest('form');
     fireEvent.submit(form!);
 
-    expect(await screen.findByText('Email and password are required.')).toBeInTheDocument();
+    expect(await screen.findByText('Email, password, and confirmation are required.')).toBeInTheDocument();
+  });
+
+  it('shows password mismatch error before submit', async () => {
+    renderWithI18n(<InviteEmailSignupForm initialEmail="invited@example.com" />);
+
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'secret123' },
+    });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
+      target: { value: 'secret124' },
+    });
+
+    const form = screen.getByRole('button', { name: 'Create account' }).closest('form');
+    fireEvent.submit(form!);
+
+    expect(await screen.findByText('Passwords do not match.')).toBeInTheDocument();
+    expect(signUp).not.toHaveBeenCalled();
+  });
+
+  it('shows password length error before submit', async () => {
+    renderWithI18n(<InviteEmailSignupForm initialEmail="invited@example.com" />);
+
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'short1' },
+    });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
+      target: { value: 'short1' },
+    });
+
+    const form = screen.getByRole('button', { name: 'Create account' }).closest('form');
+    fireEvent.submit(form!);
+
+    expect(await screen.findByText('Password must be at least 8 characters.')).toBeInTheDocument();
+    expect(signUp).not.toHaveBeenCalled();
   });
 
   it('shows generic error on network failure', async () => {
@@ -100,6 +146,9 @@ describe('InviteEmailSignupForm', () => {
     renderWithI18n(<InviteEmailSignupForm initialEmail="network-fail@example.com" />);
 
     fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'secret123' },
+    });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
       target: { value: 'secret123' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
