@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, fireEvent } from '@testing-library/react';
 import AuthGate from '@/components/AuthGate';
+import { ROUTES } from '@/constants';
 import { renderWithI18n } from '../utils/renderWithI18n';
 
 const signInWithOAuth = vi.fn();
@@ -24,6 +25,7 @@ describe('AuthGate', () => {
     getSession.mockResolvedValue({ data: { session: null }, error: null });
     renderWithI18n(<AuthGate />);
     expect(await screen.findByRole('button', { name: 'Sign in with Google' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Use email and password' })).toHaveAttribute('href', ROUTES.authSignIn);
   });
 
   it('calls Google OAuth on button click', async () => {

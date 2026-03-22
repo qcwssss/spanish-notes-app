@@ -40,10 +40,15 @@ export default async function LandingPage() {
           <Link href={ROUTES.faq} className="hover:text-white transition-colors cursor-pointer">FAQ</Link>
         </div>
         <div className="flex items-center gap-4 text-sm">
-          <GoogleSignInButton
-            label={t('landing.startWriting')}
-            className="rounded-xl bg-blue-600/90 hover:bg-blue-500 px-6 py-2.5 font-medium text-white shadow-[0_0_20px_-5px_rgba(37,99,234,0.4)] transition-all hover:shadow-[0_0_30px_-5px_rgba(37,99,234,0.6)]"
-          />
+          <div className="flex flex-col items-end gap-2">
+            <GoogleSignInButton
+              label={t('landing.startWriting')}
+              className="rounded-xl bg-blue-600/90 hover:bg-blue-500 px-6 py-2.5 font-medium text-white shadow-[0_0_20px_-5px_rgba(37,99,234,0.4)] transition-all hover:shadow-[0_0_30px_-5px_rgba(37,99,234,0.6)]"
+            />
+            <Link href={ROUTES.authSignIn} className="text-sm font-medium text-slate-400 transition-colors hover:text-white">
+              {t('auth.emailLink')}
+            </Link>
+          </div>
         </div>
       </nav>
 

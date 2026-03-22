@@ -1,8 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { createBrowserClient } from '@/utils/supabase/client';
 import { useI18n } from '@/components/I18nProvider';
+import { ROUTES } from '@/constants';
 
 export default function AuthGate() {
   const { t } = useI18n();
@@ -48,6 +50,12 @@ export default function AuthGate() {
         >
           {t('auth.button')}
         </button>
+        <Link
+          href={ROUTES.authSignIn}
+          className="mt-4 inline-flex text-sm font-medium text-blue-600 transition-colors hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200"
+        >
+          {t('auth.emailLink')}
+        </Link>
       </div>
     </div>
   );
