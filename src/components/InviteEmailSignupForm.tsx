@@ -20,6 +20,7 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
   const [email, setEmail] = useState(normalizeEmail(initialEmail));
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPasswords, setShowPasswords] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -124,12 +125,22 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
           className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-blue-500/40 placeholder:text-slate-400 focus:ring-2 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
         />
 
-        <label className="block text-sm font-medium" htmlFor="invite-signup-password">
-          {t('inviteSignup.passwordLabel')}
-        </label>
+        <div className="flex items-center justify-between gap-3">
+          <label className="block text-sm font-medium" htmlFor="invite-signup-password">
+            {t('inviteSignup.passwordLabel')}
+          </label>
+          <button
+            type="button"
+            aria-pressed={showPasswords}
+            onClick={() => setShowPasswords((value) => !value)}
+            className="rounded-md px-2 py-1 text-sm font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 dark:text-blue-300 dark:hover:text-blue-200"
+          >
+            {showPasswords ? t('inviteSignup.hidePasswords') : t('inviteSignup.showPasswords')}
+          </button>
+        </div>
         <input
           id="invite-signup-password"
-          type="password"
+          type={showPasswords ? 'text' : 'password'}
           autoComplete="new-password"
           required
           minLength={MIN_PASSWORD_LENGTH}
@@ -151,7 +162,7 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
         </label>
         <input
           id="invite-signup-confirm-password"
-          type="password"
+          type={showPasswords ? 'text' : 'password'}
           autoComplete="new-password"
           required
           minLength={MIN_PASSWORD_LENGTH}

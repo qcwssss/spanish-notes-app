@@ -25,6 +25,30 @@ describe('InviteEmailSignupForm', () => {
     expect(emailInput.value).toBe('invited@example.com');
   });
 
+  it('toggles password visibility for both password fields', () => {
+    renderWithI18n(<InviteEmailSignupForm initialEmail="invited@example.com" />);
+
+    const passwordInput = screen.getByLabelText('Password');
+    const confirmPasswordInput = screen.getByLabelText('Confirm password');
+    let toggleButton = screen.getByRole('button', { name: 'Show Passwords' });
+
+    expect(passwordInput).toHaveAttribute('type', 'password');
+    expect(confirmPasswordInput).toHaveAttribute('type', 'password');
+
+    fireEvent.click(toggleButton);
+
+    expect(passwordInput).toHaveAttribute('type', 'text');
+    expect(confirmPasswordInput).toHaveAttribute('type', 'text');
+    toggleButton = screen.getByRole('button', { name: 'Hide Passwords' });
+    expect(toggleButton).toHaveAttribute('aria-pressed', 'true');
+
+    fireEvent.click(toggleButton);
+
+    expect(passwordInput).toHaveAttribute('type', 'password');
+    expect(confirmPasswordInput).toHaveAttribute('type', 'password');
+    expect(screen.getByRole('button', { name: 'Show Passwords' })).toHaveAttribute('aria-pressed', 'false');
+  });
+
   it('submits email signup request with callback redirect', async () => {
     signUp.mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
     renderWithI18n(<InviteEmailSignupForm initialEmail="invited@example.com" />);
