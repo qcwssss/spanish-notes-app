@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import EmailPasswordSignInForm from '@/components/EmailPasswordSignInForm';
-import { ROUTES } from '@/constants';
 import { resolveSafeNext } from '@/utils/auth/resolveSafeNext';
 import { createServerClient } from '@/utils/supabase/server';
 
@@ -34,7 +33,7 @@ export default async function EmailSignInPage({ searchParams }: EmailSignInPageP
   return (
     <main className="min-h-screen bg-slate-100 px-4 py-12 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <div className="mx-auto flex min-h-[70vh] w-full max-w-3xl items-center justify-center">
-        <EmailPasswordSignInForm initialEmail={initialEmail} nextPath={nextPath} />
+        <EmailPasswordSignInForm initialEmail={initialEmail} />
       </div>
     </main>
   );

@@ -4,21 +4,16 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@/utils/supabase/client';
 import { useI18n } from '@/components/I18nProvider';
-import { ROUTES } from '@/constants';
 
 interface EmailPasswordSignInFormProps {
   initialEmail?: string;
-  nextPath?: string;
 }
 
 function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
 }
 
-export default function EmailPasswordSignInForm({
-  initialEmail = '',
-  nextPath = ROUTES.app,
-}: EmailPasswordSignInFormProps) {
+export default function EmailPasswordSignInForm({ initialEmail = '' }: EmailPasswordSignInFormProps) {
   const router = useRouter();
   const { t } = useI18n();
   const [email, setEmail] = useState(normalizeEmail(initialEmail));
@@ -68,7 +63,6 @@ export default function EmailPasswordSignInForm({
         return;
       }
 
-      router.push(nextPath);
       router.refresh();
     } catch {
       setErrorMessage(t('emailSignIn.genericError'));

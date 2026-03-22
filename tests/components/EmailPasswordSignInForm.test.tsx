@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import EmailPasswordSignInForm from '@/components/EmailPasswordSignInForm';
-import { ROUTES } from '@/constants';
 import { renderWithI18n } from '../utils/renderWithI18n';
 
 const signInWithPassword = vi.fn();
@@ -33,7 +32,7 @@ describe('EmailPasswordSignInForm', () => {
 
   it('signs in and redirects on success', async () => {
     signInWithPassword.mockResolvedValue({ data: { session: { access_token: 'token' } }, error: null });
-    renderWithI18n(<EmailPasswordSignInForm nextPath="/app/notes" />);
+    renderWithI18n(<EmailPasswordSignInForm />);
 
     fireEvent.change(screen.getByLabelText('Email'), {
       target: { value: 'Invited@Example.com ' },
@@ -48,9 +47,9 @@ describe('EmailPasswordSignInForm', () => {
         email: 'invited@example.com',
         password: 'secret123',
       });
-      expect(push).toHaveBeenCalledWith('/app/notes');
       expect(refresh).toHaveBeenCalled();
     });
+    expect(push).not.toHaveBeenCalled();
   });
 
   it('shows invalid credentials error', async () => {
@@ -67,6 +66,7 @@ describe('EmailPasswordSignInForm', () => {
 
     expect(await screen.findByText('Invalid email or password.')).toBeInTheDocument();
     expect(push).not.toHaveBeenCalled();
+    expect(refresh).not.toHaveBeenCalled();
   });
 
   it('shows invalid input error on empty submit', async () => {
@@ -79,7 +79,7 @@ describe('EmailPasswordSignInForm', () => {
     expect(signInWithPassword).not.toHaveBeenCalled();
   });
 
-  it('defaults to app route when no next path is provided', async () => {
+  it('refreshes the current route after a successful sign-in', async () => {
     signInWithPassword.mockResolvedValue({ data: { session: { access_token: 'token' } }, error: null });
     renderWithI18n(<EmailPasswordSignInForm initialEmail="invited@example.com" />);
 
@@ -93,7 +93,8 @@ describe('EmailPasswordSignInForm', () => {
         email: 'invited@example.com',
         password: 'secret123',
       });
-      expect(push).toHaveBeenCalledWith(ROUTES.app);
+      expect(refresh).toHaveBeenCalled();
     });
+    expect(push).not.toHaveBeenCalled();
   });
 });
