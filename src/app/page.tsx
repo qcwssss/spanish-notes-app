@@ -2,8 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
-import GoogleSignInButton from '@/components/GoogleSignInButton';
-import FaqEntryLink from '@/components/FaqEntryLink';
+import LandingAuthDialog from '@/components/LandingAuthDialog';
 import { createServerClient } from '@/utils/supabase/server';
 import { ROUTES } from '@/constants';
 import { PenTool, Mic, Globe2, Share2, BookOpen, Folder, FileText, ChevronRight } from 'lucide-react';
@@ -40,15 +39,7 @@ export default async function LandingPage() {
           <Link href={ROUTES.faq} className="hover:text-white transition-colors cursor-pointer">FAQ</Link>
         </div>
         <div className="flex items-center gap-4 text-sm">
-          <div className="flex flex-col items-end gap-2">
-            <GoogleSignInButton
-              label={t('landing.startWriting')}
-              className="rounded-xl bg-blue-600/90 hover:bg-blue-500 px-6 py-2.5 font-medium text-white shadow-[0_0_20px_-5px_rgba(37,99,234,0.4)] transition-all hover:shadow-[0_0_30px_-5px_rgba(37,99,234,0.6)]"
-            />
-            <Link href={ROUTES.authSignIn} className="text-sm font-medium text-slate-400 transition-colors hover:text-white">
-              {t('auth.emailLink')}
-            </Link>
-          </div>
+          <LandingAuthDialog triggerLabel={t('landing.startWriting')} />
         </div>
       </nav>
 
@@ -128,7 +119,7 @@ export default async function LandingPage() {
                    </div>
 
                    <div className="pt-2 pl-4">
-                     <span className="text-green-400">"Me encanta caminar por las <span className="underline decoration-green-400/50 underline-offset-4 cursor-pointer hover:bg-green-400/20 rounded">callejuelas</span> de Madrid al <span className="underline decoration-green-400/50 underline-offset-4 cursor-pointer hover:bg-green-400/20 rounded">amanecer</span>."</span><br/>
+                     <span className="text-green-400">&quot;Me encanta caminar por las <span className="underline decoration-green-400/50 underline-offset-4 cursor-pointer hover:bg-green-400/20 rounded">callejuelas</span> de Madrid al <span className="underline decoration-green-400/50 underline-offset-4 cursor-pointer hover:bg-green-400/20 rounded">amanecer</span>.&quot;</span><br/>
                      <span className="text-slate-500 italic">I love walking through the narrow streets of Madrid at sunrise. </span>
                      <span className="inline-flex items-center justify-center rounded bg-slate-800 px-1 py-0.5 mt-1">
                        <Mic className="h-3 w-3 text-blue-400" />
