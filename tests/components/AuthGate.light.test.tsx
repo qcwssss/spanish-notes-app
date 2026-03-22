@@ -12,6 +12,11 @@ vi.mock('@/utils/supabase/client', () => ({
   }),
 }));
 
+vi.mock('next/navigation', () => ({
+  usePathname: () => '/',
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 describe('AuthGate light mode', () => {
   it('uses light card defaults with dark overrides', async () => {
     renderWithI18n(<AuthGate />);
