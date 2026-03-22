@@ -132,7 +132,6 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
           <button
             type="button"
             aria-pressed={showPasswords}
-            aria-label={showPasswords ? t('inviteSignup.hidePasswords') : t('inviteSignup.showPasswords')}
             onClick={() => setShowPasswords((value) => !value)}
             className="rounded-md px-2 py-1 text-sm font-medium text-blue-700 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 dark:text-blue-300 dark:hover:text-blue-200"
           >

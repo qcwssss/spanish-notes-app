@@ -30,7 +30,7 @@ describe('InviteEmailSignupForm', () => {
 
     const passwordInput = screen.getByLabelText('Password');
     const confirmPasswordInput = screen.getByLabelText('Confirm password');
-    const toggleButton = screen.getByRole('button', { name: 'Show Passwords' });
+    let toggleButton = screen.getByRole('button', { name: 'Show Passwords' });
 
     expect(passwordInput).toHaveAttribute('type', 'password');
     expect(confirmPasswordInput).toHaveAttribute('type', 'password');
@@ -39,7 +39,14 @@ describe('InviteEmailSignupForm', () => {
 
     expect(passwordInput).toHaveAttribute('type', 'text');
     expect(confirmPasswordInput).toHaveAttribute('type', 'text');
-    expect(screen.getByRole('button', { name: 'Hide Passwords' })).toHaveAttribute('aria-pressed', 'true');
+    toggleButton = screen.getByRole('button', { name: 'Hide Passwords' });
+    expect(toggleButton).toHaveAttribute('aria-pressed', 'true');
+
+    fireEvent.click(toggleButton);
+
+    expect(passwordInput).toHaveAttribute('type', 'password');
+    expect(confirmPasswordInput).toHaveAttribute('type', 'password');
+    expect(screen.getByRole('button', { name: 'Show Passwords' })).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('submits email signup request with callback redirect', async () => {
