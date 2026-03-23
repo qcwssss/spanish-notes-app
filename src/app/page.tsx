@@ -74,10 +74,10 @@ export default async function LandingPage() {
                 </div>
                 <div className="mt-2 space-y-1 pl-4 text-sm font-medium text-slate-400">
                   <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-800/50 hover:text-white transition-colors">
-                    <FileText className="h-4 w-4" /> Spanish Grammar
+                    <FileText className="h-4 w-4" /> Grammar Notes
                   </div>
                   <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-800/50 hover:text-white transition-colors">
-                    <FileText className="h-4 w-4" /> Vocabulary Lists
+                    <FileText className="h-4 w-4" /> Travel Phrases
                   </div>
                   <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-800/50 hover:text-white transition-colors">
                     <FileText className="h-4 w-4" /> Reading Practice
