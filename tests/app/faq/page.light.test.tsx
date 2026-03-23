@@ -8,12 +8,13 @@ vi.mock('next/headers', () => ({
 }));
 
 describe('FAQ page', () => {
-  it('renders key sections in light mode', async () => {
+  it('renders key sections with the redesigned dark shell', async () => {
     const ui = await FaqPage();
     const { container } = render(ui);
     const root = container.firstChild as HTMLElement;
 
-    expect(root.className).toContain('bg-slate-50');
+    expect(root.className).toContain('bg-[#0A0A0B]');
+    expect(root.className).toContain('text-slate-300');
     expect(screen.getByText(messages.en.faq.title)).toBeInTheDocument();
     expect(screen.getByText(messages.en.faq.howTitle)).toBeInTheDocument();
     expect(screen.getByText(messages.en.faq.sectionTitle)).toBeInTheDocument();
