@@ -6,7 +6,7 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       selectNote: 'Select a note to start practicing',
     },
     landing: {
-      heroTitle: 'Practice Spanish from your own notes',
+      heroTitle: 'Practice languages from your own notes',
       heroSubtitle: 'Write, organize, and click any sentence to hear natural pronunciation while you study.',
       startWriting: 'Start Writing',
       watchDemo: 'Open Workspace',
@@ -279,7 +279,7 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       selectNote: '请选择一条笔记开始练习',
     },
     landing: {
-      heroTitle: '用你的笔记练习西语',
+      heroTitle: '用你的笔记练习外语',
       heroSubtitle: '记录、整理并点击任意句子，即可在学习时听到自然发音。',
       startWriting: '开始写作',
       watchDemo: '进入工作区',
