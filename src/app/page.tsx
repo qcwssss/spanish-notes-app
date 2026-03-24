@@ -49,12 +49,12 @@ export default async function LandingPage() {
           </div>
 
           <div className="flex items-center gap-4 text-sm text-slate-600 md:gap-6">
-            <a
-              href="#features"
+            <Link
+              href="#how-it-works"
               className="rounded-full px-3 py-2 transition-colors hover:bg-white hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               {t('landing.navHow')}
-            </a>
+            </Link>
             <Link
               href={ROUTES.faq}
               className="rounded-full px-3 py-2 transition-colors hover:bg-white hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
@@ -80,7 +80,7 @@ export default async function LandingPage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <LandingAuthDialog triggerLabel={t('landing.startWriting')} />
               <Link
-                href="#features"
+                href="#how-it-works"
                 className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition-colors hover:border-slate-400 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 {t('landing.secondaryCta')}
@@ -118,9 +118,9 @@ export default async function LandingPage() {
                       {t('landing.previewVocabTitle')}
                     </p>
                     <ul className="mt-3 space-y-2 text-sm text-slate-700">
-                      <li>amanecer — sunrise</li>
-                      <li>callejuela — side street</li>
-                      <li>disfrutar — enjoy</li>
+                      <li>{t('landing.previewVocab1')}</li>
+                      <li>{t('landing.previewVocab2')}</li>
+                      <li>{t('landing.previewVocab3')}</li>
                     </ul>
                   </div>
 
@@ -129,7 +129,7 @@ export default async function LandingPage() {
                       {t('landing.previewListenTitle')}
                     </p>
                     <p className="mt-3 text-sm leading-7 text-slate-700">
-                      “Me encanta caminar por las callejuelas de Madrid al amanecer.”
+                      {t('landing.previewListenSentence')}
                     </p>
                   </div>
                 </div>
@@ -158,7 +158,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        <section aria-labelledby="how-title" className="mt-16 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+        <section id="how-it-works" aria-labelledby="how-title" className="mt-16 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:items-start">
             <div>
               <h2 id="how-title" className="text-2xl font-semibold tracking-tight text-slate-950 text-balance">
