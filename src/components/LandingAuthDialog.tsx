@@ -37,7 +37,7 @@ export default function LandingAuthDialog({ triggerLabel }: { triggerLabel: stri
             <Dialog.Close asChild>
               <button
                 aria-label={t('auth.close')}
-                className="rounded-full border border-slate-300 p-2 text-slate-400 transition-colors hover:border-slate-400 hover:text-slate-700"
+                className="rounded-full border border-slate-300 p-2 text-slate-400 transition-colors hover:border-slate-400 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
               >
                 <X className="h-4 w-4" />
               </button>
