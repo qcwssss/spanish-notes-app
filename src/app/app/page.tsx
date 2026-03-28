@@ -11,7 +11,7 @@ import { redirect } from 'next/navigation';
 import { ROUTES } from '@/constants';
 
 export const metadata: Metadata = {
-  title: 'My Notes | Spanish Notes',
+  title: 'My Notes | VivaNote',
   description: 'Manage and study your Spanish notes',
 };
 

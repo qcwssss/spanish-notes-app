@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Spanish Notes App",
+  title: "VivaNote",
   description: "Learn Spanish with AI-powered interactive notes",
 };
 
@@ -44,7 +44,7 @@ export default async function RootLayout({
         <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Spanish Notes" />
+        <meta name="apple-mobile-web-app-title" content="VivaNote" />
         <script dangerouslySetInnerHTML={{ __html: getThemeInitScript() }} />
       </head>
       <body className="antialiased">
