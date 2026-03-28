@@ -2,9 +2,9 @@
 
 ---
 
-# Note Lingo (多语言笔记应用)
+# VivaNote
 
-**Note Lingo** 是一个为语言学习者设计的智能笔记应用。虽然最初针对西班牙语开发，但它**支持任何浏览器 TTS（语音合成）引擎兼容的语言**。应用集成了 Markdown 渲染、交互式点读（Point-and-Read）和多语言语音合成功能，帮助用户在阅读和记录笔记的同时，更直观地学习外语发音和语法。
+**VivaNote** 是一个为语言学习者设计的智能笔记应用。它**支持任何浏览器 TTS（语音合成）引擎兼容的语言**。应用集成了 Markdown 渲染、交互式点读（Point-and-Read）和多语言语音合成功能，帮助用户在阅读和记录笔记的同时，更直观地学习外语发音和语法。
 
 ## 1. 项目简介
 
@@ -16,9 +16,10 @@
 
 - **身份验证与用户系统**:
   - 集成 Google OAuth 登录。
+  - 邮箱密码登录。
+  - 邮箱邀请注册（`scripts/invite.sh` → `/auth/invite?email=xxx`）。
   - 用户配置管理（Target Language 选择）。
   - 存储空间配额跟踪（Storage tracking）。
-  - 激活码系统（Activation Dialog）。
 
 - **笔记管理**:
   - 完整的 CRUD 功能（创建、读取、更新、删除）。
@@ -28,7 +29,7 @@
   - 收藏视图（可按更新时间排序）。
   - 响应式侧边栏和编辑界面。
   - **笔记分享**: 通过公开链接分享笔记供他人只读访问。
-    - 试试看: [https://spanish-notes-app.vercel.app/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b](https://spanish-notes-app.vercel.app/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b)
+    - 试试看: [https://vivanote.epubtranslation.com/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b](https://vivanote.epubtranslation.com/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b)
 
 - **核心交互功能**:
   - **交互式 Markdown 渲染**: 重写了 Markdown 组件，支持对段落、列表、标题等块级元素进行递归解析，实现词级/句级的交互。
@@ -67,7 +68,7 @@
   - 文件夹支持 inline 重命名（双击或菜单）。
   - 文件夹删除功能（带确认弹窗）。
   - 收藏视图与侧边栏切换（All Notes / Favorites）。
-  - 部署域名: [https://note-lingo-app.pages.dev](https://note-lingo-app.pages.dev)
+  - 部署域名: [https://vivanote.epubtranslation.com](https://vivanote.epubtranslation.com)
 
 ## 5. 待完成事项 (Roadmap)
 
@@ -98,4 +99,4 @@ npm test
 ```
 
 ---
-*Last updated (最后更新): 2026-01-30*
+*Last updated (最后更新): 2026-03-28*
