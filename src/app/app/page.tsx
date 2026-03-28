@@ -12,7 +12,7 @@ import { ROUTES } from '@/constants';
 
 export const metadata: Metadata = {
   title: 'My Notes | VivaNote',
-  description: 'Manage and study your Spanish notes',
+  description: 'Write and study your language notes',
 };
 
 export default async function AppPage({

@@ -1,7 +1,7 @@
 {
   "name": "VivaNote",
-  "short_name": "Notes",
-  "description": "Learn Spanish with AI-powered interactive notes",
+  "short_name": "VivaNote",
+  "description": "Write, listen, and review language notes — all in one place.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

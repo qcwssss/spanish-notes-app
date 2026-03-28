@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "VivaNote",
-  description: "Learn Spanish with AI-powered interactive notes",
+  description: "Write, listen, and review language notes — all in one place.",
 };
 
 export default async function RootLayout({
