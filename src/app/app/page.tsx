@@ -11,8 +11,8 @@ import { redirect } from 'next/navigation';
 import { ROUTES } from '@/constants';
 
 export const metadata: Metadata = {
-  title: 'My Notes | Spanish Notes',
-  description: 'Manage and study your Spanish notes',
+  title: 'My Notes | VivaNote',
+  description: 'Write and study your language notes',
 };
 
 export default async function AppPage({
