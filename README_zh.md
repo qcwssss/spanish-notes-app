@@ -17,7 +17,7 @@
 - **身份验证与用户系统**:
   - 集成 Google OAuth 登录。
   - 邮箱密码登录。
-  - 邮箱邀请注册（`scripts/invite.sh` → `/auth/invite?email=xxx`）。
+  - 邮箱邀请注册（`scripts/invite.mjs` → `/auth/invite?email=xxx`）。
   - 用户配置管理（Target Language 选择）。
   - 存储空间配额跟踪（Storage tracking）。
 

@@ -17,7 +17,7 @@ Depending on your browser (Chrome, Safari, Edge, etc.), it can support dozens of
 - **Authentication & User System**:
   - Integrated Google OAuth login.
   - Email/password sign-in.
-  - Invite-based registration (`scripts/invite.sh` → `/auth/invite?email=xxx`).
+  - Invite-based registration (`scripts/invite.mjs` → `/auth/invite?email=xxx`).
   - User profile management (Target Language selection).
   - Storage quota tracking.
 
