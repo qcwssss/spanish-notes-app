@@ -138,6 +138,29 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
     }
   };
 
+  // 注册成功后完全替换表单，避免与表单混在一起造成困惑
+  if (isSuccess) {
+    return (
+      <section className="w-full max-w-md rounded-2xl border border-emerald-200 bg-white p-6 text-slate-900 shadow-xl dark:border-emerald-900/50 dark:bg-slate-900 dark:text-slate-100">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <span className="text-4xl">✉️</span>
+          <h1 className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
+            {t('inviteSignup.successTitle')}
+          </h1>
+          <p className="text-sm text-slate-600 dark:text-slate-400">
+            {t('inviteSignup.successBody')}
+          </p>
+          <p className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+            {normalizedEmail}
+          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {t('inviteSignup.successHint')}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
       <h1 className="text-2xl font-bold">{t('inviteSignup.title')}</h1>
@@ -213,11 +236,6 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
           </p>
         )}
 
-        {isSuccess && (
-          <p role="status" aria-live="polite" className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
-            {t('inviteSignup.success')}
-          </p>
-        )}
 
         <button
           type="submit"
