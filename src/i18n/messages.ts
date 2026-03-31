@@ -385,7 +385,7 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       submitting: '创建中...',
       successTitle: '请查收邮件',
       successBody: '确认链接已发送到以下邮箱：',
-      successHint: '点击邮件中的链接即可完成注册。如果收件筱中没有，请检查垃圾邮件。',
+      successHint: '点击邮件中的链接即可完成注册。如果收件箱中没有，请检查垃圾邮件。',
       inviteRequired: '该邮箱未被邀请。',
       inviteUsed: '该邀请已被使用。',
       invalidInput: '邮箱、密码和确认密码均为必填。',

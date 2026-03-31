@@ -40,17 +40,8 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
       return t('inviteSignup.inviteUsed');
     }
 
-    // Supabase 密码强度策略错误：尽量精确匹配缺失的字符类型
+    // Supabase 密码强度策略错误：只靠关键字检测
     if (normalized.includes('password should contain') || normalized.includes('password is too weak')) {
-      if (normalized.includes('abcdefghijklmnopqrstuvwxyz') && !normalized.includes('ABCDEFGHIJKLMNOPQRSTUVWXYZ')) {
-        return t('inviteSignup.passwordMissingLower');
-      }
-      if (normalized.includes('ABCDEFGHIJKLMNOPQRSTUVWXYZ')) {
-        return t('inviteSignup.passwordMissingUpper');
-      }
-      if (normalized.includes('0123456789')) {
-        return t('inviteSignup.passwordMissingNumber');
-      }
       return t('inviteSignup.passwordWeakGeneric');
     }
 
@@ -141,7 +132,11 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
   // 注册成功后完全替换表单，避免与表单混在一起造成困惑
   if (isSuccess) {
     return (
-      <section className="w-full max-w-md rounded-2xl border border-emerald-200 bg-white p-6 text-slate-900 shadow-xl dark:border-emerald-900/50 dark:bg-slate-900 dark:text-slate-100">
+      <section 
+        role="status" 
+        aria-live="polite" 
+        className="w-full max-w-md rounded-2xl border border-emerald-200 bg-white p-6 text-slate-900 shadow-xl dark:border-emerald-900/50 dark:bg-slate-900 dark:text-slate-100"
+      >
         <div className="flex flex-col items-center gap-3 text-center">
           <span className="text-4xl">✉️</span>
           <h1 className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
