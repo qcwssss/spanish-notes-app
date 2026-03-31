@@ -54,17 +54,17 @@ describe('InviteEmailSignupForm', () => {
     renderWithI18n(<InviteEmailSignupForm initialEmail="invited@example.com" />);
 
     fireEvent.change(screen.getByLabelText('Password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.change(screen.getByLabelText('Confirm password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
     await waitFor(() => {
       expect(signUp).toHaveBeenCalledWith({
         email: 'invited@example.com',
-        password: 'secret123',
+        password: 'Secret123',
         options: {
           emailRedirectTo: expect.stringContaining('/auth/callback?next=%2Fapp'),
         },
@@ -80,10 +80,10 @@ describe('InviteEmailSignupForm', () => {
     renderWithI18n(<InviteEmailSignupForm initialEmail="no-invite@example.com" />);
 
     fireEvent.change(screen.getByLabelText('Password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.change(screen.getByLabelText('Confirm password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
@@ -95,14 +95,15 @@ describe('InviteEmailSignupForm', () => {
     renderWithI18n(<InviteEmailSignupForm initialEmail="invited@example.com" />);
 
     fireEvent.change(screen.getByLabelText('Password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.change(screen.getByLabelText('Confirm password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
-    expect(await screen.findByText('Check your email to complete registration.')).toBeInTheDocument();
+    expect(await screen.findByText('Check your email')).toBeInTheDocument();
+    expect(await screen.findByText('invited@example.com')).toBeInTheDocument();
   });
   it('shows invite-already-used error', async () => {
     signUp.mockResolvedValue({
@@ -112,10 +113,10 @@ describe('InviteEmailSignupForm', () => {
     renderWithI18n(<InviteEmailSignupForm initialEmail="used-invite@example.com" />);
 
     fireEvent.change(screen.getByLabelText('Password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.change(screen.getByLabelText('Confirm password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
@@ -135,10 +136,10 @@ describe('InviteEmailSignupForm', () => {
     renderWithI18n(<InviteEmailSignupForm initialEmail="invited@example.com" />);
 
     fireEvent.change(screen.getByLabelText('Password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.change(screen.getByLabelText('Confirm password'), {
-      target: { value: 'secret124' },
+      target: { value: 'Secret124' },
     });
 
     const form = screen.getByRole('button', { name: 'Create account' }).closest('form');
@@ -148,7 +149,7 @@ describe('InviteEmailSignupForm', () => {
     expect(signUp).not.toHaveBeenCalled();
   });
 
-  it('shows password length error before submit', async () => {
+  it('shows password length error on submit', async () => {
     renderWithI18n(<InviteEmailSignupForm initialEmail="invited@example.com" />);
 
     fireEvent.change(screen.getByLabelText('Password'), {
@@ -170,10 +171,10 @@ describe('InviteEmailSignupForm', () => {
     renderWithI18n(<InviteEmailSignupForm initialEmail="network-fail@example.com" />);
 
     fireEvent.change(screen.getByLabelText('Password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.change(screen.getByLabelText('Confirm password'), {
-      target: { value: 'secret123' },
+      target: { value: 'Secret123' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
