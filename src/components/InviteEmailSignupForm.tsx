@@ -10,6 +10,8 @@ interface InviteEmailSignupFormProps {
 }
 
 const MIN_PASSWORD_LENGTH = 8;
+// 密码强度校验：必须包含小写字母、大写字母、数字
+const PASSWORD_STRENGTH_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/;
 
 function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
@@ -36,6 +38,14 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
       return t('inviteSignup.inviteUsed');
     }
 
+    // Supabase 密码强度策略错误
+    if (
+      normalized.includes('password should contain') ||
+      normalized.includes('password is too weak')
+    ) {
+      return t('inviteSignup.passwordTooWeak');
+    }
+
     return t('inviteSignup.genericError');
   };
 
@@ -46,6 +56,11 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
 
     if (password.length < MIN_PASSWORD_LENGTH) {
       return t('inviteSignup.passwordTooShort');
+    }
+
+    // 本地强度校验：必须包含大小写字母和数字
+    if (!PASSWORD_STRENGTH_REGEX.test(password)) {
+      return t('inviteSignup.passwordTooWeak');
     }
 
     if (password !== confirmPassword) {
@@ -59,6 +74,7 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
   const canSubmit =
     Boolean(normalizedEmail) &&
     password.length >= MIN_PASSWORD_LENGTH &&
+    PASSWORD_STRENGTH_REGEX.test(password) &&
     confirmPassword.length >= MIN_PASSWORD_LENGTH &&
     password === confirmPassword;
 
