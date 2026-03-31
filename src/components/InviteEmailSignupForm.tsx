@@ -10,8 +10,10 @@ interface InviteEmailSignupFormProps {
 }
 
 const MIN_PASSWORD_LENGTH = 8;
-// 密码强度校验：必须包含小写字母、大写字母、数字
-const PASSWORD_STRENGTH_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/;
+// 密码强度：分条校验，给出精确的缺失提示
+const HAS_LOWERCASE = /[a-z]/;
+const HAS_UPPERCASE = /[A-Z]/;
+const HAS_NUMBER = /[0-9]/;
 
 function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
@@ -38,12 +40,18 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
       return t('inviteSignup.inviteUsed');
     }
 
-    // Supabase 密码强度策略错误
-    if (
-      normalized.includes('password should contain') ||
-      normalized.includes('password is too weak')
-    ) {
-      return t('inviteSignup.passwordTooWeak');
+    // Supabase 密码强度策略错误：尽量精确匹配缺失的字符类型
+    if (normalized.includes('password should contain') || normalized.includes('password is too weak')) {
+      if (normalized.includes('abcdefghijklmnopqrstuvwxyz') && !normalized.includes('ABCDEFGHIJKLMNOPQRSTUVWXYZ')) {
+        return t('inviteSignup.passwordMissingLower');
+      }
+      if (normalized.includes('ABCDEFGHIJKLMNOPQRSTUVWXYZ')) {
+        return t('inviteSignup.passwordMissingUpper');
+      }
+      if (normalized.includes('0123456789')) {
+        return t('inviteSignup.passwordMissingNumber');
+      }
+      return t('inviteSignup.passwordWeakGeneric');
     }
 
     return t('inviteSignup.genericError');
@@ -58,9 +66,15 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
       return t('inviteSignup.passwordTooShort');
     }
 
-    // 本地强度校验：必须包含大小写字母和数字
-    if (!PASSWORD_STRENGTH_REGEX.test(password)) {
-      return t('inviteSignup.passwordTooWeak');
+    // 分条校验，精确告知缺少哪类字符
+    if (!HAS_LOWERCASE.test(password)) {
+      return t('inviteSignup.passwordMissingLower');
+    }
+    if (!HAS_UPPERCASE.test(password)) {
+      return t('inviteSignup.passwordMissingUpper');
+    }
+    if (!HAS_NUMBER.test(password)) {
+      return t('inviteSignup.passwordMissingNumber');
     }
 
     if (password !== confirmPassword) {
@@ -74,7 +88,9 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
   const canSubmit =
     Boolean(normalizedEmail) &&
     password.length >= MIN_PASSWORD_LENGTH &&
-    PASSWORD_STRENGTH_REGEX.test(password) &&
+    HAS_LOWERCASE.test(password) &&
+    HAS_UPPERCASE.test(password) &&
+    HAS_NUMBER.test(password) &&
     confirmPassword.length >= MIN_PASSWORD_LENGTH &&
     password === confirmPassword;
 
