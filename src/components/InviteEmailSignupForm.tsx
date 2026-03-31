@@ -76,13 +76,12 @@ export default function InviteEmailSignupForm({ initialEmail = '' }: InviteEmail
   };
 
   const normalizedEmail = normalizeEmail(email);
+  // canSubmit 只做基础检查：邮箱非空 + 密码不为空 + 两次一致
+  // 密码强度校验故意留给 validateForm，这样用户能看到精确的缺字符错误提示
   const canSubmit =
     Boolean(normalizedEmail) &&
-    password.length >= MIN_PASSWORD_LENGTH &&
-    HAS_LOWERCASE.test(password) &&
-    HAS_UPPERCASE.test(password) &&
-    HAS_NUMBER.test(password) &&
-    confirmPassword.length >= MIN_PASSWORD_LENGTH &&
+    password.length > 0 &&
+    confirmPassword.length > 0 &&
     password === confirmPassword;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
