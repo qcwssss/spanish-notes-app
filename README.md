@@ -2,9 +2,9 @@
 
 ---
 
-# Note Lingo
+# VivaNote
 
-**Note Lingo** is a smart note-taking application designed for language learners. While originally built with Spanish in mind, it **supports any language compatible with your browser's Text-to-Speech (TTS) engine**. It integrates Markdown rendering, interactive Point-and-Read, and multilingual TTS capabilities, helping users intuitively learn pronunciation and grammar while reading and taking notes.
+**VivaNote** is a smart note-taking application designed for language learners. It **supports any language compatible with your browser's Text-to-Speech (TTS) engine**. It integrates Markdown rendering, interactive Point-and-Read, and multilingual TTS capabilities, helping users intuitively learn pronunciation and grammar while reading and taking notes.
 
 ## 1. Project Introduction
 
@@ -16,9 +16,10 @@ Depending on your browser (Chrome, Safari, Edge, etc.), it can support dozens of
 
 - **Authentication & User System**:
   - Integrated Google OAuth login.
+  - Email/password sign-in.
+  - Invite-based registration (`scripts/invite.mjs` → `/auth/invite?email=xxx`).
   - User profile management (Target Language selection).
   - Storage quota tracking.
-  - Activation code system (Activation Dialog).
 
 - **Note Management**:
   - Full CRUD functionality (Create, Read, Update, Delete).
@@ -28,7 +29,7 @@ Depending on your browser (Chrome, Safari, Edge, etc.), it can support dozens of
   - Favorites view with sortable list (Newest/Oldest).
   - Responsive sidebar and editing interface.
   - **Note Sharing**: Share notes via public links for read-only access.
-    - Try it: [https://spanish-notes-app.vercel.app/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b](https://spanish-notes-app.vercel.app/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b)
+    - Try it: [https://vivanote.epubtranslation.com/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b](https://vivanote.epubtranslation.com/share/6ed572b32dfc481f8eceefac771fc2f81bd08712989d4658910ffc7b19f6950b)
 
 - **Core Interactive Features**:
   - **Interactive Markdown Rendering**: Rewrote Markdown components to recursively parse block-level elements like paragraphs, lists, and headers, implementing word/sentence-level interactivity.
@@ -67,7 +68,7 @@ A custom Hook encapsulating the browser's `speechSynthesis` API:
   - Folder support for inline renaming (double-click or menu).
   - Folder deletion with confirmation dialog.
   - Favorites view with sidebar switch and sortable list.
-  - Deployment URL: [https://note-lingo-app.pages.dev](https://note-lingo-app.pages.dev)
+  - Deployment URL: [https://vivanote.epubtranslation.com](https://vivanote.epubtranslation.com)
 
 ## 5. Roadmap
 
@@ -97,4 +98,4 @@ npm test
 ```
 
 ---
-*Last updated: 2026-01-30*
+*Last updated: 2026-03-28*
