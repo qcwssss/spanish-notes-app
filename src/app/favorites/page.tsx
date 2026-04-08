@@ -25,7 +25,7 @@ export default async function FavoritesPage() {
         profile={profile}
       />
 
-      <main className="flex-1 p-8 overflow-y-auto h-screen">
+      <main className="flex-1 pl-14 pr-2 py-4 md:p-8 overflow-y-auto h-screen">
         <FavoritesView notes={notes || []} />
       </main>
     </div>
