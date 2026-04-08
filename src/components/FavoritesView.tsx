@@ -55,7 +55,7 @@ export default function FavoritesView({ notes }: FavoritesViewProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between border-b border-slate-200 pb-4 dark:border-slate-800">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4 pr-12 md:pr-0 dark:border-slate-800">
         <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
           <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
           <h1 className="text-2xl font-semibold">{t('favorites.title')}</h1>
