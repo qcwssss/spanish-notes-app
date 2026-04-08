@@ -64,7 +64,7 @@ export default async function AppPage({
         selectedNoteId={selectedNoteId ?? null}
       />
 
-      <main className="flex-1 px-0 py-4 md:p-8 overflow-y-auto h-screen">
+      <main className="flex-1 px-2 py-4 md:p-8 overflow-y-auto h-screen">
         {activeNote ? (
           <Editor
             note={activeNote}

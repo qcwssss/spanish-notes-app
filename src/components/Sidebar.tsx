@@ -175,8 +175,8 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
       {/* Toggle Button (Visible when sidebar is hidden) */}
       <button
         onClick={() => handleCollapse(false)}
-        className={`fixed top-4 left-4 z-50 p-2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-lg text-slate-500 hover:text-slate-900 border border-slate-200 transition-all duration-300 shadow-lg dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-slate-400 dark:hover:text-white dark:border-slate-700 ${
-          isCollapsed ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
+        className={`fixed top-4 right-4 z-50 p-2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-lg text-slate-500 hover:text-slate-900 border border-slate-200 transition-all duration-300 shadow-lg dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-slate-400 dark:hover:text-white dark:border-slate-700 ${
+          isCollapsed ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
         }`}
         title={t('sidebar.expandSidebar')}
         aria-label={t('sidebar.expandSidebar')}
