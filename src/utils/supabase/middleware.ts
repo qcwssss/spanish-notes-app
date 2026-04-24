@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { getSupabaseConfig } from './config'
+import { ROUTES } from '@/constants'
 
 export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname
@@ -68,8 +69,9 @@ export async function updateSession(request: NextRequest) {
     }
 
     const url = request.nextUrl.clone()
-    url.pathname = '/'
-    url.search = ''
+    const nextPath = `${pathname}${request.nextUrl.search}`
+    url.pathname = ROUTES.authSignIn
+    url.search = `?next=${encodeURIComponent(nextPath)}`
     return NextResponse.redirect(url)
   }
 

@@ -1,22 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import type { ReactNode } from 'react';
-import LandingPage from '@/app/page';
-import { messages } from '@/i18n/messages';
+import RootPage from '@/app/page';
+import { ROUTES } from '@/constants';
 
 const { redirect, getUser } = vi.hoisted(() => ({
   redirect: vi.fn(),
   getUser: vi.fn(async () => ({ data: { user: null } })),
-}));
-
-vi.mock('next/link', () => ({
-  default: ({ href, children, ...props }: { href: string; children: ReactNode }) => (
-    <a href={href} {...props}>{children}</a>
-  ),
-}));
-
-vi.mock('@/components/LandingAuthDialog', () => ({
-  default: ({ triggerLabel }: { triggerLabel: string }) => <button>{triggerLabel}</button>,
 }));
 
 vi.mock('next/navigation', () => ({
@@ -35,34 +23,23 @@ vi.mock('@/utils/supabase/server', () => ({
   })),
 }));
 
-describe('Landing page light redesign regression', () => {
+describe('Root app entry', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    getUser.mockResolvedValue({ data: { user: null } });
   });
 
-  it('renders the unauthenticated landing page with a light shell', async () => {
-    const ui = await LandingPage();
-    const { container } = render(ui);
-    const root = container.firstChild as HTMLElement;
+  it('sends unauthenticated visitors to sign in for the app', async () => {
+    await RootPage();
 
-    expect(root.className).toContain('bg-slate-50');
-    expect(root.className).toContain('text-slate-900');
-    expect(root.className).not.toContain('bg-[#060608]');
-    expect(root.className).not.toContain('text-slate-300');
+    expect(redirect).toHaveBeenCalledWith(`${ROUTES.authSignIn}?next=%2Fapp`);
   });
 
-  it('keeps translated landing copy visible without the old hardcoded shell labels', async () => {
-    const ui = await LandingPage();
-    render(ui);
+  it('sends authenticated visitors to the workspace', async () => {
+    getUser.mockResolvedValue({ data: { user: { id: 'user-1' } } });
 
-    expect(screen.getByText(messages.en.landing.heroTitle)).toBeInTheDocument();
-    expect(screen.getByText(messages.en.landing.heroSubtitle)).toBeInTheDocument();
-    expect(screen.getByText(messages.en.landing.heroEyebrow)).toBeInTheDocument();
-    expect(screen.getByText(messages.en.landing.heroSupport)).toBeInTheDocument();
-    expect(screen.getByText(messages.en.landing.previewLabel)).toBeInTheDocument();
-    expect(screen.getByText(messages.en.landing.previewTitle)).toBeInTheDocument();
-    expect(screen.getByText(messages.en.landing.previewBody)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: messages.en.landing.startWriting })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: messages.en.landing.secondaryCta })).toBeInTheDocument();
+    await RootPage();
+
+    expect(redirect).toHaveBeenCalledWith(ROUTES.app);
   });
 });
