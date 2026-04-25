@@ -29,10 +29,10 @@ describe('Root app entry', () => {
     getUser.mockResolvedValue({ data: { user: null } });
   });
 
-  it('sends unauthenticated visitors to sign in for the app', async () => {
+  it('sends unauthenticated visitors to the workspace entry', async () => {
     await RootPage();
 
-    expect(redirect).toHaveBeenCalledWith(`${ROUTES.authSignIn}?next=%2Fapp`);
+    expect(redirect).toHaveBeenCalledWith(ROUTES.app);
   });
 
   it('sends authenticated visitors to the workspace', async () => {

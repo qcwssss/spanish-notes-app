@@ -1,7 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { getSupabaseConfig } from './config'
-import { ROUTES } from '@/constants'
 
 export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname
@@ -52,8 +51,16 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const isRoot = pathname === '/'
+  const isWorkspacePath =
+    pathname === '/app' ||
+    pathname.startsWith('/app/') ||
+    pathname === '/settings' ||
+    pathname.startsWith('/settings/') ||
+    pathname === '/favorites' ||
+    pathname.startsWith('/favorites/')
   const isPublicPath =
     isRoot ||
+    isWorkspacePath ||
     pathname.startsWith('/home') ||
     pathname.startsWith('/faq') ||
     pathname.startsWith('/auth') ||
@@ -69,9 +76,8 @@ export async function updateSession(request: NextRequest) {
     }
 
     const url = request.nextUrl.clone()
-    const nextPath = `${pathname}${request.nextUrl.search}`
-    url.pathname = ROUTES.authSignIn
-    url.search = `?next=${encodeURIComponent(nextPath)}`
+    url.pathname = '/app'
+    url.search = ''
     return NextResponse.redirect(url)
   }
 
