@@ -51,8 +51,16 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const isRoot = pathname === '/'
+  const isWorkspacePath =
+    pathname === '/app' ||
+    pathname.startsWith('/app/') ||
+    pathname === '/settings' ||
+    pathname.startsWith('/settings/') ||
+    pathname === '/favorites' ||
+    pathname.startsWith('/favorites/')
   const isPublicPath =
     isRoot ||
+    isWorkspacePath ||
     pathname.startsWith('/home') ||
     pathname.startsWith('/faq') ||
     pathname.startsWith('/auth') ||
@@ -68,7 +76,7 @@ export async function updateSession(request: NextRequest) {
     }
 
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/app'
     url.search = ''
     return NextResponse.redirect(url)
   }
