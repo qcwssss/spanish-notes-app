@@ -1,98 +1,9 @@
 'use server';
 
 import { createServerClient } from '@/utils/supabase/server';
-import { revalidatePath } from 'next/cache';
 import { Note } from '@/types/note';
-import { UNTITLED_NOTE_TITLE } from '@/constants';
-import { getDefaultFolder } from '@/utils/folders/queries';
 
-export async function createNote(
-  title: string = UNTITLED_NOTE_TITLE,
-  content: string = '',
-  folderId?: string
-) {
-  const supabase = await createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    throw new Error('User not authenticated');
-  }
-
-  let targetFolderId = folderId;
-  if (!targetFolderId) {
-    const defaultFolder = await getDefaultFolder();
-    if (!defaultFolder) {
-      throw new Error('Default folder not found');
-    }
-    targetFolderId = defaultFolder.id;
-  }
-
-  const { data, error } = await supabase
-    .from('notes')
-    .insert([
-      {
-        user_id: user.id,
-        title,
-        content,
-        folder_id: targetFolderId,
-      },
-    ])
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  revalidatePath('/');
-  return data as Note;
-}
-
-export async function updateNote(id: string, updates: Partial<Note>) {
-  const supabase = await createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not authenticated');
-
-  // Filter out fields that shouldn't be updated manually
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id: _id, user_id: _uid, created_at: _cat, ...safeUpdates } = updates;
-
-  const { data, error } = await supabase
-    .from('notes')
-    .update({ 
-      ...safeUpdates, 
-      updated_at: new Date().toISOString() 
-    })
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .select()
-    .single();
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath('/');
-  return data as Note;
-}
-
-export async function deleteNote(id: string) {
-  const supabase = await createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) throw new Error('User not authenticated');
-
-  const { error } = await supabase
-    .from('notes')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user.id);
-
-  if (error) throw new Error(error.message);
-
-  revalidatePath('/');
-}
-
-export async function fetchNote(id: string) {
+export async function fetchNote(id: string): Promise<Note | null> {
     const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -107,4 +18,20 @@ export async function fetchNote(id: string) {
     
     if (error) return null;
     return data as Note;
+}
+
+export async function getNotes() {
+    const supabase = await createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) return [];
+
+    const { data, error } = await supabase
+        .from('notes')
+        .select('id, title, updated_at, folder_id, is_favorite')
+        .eq('user_id', user.id)
+        .order('updated_at', { ascending: false });
+    
+    if (error) return [];
+    return data;
 }

@@ -15,9 +15,11 @@ import { createFolder } from '@/utils/folders/actions';
 import { FolderPlus, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useToast } from './ToastProvider';
 import { usePathname } from 'next/navigation';
-import { applyTheme, getStoredTheme, setStoredTheme, type ThemePreference } from '@/utils/theme';
+import { type ThemePreference } from '@/utils/theme';
 import { useI18n } from '@/components/I18nProvider';
 import { ROUTES } from '@/constants';
+import { useTheme } from '@/hooks/useTheme';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 const SIDEBAR_COLLAPSE_KEY = 'app-sidebar-collapsed';
 
@@ -49,7 +51,8 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
       }
     }
   }, []);
-  const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme() ?? 'dark');
+  
+  const { theme, toggleTheme } = useTheme();
   
   const { toast } = useToast();
   const showHierarchy = shouldShowHierarchy(folders);
@@ -83,10 +86,6 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     }
   }, [folders, selectedFolderId]);
 
-  useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
-
   const handleCreateFolder = async (name: string) => {
     try {
       await createFolder(name);
@@ -106,32 +105,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
     localStorage.setItem(SIDEBAR_COLLAPSE_KEY, JSON.stringify(collapsed));
   };
 
-  const handleThemeToggle = () => {
-    const nextTheme: ThemePreference = theme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
-    setStoredTheme(nextTheme);
-  };
-  
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Handle window resize to detect mobile using matchMedia
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 768px)');
-    
-    // Initial check
-    setIsMobile(mediaQuery.matches);
-
-    // Handler for change
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsMobile(e.matches);
-    };
-
-    // Modern browsers support addEventListener on MediaQueryList
-    // (Safari 14+, Chrome 39+, Firefox 55+)
-    mediaQuery.addEventListener('change', handleChange);
-    
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+  const isMobile = useIsMobile();
 
   // Auto-close sidebar on mobile when navigating
   useEffect(() => {
@@ -254,7 +228,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
               <UserInfoCard 
                 profile={profile} 
                 theme={mounted ? theme : 'dark'} // Default safely to dark or matching server, but better to delay render
-                onToggleTheme={handleThemeToggle}
+                onToggleTheme={toggleTheme}
               />
             </div>
           )}

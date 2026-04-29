@@ -93,8 +93,14 @@ export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
     
     // Chrome requires this event listener
     if (window.speechSynthesis.onvoiceschanged !== undefined) {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
+      window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
     }
+    
+    return () => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+      }
+    };
   }, [storageKey, voicePrefix]);
 
   useEffect(() => {

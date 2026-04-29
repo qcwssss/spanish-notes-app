@@ -66,17 +66,10 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith('/auth') ||
     pathname.startsWith('/share') ||
     pathname.startsWith('/api/share')
-  const hasSupabaseAuthCookie = request.cookies
-    .getAll()
-    .some(({ name }) => name.startsWith('sb-') && name.includes('auth-token'))
 
   if (!user && !isPublicPath) {
-    if (hasSupabaseAuthCookie) {
-      return supabaseResponse
-    }
-
     const url = request.nextUrl.clone()
-    url.pathname = '/app'
+    url.pathname = '/'
     url.search = ''
     return NextResponse.redirect(url)
   }

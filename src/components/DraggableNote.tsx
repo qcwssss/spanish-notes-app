@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Note } from '@/types/note';
 import { ROUTES, UNTITLED_NOTE_TITLE } from '@/constants';
 import { Trash2, Star } from 'lucide-react';
-import { deleteNote } from '@/utils/notes/queries';
+import { deleteNote } from '@/utils/notes/actions';
 import { toggleFavorite } from '@/utils/notes/actions';
 import { useRouter } from 'next/navigation';
 import * as Dialog from '@radix-ui/react-dialog';
