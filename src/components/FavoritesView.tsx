@@ -3,12 +3,12 @@
 import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowUpDown, Star } from 'lucide-react';
-import { Note } from '@/types/note';
+import { NoteListItem } from '@/types/note';
 import { ROUTES, UNTITLED_NOTE_TITLE } from '@/constants';
 import { useI18n } from '@/components/I18nProvider';
 
 interface FavoritesViewProps {
-  notes: Note[];
+  notes: NoteListItem[];
 }
 
 export default function FavoritesView({ notes }: FavoritesViewProps) {

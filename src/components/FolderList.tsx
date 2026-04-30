@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { Folder } from '@/types/folder';
-import { Note } from '@/types/note';
+import { NoteListItem } from '@/types/note';
 import { ROUTES, UNTITLED_NOTE_TITLE } from '@/constants';
 import { moveNote } from '@/utils/notes/actions';
 import { renameFolder } from '@/utils/folders/actions';
@@ -14,7 +14,7 @@ import { useI18n } from '@/components/I18nProvider';
 
 interface FolderListProps {
   folders: Folder[];
-  notes: Note[];
+  notes: NoteListItem[];
   isActive: boolean;
   showHierarchy?: boolean;
   onSelectFolder?: (folder: Folder) => void;
@@ -38,7 +38,7 @@ export default function FolderList({
   }, []);
 
   const notesByFolder = useMemo(() => {
-    const map = new Map<string, Note[]>();
+    const map = new Map<string, NoteListItem[]>();
     for (const note of notes) {
       if (note.folder_id) {
         if (!map.has(note.folder_id)) {
@@ -79,7 +79,7 @@ export default function FolderList({
     const folderId = over.id as string;
 
     if (active.data.current?.type === 'note' && over.data.current?.type === 'folder') {
-      const note = active.data.current.note as Note;
+      const note = active.data.current.note as NoteListItem;
       
       if (note.folder_id === folderId) return;
 

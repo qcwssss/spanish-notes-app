@@ -8,3 +8,5 @@ export interface Note {
   created_at: string;
   updated_at: string;
 }
+
+export type NoteListItem = Pick<Note, 'id' | 'folder_id' | 'is_favorite' | 'title' | 'updated_at'>;

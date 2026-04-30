@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import Link from 'next/link';
-import { Note } from '@/types/note';
+import { NoteListItem } from '@/types/note';
 import { ROUTES, UNTITLED_NOTE_TITLE } from '@/constants';
 import { Trash2, Star } from 'lucide-react';
 import { deleteNote } from '@/utils/notes/actions';
@@ -15,7 +15,7 @@ import { useToast } from '@/components/ToastProvider';
 import { useI18n } from '@/components/I18nProvider';
 
 interface DraggableNoteProps {
-  note: Note;
+  note: NoteListItem;
 }
 
 export default function DraggableNote({ note }: DraggableNoteProps) {

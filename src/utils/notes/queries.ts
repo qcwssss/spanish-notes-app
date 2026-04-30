@@ -1,7 +1,7 @@
 'use server';
 
 import { createServerClient } from '@/utils/supabase/server';
-import { Note } from '@/types/note';
+import { Note, NoteListItem } from '@/types/note';
 
 export async function fetchNote(id: string): Promise<Note | null> {
     const supabase = await createServerClient();
@@ -20,7 +20,7 @@ export async function fetchNote(id: string): Promise<Note | null> {
     return data as Note;
 }
 
-export async function getNotes() {
+export async function getNotes(): Promise<NoteListItem[]> {
     const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -33,5 +33,5 @@ export async function getNotes() {
         .order('updated_at', { ascending: false });
     
     if (error) return [];
-    return data;
+    return data as NoteListItem[];
 }

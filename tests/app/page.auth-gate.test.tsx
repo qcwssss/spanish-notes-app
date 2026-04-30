@@ -24,6 +24,9 @@ vi.mock('@/utils/supabase/server', () => ({
     },
     from: () => ({
       select: () => ({
+        eq: () => ({
+          order: () => Promise.resolve({ data: [] }),
+        }),
         order: () => Promise.resolve({ data: [] }),
       }),
     }),

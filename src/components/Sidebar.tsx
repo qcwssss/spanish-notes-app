@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Note } from '@/types/note';
+import { NoteListItem } from '@/types/note';
 import { Folder, DEFAULT_FOLDER_NAME } from '@/types/folder';
 import { UserProfile } from '@/types/profile';
 import CreateNoteButton from './CreateNoteButton';
@@ -24,7 +24,7 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 const SIDEBAR_COLLAPSE_KEY = 'app-sidebar-collapsed';
 
 interface SidebarProps {
-  notes: Note[];
+  notes: NoteListItem[];
   folders: Folder[];
   profile: UserProfile | null;
   selectedNoteId?: string | null;
