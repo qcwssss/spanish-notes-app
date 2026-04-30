@@ -60,18 +60,17 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith('/favorites/')
   const isPublicPath =
     isRoot ||
+    isWorkspacePath ||
     pathname.startsWith('/home') ||
     pathname.startsWith('/faq') ||
     pathname.startsWith('/auth') ||
     pathname.startsWith('/share') ||
     pathname.startsWith('/api/share')
 
-  if (!user && (isWorkspacePath || !isPublicPath)) {
+  if (!user && !isPublicPath) {
     const url = request.nextUrl.clone()
-    const next = `${pathname}${request.nextUrl.search}`
-    url.pathname = '/auth/sign-in'
+    url.pathname = '/'
     url.search = ''
-    url.searchParams.set('next', next)
     return NextResponse.redirect(url)
   }
 

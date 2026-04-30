@@ -27,13 +27,11 @@ describe('updateSession app routing', () => {
     getUser.mockResolvedValue({ data: { user: null } });
   });
 
-  it('redirects unauthenticated app requests to sign in with a safe next path', async () => {
+  it('lets unauthenticated app requests reach the AuthGate workspace entry', async () => {
     const request = new NextRequest('http://localhost/app?noteId=note-1');
 
     const response = await updateSession(request);
 
-    expect(response.headers.get('location')).toBe(
-      'http://localhost/auth/sign-in?next=%2Fapp%3FnoteId%3Dnote-1'
-    );
+    expect(response.headers.get('location')).toBeNull();
   });
 });

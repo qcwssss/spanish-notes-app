@@ -1,7 +1,12 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import AppPage from '@/app/app/page';
 import { renderWithI18n } from '../utils/renderWithI18n';
+
+const { getUser, redirect } = vi.hoisted(() => ({
+  getUser: vi.fn(),
+  redirect: vi.fn(),
+}));
 
 vi.mock('@/components/AuthGate', () => ({
   default: () => <div>AuthGate</div>,
@@ -14,13 +19,13 @@ vi.mock('@/components/ToastProvider', () => ({
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
   usePathname: () => '/',
-  redirect: vi.fn(),
+  redirect,
 }));
 
 vi.mock('@/utils/supabase/server', () => ({
   createServerClient: vi.fn(() => ({
     auth: {
-      getUser: () => Promise.resolve({ data: { user: { id: 'user-1' } } }),
+      getUser,
     },
     from: () => ({
       select: () => ({
@@ -46,8 +51,23 @@ vi.mock('next/headers', () => ({
 }));
 
 describe('App workspace auth gate', () => {
-  it('renders AuthGate', async () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    getUser.mockResolvedValue({ data: { user: { id: 'user-1' } } });
+  });
+
+  it('renders AuthGate for authenticated workspace requests', async () => {
     const ui = await AppPage({ searchParams: Promise.resolve({}) });
+    renderWithI18n(ui);
+    expect(screen.getByText('AuthGate')).toBeInTheDocument();
+  });
+
+  it('renders AuthGate shell instead of redirecting unauthenticated workspace requests', async () => {
+    getUser.mockResolvedValue({ data: { user: null } });
+
+    const ui = await AppPage({ searchParams: Promise.resolve({}) });
+
+    expect(redirect).not.toHaveBeenCalled();
     renderWithI18n(ui);
     expect(screen.getByText('AuthGate')).toBeInTheDocument();
   });
