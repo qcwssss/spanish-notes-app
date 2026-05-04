@@ -92,9 +92,22 @@ export const useTTS = (targetLanguage: string | null = DEFAULT_LANGUAGE) => {
     loadVoices();
     
     // Chrome requires this event listener
-    if (window.speechSynthesis.onvoiceschanged !== undefined) {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
+    if (
+      window.speechSynthesis.onvoiceschanged !== undefined &&
+      typeof window.speechSynthesis.addEventListener === 'function'
+    ) {
+      window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
     }
+    
+    return () => {
+      if (
+        typeof window !== 'undefined' &&
+        window.speechSynthesis &&
+        typeof window.speechSynthesis.removeEventListener === 'function'
+      ) {
+        window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+      }
+    };
   }, [storageKey, voicePrefix]);
 
   useEffect(() => {

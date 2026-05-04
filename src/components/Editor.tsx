@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Note } from '@/types/note';
-import { updateNote, deleteNote } from '@/utils/notes/queries';
+import { updateNote, deleteNote } from '@/utils/notes/actions';
 import NotePlayer from './NotePlayer';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';

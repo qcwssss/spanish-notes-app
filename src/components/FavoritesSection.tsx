@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, Star } from 'lucide-react';
-import { Note } from '@/types/note';
+import { NoteListItem } from '@/types/note';
 import DraggableNote from './DraggableNote';
 import { useI18n } from '@/components/I18nProvider';
 
 interface FavoritesSectionProps {
-  notes: Note[];
+  notes: NoteListItem[];
 }
 
 export default function FavoritesSection({ notes }: FavoritesSectionProps) {

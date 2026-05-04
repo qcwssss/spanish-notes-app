@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createNote } from '@/utils/notes/queries';
+import { createNote } from '@/utils/notes/actions';
 
 vi.mock('@/utils/supabase/server', () => ({
   createServerClient: vi.fn(),

@@ -50,33 +50,25 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isRoot = pathname === '/'
-  const isWorkspacePath =
-    pathname === '/app' ||
-    pathname.startsWith('/app/') ||
-    pathname === '/settings' ||
-    pathname.startsWith('/settings/') ||
-    pathname === '/favorites' ||
-    pathname.startsWith('/favorites/')
+  // middleware 只负责刷新 session，路由保护由各 Page 的服务器端 redirect 负责。
+  // workspace 路径（/app、/settings、/favorites）标记为公开，避免 / ↔ /app 重定向循环：
+  // —— /（landing page）直接 redirect 到 /app
+  // —— /app（AppPage）在 !user 时 redirect 到 /
+  // 若 middleware 也拦截 /app，三段重定向会形成死循环。
   const isPublicPath =
-    isRoot ||
-    isWorkspacePath ||
-    pathname.startsWith('/home') ||
-    pathname.startsWith('/faq') ||
-    pathname.startsWith('/auth') ||
-    pathname.startsWith('/share') ||
-    pathname.startsWith('/api/share')
-  const hasSupabaseAuthCookie = request.cookies
-    .getAll()
-    .some(({ name }) => name.startsWith('sb-') && name.includes('auth-token'))
+    pathname === '/' ||
+    pathname === '/app'      || pathname.startsWith('/app/') ||
+    pathname === '/settings' || pathname.startsWith('/settings/') ||
+    pathname === '/favorites'|| pathname.startsWith('/favorites/') ||
+    pathname === '/home'     || pathname.startsWith('/home/') ||
+    pathname === '/faq'      || pathname.startsWith('/faq/') ||
+    pathname === '/auth'     || pathname.startsWith('/auth/') ||
+    pathname === '/share'    || pathname.startsWith('/share/') ||
+    pathname === '/api/share'|| pathname.startsWith('/api/share/')
 
   if (!user && !isPublicPath) {
-    if (hasSupabaseAuthCookie) {
-      return supabaseResponse
-    }
-
     const url = request.nextUrl.clone()
-    url.pathname = '/app'
+    url.pathname = '/'
     url.search = ''
     return NextResponse.redirect(url)
   }

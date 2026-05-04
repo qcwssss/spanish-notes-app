@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { createNote } from '@/utils/notes/queries';
+import { createNote } from '@/utils/notes/actions';
 import { useRouter } from 'next/navigation';
 import ActivationDialog from './ActivationDialog';
 import { ROUTES, UNTITLED_NOTE_TITLE } from '@/constants';

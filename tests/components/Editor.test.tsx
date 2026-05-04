@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, fireEvent, act } from '@testing-library/react';
 import Editor from '@/components/Editor';
-import { updateNote } from '@/utils/notes/queries';
+import { updateNote } from '@/utils/notes/actions';
 import { renderWithI18n } from '../utils/renderWithI18n';
 
-vi.mock('@/utils/notes/queries', () => ({
+vi.mock('@/utils/notes/actions', () => ({
   updateNote: vi.fn(() => Promise.resolve()),
   deleteNote: vi.fn(() => Promise.resolve()),
 }));

@@ -1,14 +1,13 @@
 import { createServerClient } from '@/utils/supabase/server';
 import { getUserProfile } from '@/utils/profile/queries';
 import { getFolders } from '@/utils/folders/queries';
+import { getNotes, fetchNote } from '@/utils/notes/queries';
 import Sidebar from '@/components/Sidebar';
 import Editor from '@/components/Editor';
 import AuthGate from '@/components/AuthGate';
 import { getServerLocale } from '@/i18n/server';
 import { createTranslator } from '@/i18n/translator';
 import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
-import { ROUTES } from '@/constants';
 
 export const metadata: Metadata = {
   title: 'My Notes | VivaNote',
@@ -25,19 +24,12 @@ export default async function AppPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect(ROUTES.home);
-  }
-
   const profile = await getUserProfile();
   const folders = await getFolders();
   const locale = await getServerLocale();
   const t = createTranslator(locale);
 
-  const { data: notes } = await supabase
-    .from('notes')
-    .select('id, title, updated_at, folder_id, is_favorite')
-    .order('updated_at', { ascending: false });
+  const notes = await getNotes();
 
   const resolvedSearchParams = await searchParams;
   const selectedNoteId = [resolvedSearchParams?.noteId].flat()[0];
@@ -45,13 +37,7 @@ export default async function AppPage({
   let activeNote = null;
 
   if (selectedNoteId) {
-    const { data: note } = await supabase
-      .from('notes')
-      .select('*')
-      .eq('id', selectedNoteId)
-      .eq('user_id', user.id)
-      .single();
-    activeNote = note;
+    activeNote = await fetchNote(selectedNoteId);
   }
 
   return (
