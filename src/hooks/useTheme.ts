@@ -1,20 +1,21 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore, useEffect } from 'react';
 import { getStoredTheme, setStoredTheme, applyTheme, type ThemePreference } from '@/utils/theme';
 
-// 使用 useSyncExternalStore 在 SSR / CSR 两侧获得一致的初始值，
-// 彻底消除水合阶段的主题闪烁（FOUC）。
-
-const THEME_STORAGE_KEY = 'theme';
+// 与 src/utils/theme.ts 中保持一致
+const THEME_STORAGE_KEY = 'app-theme';
 
 function subscribeToTheme(callback: () => void): () => void {
   if (typeof window === 'undefined') return () => {};
-  // 监听其他 Tab 的 storage 变化，保持 Tab 间同步
-  window.addEventListener('storage', (e) => {
+
+  // 使用命名函数以便能从 removeEventListener 正确移除
+  const handler = (e: StorageEvent) => {
     if (e.key === THEME_STORAGE_KEY) callback();
-  });
-  return () => window.removeEventListener('storage', callback as EventListener);
+  };
+
+  window.addEventListener('storage', handler);
+  return () => window.removeEventListener('storage', handler);
 }
 
 function getThemeSnapshot(): ThemePreference {
@@ -32,10 +33,16 @@ export function useTheme() {
     getThemeServerSnapshot
   );
 
+  // 任何来源（本 Tab setTheme 或其他 Tab 的 storage 事件）触发快照变化时，
+  // 同步更新 DOM class，防止 DOM 与存储值脱节
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
+
   const setTheme = (nextTheme: ThemePreference) => {
     setStoredTheme(nextTheme);
     applyTheme(nextTheme);
-    // 手动触发同页面内的重新渲染（storage 事件不会在当前 Tab 中触发）
+    // 手动派发 StorageEvent 让 useSyncExternalStore 感知当前 Tab 的变化
     window.dispatchEvent(new StorageEvent('storage', { key: THEME_STORAGE_KEY }));
   };
 

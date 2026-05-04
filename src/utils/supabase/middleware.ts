@@ -52,11 +52,11 @@ export async function updateSession(request: NextRequest) {
 
   const isPublicPath =
     pathname === '/' ||
-    pathname.startsWith('/home') ||
-    pathname.startsWith('/faq') ||
-    pathname.startsWith('/auth') ||
-    pathname.startsWith('/share') ||
-    pathname.startsWith('/api/share')
+    pathname === '/home' || pathname.startsWith('/home/') ||
+    pathname === '/faq'  || pathname.startsWith('/faq/') ||
+    pathname === '/auth' || pathname.startsWith('/auth/') ||
+    pathname === '/share' || pathname.startsWith('/share/') ||
+    pathname === '/api/share' || pathname.startsWith('/api/share/')
 
   if (!user && !isPublicPath) {
     const url = request.nextUrl.clone()
