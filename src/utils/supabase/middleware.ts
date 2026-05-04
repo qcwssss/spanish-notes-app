@@ -50,17 +50,8 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isRoot = pathname === '/'
-  const isWorkspacePath =
-    pathname === '/app' ||
-    pathname.startsWith('/app/') ||
-    pathname === '/settings' ||
-    pathname.startsWith('/settings/') ||
-    pathname === '/favorites' ||
-    pathname.startsWith('/favorites/')
   const isPublicPath =
-    isRoot ||
-    isWorkspacePath ||
+    pathname === '/' ||
     pathname.startsWith('/home') ||
     pathname.startsWith('/faq') ||
     pathname.startsWith('/auth') ||

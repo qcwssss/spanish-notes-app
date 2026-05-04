@@ -3,6 +3,9 @@
 import { createServerClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { Note } from '@/types/note';
+
+// 只允许更新业务内容，拒绝主键/所有者/时间戳等不可变字段
+type NoteUpdatePayload = Pick<Note, 'title' | 'content' | 'folder_id' | 'is_favorite'>;
 import { UNTITLED_NOTE_TITLE } from '@/constants';
 import { getDefaultFolder } from '@/utils/folders/queries';
 
@@ -52,20 +55,16 @@ export async function createNote(
 
 // ─── 更新 ───────────────────────────────────────────────────────────────────
 
-export async function updateNote(id: string, updates: Partial<Note>): Promise<Note> {
+export async function updateNote(id: string, updates: Partial<NoteUpdatePayload>): Promise<Note> {
   const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) throw new Error('User not authenticated');
 
-  // 过滤掉不允许手动更新的字段
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id: _id, user_id: _uid, created_at: _cat, ...safeUpdates } = updates;
-
   const { data, error } = await supabase
     .from('notes')
     .update({
-      ...safeUpdates,
+      ...updates,
       updated_at: new Date().toISOString(),
     })
     .eq('id', id)
