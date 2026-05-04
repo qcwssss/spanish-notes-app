@@ -27,9 +27,13 @@ export function FolderDeleteDialog({
         <Dialog.Content
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 text-slate-900 shadow-xl focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
         >
-          <Dialog.Title className="mb-4 text-xl font-bold text-slate-900 dark:text-slate-100">
+          <Dialog.Title className="mb-2 text-xl font-bold text-slate-900 dark:text-slate-100">
             {t('folders.deleteFolderTitle')}
           </Dialog.Title>
+
+          <Dialog.Description className="mb-4 text-sm text-slate-600 dark:text-slate-300">
+            {t('folders.deleteFolderDescription')}
+          </Dialog.Description>
           
           <div className="space-y-3">
             <button
