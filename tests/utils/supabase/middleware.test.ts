@@ -27,8 +27,17 @@ describe('updateSession app routing', () => {
     getUser.mockResolvedValue({ data: { user: null } });
   });
 
-  it('redirects unauthenticated /app requests to home', async () => {
+  it('lets unauthenticated /app requests through — AppPage handles auth redirect', async () => {
     const request = new NextRequest('http://localhost/app?noteId=note-1');
+
+    const response = await updateSession(request);
+
+    // middleware 不拦截 workspace 路径，避免与 landing page 产生 / ↔ /app 循环
+    expect(response.headers.get('location')).toBeNull();
+  });
+
+  it('still redirects unauthenticated requests to truly private paths', async () => {
+    const request = new NextRequest('http://localhost/some-private-api');
 
     const response = await updateSession(request);
 
@@ -36,8 +45,8 @@ describe('updateSession app routing', () => {
   });
 
   it('rejects forged Supabase cookies — does not bypass auth', async () => {
-    // 伪造 sb-* Cookie，模拟旧 bypass 攻击路径
-    const request = new NextRequest('http://localhost/app?noteId=note-1', {
+    // 伪造 sb-* Cookie，模拟旧 bypass 攻击路径（针对私有路由）
+    const request = new NextRequest('http://localhost/some-private-api', {
       headers: {
         cookie: 'sb-access-token=fake; sb-refresh-token=fake',
       },
