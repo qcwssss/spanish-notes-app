@@ -29,9 +29,10 @@ export default function NotePlayer({ content, targetLanguage }: NotePlayerProps)
           <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100">{t('notePlayer.title')}</h2>
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">{t('notePlayer.voice')}</label>
+          <label htmlFor="voice-select" className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">{t('notePlayer.voice')}</label>
           <div className="relative">
             <select
+              id="voice-select"
               value={selectedVoiceIndex}
               onChange={(e) => setSelectedVoiceIndex(Number(e.target.value))}
               className="appearance-none bg-slate-50 text-slate-700 text-xs rounded-lg pl-3 pr-8 py-1.5 border border-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/50 focus-visible:ring-offset-1 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 cursor-pointer max-w-[160px]"
