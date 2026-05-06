@@ -120,7 +120,7 @@ export default function ShareActions({ noteId, onRequestEdit, onRequestDelete }:
       className="fixed right-4 z-40 md:right-6"
       style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom))' }}
     >
-      <div className="relative h-12 w-[6.5rem] rounded-full border border-slate-200 bg-white/95 shadow-lg backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
+      <div className="relative h-12 w-[6.5rem] rounded-full border border-slate-200/80 bg-white/95 shadow-[0_4px_16px_rgba(15,23,42,0.10)] backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
         <button
           type="button"
           onClick={onRequestEdit}
@@ -150,7 +150,7 @@ export default function ShareActions({ noteId, onRequestEdit, onRequestDelete }:
           onClick={menuOpen ? () => setMenuOpen(false) : onRequestEdit}
           aria-label={menuOpen ? t('share.moreActions') : t('editor.edit')}
           title={menuOpen ? t('share.moreActions') : t('editor.edit')}
-          className={`absolute left-0.5 top-0.5 inline-flex h-11 w-11 items-center justify-center rounded-full border border-blue-200 bg-blue-600 text-white shadow-sm transition-[transform,background-color] duration-200 ease-out hover:bg-blue-500 dark:border-blue-700/60 dark:bg-blue-600 dark:hover:bg-blue-500 ${menuOpen ? 'translate-x-14' : 'translate-x-0'}`}
+          className={`absolute left-0.5 top-0.5 inline-flex h-11 w-11 items-center justify-center rounded-full bg-slate-800 text-white shadow-sm transition-[transform,background-color] duration-200 ease-out hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 ${menuOpen ? 'translate-x-14' : 'translate-x-0'}`}
         >
           {menuOpen ? <Ellipsis className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
         </button>

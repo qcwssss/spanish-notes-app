@@ -219,7 +219,7 @@ export default function Sidebar({ notes, folders, profile, selectedNoteId }: Sid
             <div className="relative">
               <button
                 onClick={() => setIsCreateFolderOpen(true)}
-                className="absolute bottom-full right-3 mb-3 p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg transition-all hover:scale-105 z-20"
+                className="absolute bottom-full right-3 mb-3 p-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl shadow-md transition-all hover:scale-105 z-20 dark:bg-slate-700 dark:hover:bg-slate-600"
                 title={t('sidebar.createFolder')}
                 aria-label={t('sidebar.createFolder')}
               >

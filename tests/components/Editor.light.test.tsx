@@ -94,8 +94,10 @@ Paragraph text
     expect(paragraph?.className).toContain('dark:text-slate-200');
     expect(tableWrapper?.className).toContain('bg-white');
     expect(tableWrapper?.className).toContain('dark:bg-slate-900/40');
-    expect(tableHead?.className).toContain('bg-slate-100');
-    expect(tableHead?.className).toContain('dark:bg-slate-800/80');
+    // thead 现在是细腻的浅灰 + 大写小字标题（见 MarkdownRenderer 改动）
+    expect(tableHead?.className).toContain('bg-slate-50');
+    expect(tableHead?.className).toContain('text-slate-500');
+    expect(tableHead?.className).toContain('uppercase');
     expect(tableCell?.className).toContain('text-slate-700');
     expect(tableCell?.className).toContain('dark:text-slate-200');
   });

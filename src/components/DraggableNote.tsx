@@ -98,7 +98,7 @@ export default function DraggableNote({ note }: DraggableNoteProps) {
       >
         <Link
           href={`${ROUTES.app}?noteId=${note.id}`}
-          className="block p-2 pr-16 rounded-lg text-sm text-slate-600 transition-colors truncate cursor-grab active:cursor-grabbing hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+          className="block p-2 pr-16 rounded-lg text-sm text-slate-600 transition-colors truncate cursor-grab active:cursor-grabbing hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700/60 dark:hover:text-white"
           {...listeners}
           {...attributes}
         >
