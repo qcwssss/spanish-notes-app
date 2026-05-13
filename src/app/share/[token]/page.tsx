@@ -95,8 +95,22 @@ export default async function SharedNotePage({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <main className="mx-auto max-w-4xl px-4 py-8 md:py-12">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <div className="flex w-full flex-col items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-center text-sm font-medium text-white sm:flex-row sm:text-base">
+        <div className="flex items-center gap-2">
+          <span className="hidden sm:inline">⚡</span>
+          <span>{t('share.topBannerText')}</span>
+        </div>
+        <Link
+          href={ROUTES.app}
+          className="group inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/30 sm:ml-2 sm:text-sm"
+        >
+          {t('share.topBannerCta')}
+          <span className="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true">→</span>
+        </Link>
+      </div>
+
+      <main className="mx-auto w-full max-w-4xl flex-grow px-4 py-8 md:py-12">
         <ShareUpdateWatcher token={token} initialUpdatedAt={note.updatedAt} />
 
         <div className="mb-4 flex items-center justify-between gap-3">
