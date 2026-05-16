@@ -259,6 +259,8 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       howToUseStep2: 'Use it as a read-only practice page for listening and shadowing.',
       howToUseStep3: 'Want your own workspace? Use the create-notes button.',
       howToUseTip: 'Tip: This shared page is read-only, so edits are not available here.',
+      topBannerText: 'This note was created with VivaNote, a click-to-pronounce language learning app.',
+      topBannerCta: 'Create your notes for free',
     },
   },
   zh: {
@@ -519,6 +521,8 @@ export const messages: Record<Locale, Record<string, Record<string, string>>> = 
       howToUseStep2: '把它当作只读练习页进行听读和跟读。',
       howToUseStep3: '想要自己的工作区？点击创建笔记按钮。',
       howToUseTip: '提示：该分享页为只读模式，无法直接编辑。',
+      topBannerText: '这篇笔记由 VivaNote 创建，一款支持点击文本听发音的语言学习应用。',
+      topBannerCta: '免费创建你的笔记',
     },
   },
 };
